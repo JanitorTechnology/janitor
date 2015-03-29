@@ -1,0 +1,196 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+header, section, footer {
+  flex-shrink: 0;
+}
+
+section {
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+section:last-of-type {
+  flex-grow: 1;
+}
+
+h4 {
+  color: #777;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
+
+.navbar-inverse {
+  background-color: #333;
+}
+
+.navbar-header {
+  text-align: center;
+}
+
+.navbar-brand {
+  opacity: 0.7;
+  float: none;
+  display: inline-block;
+}
+
+.navbar-brand:hover, .navbar-brand:focus {
+  opacity: 1;
+}
+
+.navbar-brand > img {
+  width: 25px;
+  float: left;
+  margin-top: 3px;
+  margin-right: 5px;
+  filter: invert(100%);
+  -webkit-filter: invert(100%);
+}
+
+.navbar-brand > span, .jumbotron h1 {
+  color: white;
+  font-family: sans-serif;
+}
+
+.navbar-toggle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 11px 0 0 13px;
+  font-size: 20px;
+}
+
+.navbar-toggle:link, .navbar-toggle:visited, .navbar-toggle:active {
+  color: white;
+  opacity: 0.6;
+}
+
+.navbar-toggle:hover {
+  color: white;
+  opacity: 0.9;
+}
+
+.badge-red {
+  background-color: #D9534F;
+}
+
+.jumbotron {
+  color: white;
+  background-color: #074E68;
+  padding-top: 130px;
+  padding-bottom: 100px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.signup {
+  color: white;
+  background-color: #085A78;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-top: 0;
+}
+
+.signup > .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.signup-text {
+  margin-right: 50px;
+}
+
+.signup-text > h2, .signup-text h3 {
+  margin: 10px 0 0 0;
+}
+
+.signup-form {
+  max-width: 400px;
+  margin: 0;
+}
+
+.signup-form > .form-control-feedback {
+  right: 75px;
+  top: 5px;
+}
+
+.signup-form:not(.has-success) > .glyphicon-ok {
+  visibility: hidden;
+}
+
+.signup-form:not(.has-error) > .glyphicon-remove {
+  visibility: hidden;
+}
+
+.janitor-story {
+  margin-top: 15px;
+}
+
+.janitor-story > h2 > .glyphicon-flash {
+  margin: 0 -5px;
+  font-size: 32px;
+  top: 3px;
+}
+
+.janitor-story > h2 > .glyphicon-check {
+  font-size: 28px;
+}
+
+.janitor-story > h2 > .glyphicon-cloud {
+  top: 7px;
+}
+
+.panel-project {
+  margin-top: 25px;
+}
+
+.panel-project > .panel-heading {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.project-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.project-title {
+  flex-grow: 1;
+  padding: 0 10px;
+  margin: 0;
+}
+
+.project-actions {
+  flex-shrink: 0;
+}
+
+.panel-project > .panel-body {
+  padding: 10px;
+}
+
+.project-updated {
+  text-align: right;
+  margin-bottom: 0;
+}
+
+.project-timestamp {
+  border-bottom: 1px dotted lightgrey;
+}
+
+footer {
+  margin-top: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

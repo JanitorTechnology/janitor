@@ -1,0 +1,20 @@
+    <section>
+      <div class="container">
+        <h1>Contribute to the best projects</h1>
+        <h4>In just a few clicks, enter a fully-functional development environment. Yes, it's that easy.</h4>
+        {{for i, project in projects {{
+        <div class="panel panel-default panel-project">
+          <div class="panel-heading">
+            <img class="project-icon" src={{= project.icon in json}} alt="Firefox Logo">
+            <h4 class="project-title"><a href="#">{{= project.name in html}}</a></h4>
+            <div class="project-actions">
+              <a href="#" class="btn btn-default">SSH</a>
+              <a href="#" class="btn btn-primary"><span class="hidden-xs">Edit in </span>Cloud9</a>
+            </div>
+          </div>
+          <div class="panel-body">
+            <p class="project-updated">Updated <span class="project-timestamp">{{= project.updated in html}}</span>.</p>
+          </div>
+        </div>}}}}
+      </div>
+    </section>

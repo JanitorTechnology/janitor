@@ -1,0 +1,19 @@
+{
+  "author": {
+    "name": "Jan Keromnes",
+    "email": "janx@linux.com",
+    "url": "http://jan.tools"
+  },
+  "name": "Janitor",
+  "description": "Automated development system",
+  "version": "0.0.0",
+  "homepage": "https://janitor.technology",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jankeromnes/janitor"
+  },
+  "license": "",
+  "dependencies": {
+    "camp": ">=15.5.5"
+  }
+}
