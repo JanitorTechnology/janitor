@@ -43,7 +43,7 @@ app.route(/^\/$/, function (data, match, end) {
 
   var title = '';
 
-  machines.getUpdatedProjects(function (err, projects) {
+  machines.getProjects(function (err, projects) {
     end({
       title: title,
       contributions: [7,8,9],
