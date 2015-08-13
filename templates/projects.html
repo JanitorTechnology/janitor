@@ -1,15 +1,15 @@
     <section>
       <div class="container">
-        <h1>Contribute to the best projects</h1>
-        <h4>In just a few clicks, enter a fully-functional development environment. Yes, it's that easy.</h4>
+        <h1>Contribute to incredible software</h1>
+        <h4>In just a single click, enter a fully-functional development environment. Yes, it's that easy.</h4>
         {{for i, project in projects {{
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <img class="project-icon" src={{= project.icon in json}} alt="Firefox Logo">
             <h4 class="project-title"><a href="#">{{= project.name in html}}</a></h4>
             <div class="project-actions">
-              <a href="#" class="btn btn-default">SSH</a>
-              <a href="#" class="btn btn-primary"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              <a target="_blank" href="#" class="btn btn-default">SSH</a>
+              <a target="_blank" href="https://c9.io/open/ssh?name={{= project.id in uri }}&host=janitor.technology&port=49155&user=user&workspaceDir={{= project.docker.path in uri }}&nodePath=%2Fusr%2Fbin%2Fnodejs" class="btn btn-primary"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">
