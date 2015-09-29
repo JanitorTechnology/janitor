@@ -2,12 +2,41 @@
 
 // Alpha sign-up form.
 
-var form = document.querySelector('.signup-form');
-var email = document.querySelector('#signup-email');
-var submit = document.querySelector('#signup-button');
+emailForm('#signup-form', 'signup', function (data) {
 
-function formStatus (status) {
+  var form = document.querySelector('#signup-form');
+
+  if (data.status === 'added' || data.status === 'already-added') {
+    updateFormStatus(form, 'success');
+  } else {
+    updateFormStatus(form, 'error');
+  }
+
+});
+
+
+// Email-login form.
+
+emailForm('#login-form', 'login', function (data) {
+
+  var form = document.querySelector('#login-form');
+
+  if (data.status === 'logged-in' || data.status === 'email-sent') {
+    updateFormStatus(form, 'success');
+  } else {
+    updateFormStatus(form, 'error');
+  }
+});
+
+
+// Update the visual feedback of an ajax form's status.
+
+function updateFormStatus (form, status) {
+
+  var submit = form.querySelector('input[type=submit]');
+
   form.classList.remove('has-success', 'has-error');
+
   switch (status) {
     case 'success':
       form.classList.add('has-success');
@@ -19,25 +48,55 @@ function formStatus (status) {
     default:
       submit.classList.remove('disabled');
   }
+
 }
 
-email.addEventListener('change', formStatus);
-email.addEventListener('keydown', formStatus);
 
-Scout('.signup-form').on('submit', function (query) {
-  query.action = 'signup';
+// Set-up an ajax form to send an email address.
 
-  query.data = {
-    email: email.value
-  };
+function emailForm (selector, action, callback) {
 
-  submit.classList.add('disabled');
+  var form = document.querySelector(selector);
 
-  query.resp = function (data) {
-    if (data.status === 'added' || data.status === 'already-added') {
-      formStatus('success');
-    } else {
-      formStatus('error');
-    }
-  };
-});
+  if (!form) {
+    return;
+  }
+
+  var email = form.querySelector('input[type=email]');
+  var submit = form.querySelector('input[type=submit]');
+
+  function resetFormStatus () {
+    updateFormStatus(form);
+  }
+
+  email.addEventListener('change', resetFormStatus);
+  email.addEventListener('keydown', resetFormStatus);
+
+  Scout(selector).on('submit', function (query) {
+    query.action = action;
+    query.data = {
+      email: email.value
+    };
+    query.resp = callback;
+    email.blur();
+    submit.classList.add('disabled');
+  });
+
+}
+
+
+// Remove the query string (e.g. '?key=123') from the URL.
+
+function removeQueryString () {
+
+  var search = window.location.search;
+
+  if (search) {
+    var url = String(window.location).replace(search, '');
+    window.history.replaceState({}, document.title, url);
+  }
+
+};
+
+removeQueryString();
+

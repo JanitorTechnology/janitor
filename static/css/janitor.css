@@ -21,6 +21,12 @@ section:last-of-type {
   flex-grow: 1;
 }
 
+h2 {
+  border-bottom: 1px solid #e2e2e2;
+  margin-bottom: 7px;
+  padding-bottom: 7px;
+}
+
 h4 {
   color: #777;
 }
@@ -115,22 +121,38 @@ h4 {
   margin: 10px 0 0 0;
 }
 
-.signup-form {
+.email-form {
   max-width: 400px;
   margin: 0;
 }
 
-.signup-form > .form-control-feedback {
+.email-form > .form-control-feedback {
   right: 75px;
   top: 5px;
 }
 
-.signup-form:not(.has-success) > .glyphicon-ok {
+.email-form:not(.has-success) > .glyphicon-ok {
   visibility: hidden;
 }
 
-.signup-form:not(.has-error) > .glyphicon-remove {
+.email-form:not(.has-error) > .glyphicon-remove {
   visibility: hidden;
+}
+
+.login-with {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: row;
+}
+
+.login-with > a {
+  flex: 1;
+}
+
+.login-with > a:not(:last-child) {
+  margin-right: 10px;
 }
 
 .janitor-story {
