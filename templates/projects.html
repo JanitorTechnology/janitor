@@ -9,7 +9,7 @@
             <h4 class="project-title"><a href="#">{{= project.name in html}}</a></h4>
             <div class="project-actions">
               <a target="_blank" href="#" class="btn btn-default">SSH</a>
-              <a target="_blank" href="https://c9.io/open/ssh?name={{= project.id in uri }}&host=janitor.technology&port=49155&user=user&workspaceDir={{= project.docker.path in uri }}&nodePath=%2Fusr%2Fbin%2Fnodejs" class="btn btn-primary"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              <a target="_blank" href="https://c9.io/open/ssh?name={{= project.id in uri }}&host=janitor.technology&port={{= project.docker.port in integer }}&user=user&workspaceDir={{= project.docker.path in uri }}&nodePath=%2Fusr%2Fbin%2Fnodejs" class="btn btn-primary"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">
