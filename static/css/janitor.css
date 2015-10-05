@@ -127,16 +127,18 @@ h4 {
 }
 
 .email-form > .form-control-feedback {
+  outline: none;
+  padding: 1px;
   right: 75px;
   top: 5px;
 }
 
-.email-form:not(.has-success) > .glyphicon-ok {
-  visibility: hidden;
+.email-form:not(.has-success) > .form-control-feedback > .glyphicon-ok {
+  display: none;
 }
 
-.email-form:not(.has-error) > .glyphicon-remove {
-  visibility: hidden;
+.email-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
+  display: none;
 }
 
 .login-with {
