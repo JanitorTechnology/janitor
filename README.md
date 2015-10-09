@@ -6,6 +6,10 @@ The most automated development system in the world.
 
 https://janitor.technology
 
+Because watching a video is easier than reading a few pages of documentation, watch:
+
+https://www.youtube.com/watch?v=5sNDMIh-iVw
+
 ## Try it at home
 
 Install [Docker](https://www.docker.com) and [Node.js](https://nodejs.org).
