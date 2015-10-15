@@ -12,7 +12,7 @@
     "type": "git",
     "url": "https://github.com/jankeromnes/janitor"
   },
-  "license": "",
+  "license": "AGPLv3",
   "dependencies": {
     "camp": "~15.7.2",
     "email-login": "~0.1.2"

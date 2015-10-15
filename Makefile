@@ -1,4 +1,6 @@
 # Makefile: Tools to help you install the Janitor on Ubuntu/Debian.
+# Copyright © 2015 Jan Keromnes. All rights reserved.
+# The following code is covered by the AGPLv3 license.
 
 
 ### READ THIS ###
@@ -10,15 +12,17 @@ install: db https npm daemon ports shipyard localengine welcome
 uninstall: undb unhttps unnpm undaemon unports unlocalengine unshipyard unwelcome
 
 
-
 ### JSON DATABASE ###
 
+# Set up a simple JSON database.
 db: db.json
 
+# Create a clean JSON file.
 db.json:
 	echo "{}" > db.json
 	chmod 600 db.json # read/write by owner
 
+# WARNING: This deletes your data!
 undb:
 	rm -f db.json
 

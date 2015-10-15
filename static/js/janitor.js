@@ -1,3 +1,5 @@
+// Copyright © 2015 Jan Keromnes. All rights reserved.
+// The following code is covered by the AGPLv3 license.
 
 
 // Alpha sign-up form.
