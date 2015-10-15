@@ -6,9 +6,7 @@ The most automated development system in the world.
 
 https://janitor.technology
 
-Because watching a video is easier than reading a few pages of documentation, watch:
-
-https://www.youtube.com/watch?v=5sNDMIh-iVw
+[![Janitor demo video](http://img.youtube.com/vi/5sNDMIh-iVw/hqdefault.jpg)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
 
 ## Try it at home
 
