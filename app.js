@@ -6,7 +6,7 @@ var http = require('http');
 
 var db = require('./lib/db');
 var log = require('./lib/log');
-var machines = require('./lib/machines');
+var routes = require('./lib/routes');
 var shipyard = require('./lib/shipyard');
 var users = require('./lib/users');
 
@@ -45,82 +45,8 @@ log('Janitor →  https://localhost' + (ports.https === 443 ? '' : ':' + ports.h
 
 app.route(/^\/$/, function (data, match, end, query) {
 
-  var title = '';
-
   users.get(data, query, function (err, user) {
-    machines.getProjects(function (err, projects) {
-      end({
-        projects: projects,
-        title: title,
-        user: user
-      }, { template: [
-        '../templates/header.html',
-        '../templates/landing.html',
-        '../templates/projects.html',
-        '../templates/footer.html'
-      ]});
-    });
-  });
-
-});
-
-
-// User contributions list.
-
-app.route(/^\/contributions\/(.*)$/, function (data, match, end, query) {
-
-  var title = 'My Contributions';
-  var path = match[1];
-
-  users.get(data, query, function (err, user) {
-    end({
-      title: title,
-      user: user
-    }, { template: [
-      '../templates/header.html',
-      '../templates/contributions.html',
-      '../templates/footer.html'
-    ]});
-  });
-
-});
-
-
-// User account.
-
-app.route(/\/account\/$/, function (data, match, end, query) {
-
-  var title = 'My Account';
-
-  users.get(data, query, function (err, user) {
-    end({
-      title: title,
-      user: user
-    }, { template: [
-      '../templates/header.html',
-      '../templates/account.html',
-      '../templates/footer.html'
-    ]});
-  });
-
-});
-
-
-// User login.
-
-app.route(/\/login$/, function (data, match, end, query) {
-
-  var title = 'Sign In';
-
-  users.get(data, query, function (err, user) {
-    end({
-      title: title,
-      user: user,
-    }, { template: [
-      '../templates/header.html',
-      '../templates/login.html',
-      '../templates/footer.html'
-    ]});
+    routes.landingPage(user, end);
   });
 
 });
@@ -128,12 +54,64 @@ app.route(/\/login$/, function (data, match, end, query) {
 
 // User logout.
 
-app.route(/\/logout$/, function (data, match, end, query) {
+app.route(/^\/logout\/?$/, function (data, match, end, query) {
 
   users.logout(query, function (err) {
-    query.res.statusCode = 302;
-    query.res.setHeader('Location', '/');
-    query.res.end();
+    routes.redirect(query, '/');
+  });
+
+});
+
+
+// User login.
+
+app.route(/^\/login\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (user) {
+      routes.redirect(query, '/');
+      return;
+    }
+
+    routes.loginPage(end);
+
+  });
+
+});
+
+
+// User contributions list.
+
+app.route(/^\/contributions\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (user) {
+      routes.contributionsPage(user, end);
+      return;
+    }
+
+    routes.loginPage(end);
+
+  });
+
+});
+
+
+// User account.
+
+app.route(/^\/account\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (user) {
+      routes.accountPage(user, end);
+      return;
+    }
+
+    routes.loginPage(end);
+
   });
 
 });
@@ -143,19 +121,10 @@ app.route(/\/logout$/, function (data, match, end, query) {
 
 app.notfound(/.*/, function (data, match, end, query) {
 
-  var title = 'Page not found!';
-
   log('404', match[0]);
 
   users.get(data, query, function (err, user) {
-    end({
-      title: title,
-      user: user
-    }, { template: [
-      '../templates/header.html',
-      '../templates/404.html',
-      '../templates/footer.html'
-    ]});
+    routes.notFoundPage(user, end);
   });
 
 });
