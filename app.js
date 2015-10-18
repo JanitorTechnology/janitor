@@ -187,22 +187,25 @@ app.ajax.on('signup', function (data, end) {
 
 app.ajax.on('login', function (data, end, query) {
 
-  var email = data.email;
-
   users.get(data, query, function (err, user) {
+
     if (user) {
       end({ status: 'logged-in' });
       return;
     }
+
+    var email = data.email;
+
     users.sendLoginEmail(email, query, function (err) {
       if (err) {
         var error = err.toString();
-        log(error, 'while emailing', email);
+        log(error, '(while emailing ' + email + ')');
         end({ status: 'error', message: error });
         return;
       }
       end({ status: 'email-sent' });
     });
+
   });
 
 });
