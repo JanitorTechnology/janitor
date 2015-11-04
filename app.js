@@ -46,7 +46,7 @@ log('Janitor →  https://localhost' + (ports.https === 443 ? '' : ':' + ports.h
 app.route(/^\/$/, function (data, match, end, query) {
 
   users.get(data, query, function (err, user) {
-    routes.landingPage(user, end);
+    return routes.landingPage(user, end);
   });
 
 });
@@ -57,7 +57,7 @@ app.route(/^\/$/, function (data, match, end, query) {
 app.route(/^\/logout\/?$/, function (data, match, end, query) {
 
   users.logout(query, function (err) {
-    routes.redirect(query, '/');
+    return routes.redirect(query, '/');
   });
 
 });
@@ -70,11 +70,10 @@ app.route(/^\/login\/?$/, function (data, match, end, query) {
   users.get(data, query, function (err, user) {
 
     if (user) {
-      routes.redirect(query, '/');
-      return;
+      return routes.redirect(query, '/');
     }
 
-    routes.loginPage(end);
+    return routes.loginPage(end);
 
   });
 
@@ -88,11 +87,10 @@ app.route(/^\/contributions\/?$/, function (data, match, end, query) {
   users.get(data, query, function (err, user) {
 
     if (user) {
-      routes.contributionsPage(user, end);
-      return;
+      return routes.contributionsPage(user, end);
     }
 
-    routes.loginPage(end);
+    return routes.loginPage(end);
 
   });
 
@@ -106,11 +104,10 @@ app.route(/^\/account\/?$/, function (data, match, end, query) {
   users.get(data, query, function (err, user) {
 
     if (user) {
-      routes.accountPage(user, end);
-      return;
+      return routes.accountPage(user, end);
     }
 
-    routes.loginPage(end);
+    return routes.loginPage(end);
 
   });
 
@@ -124,7 +121,7 @@ app.notfound(/.*/, function (data, match, end, query) {
   log('404', match[0]);
 
   users.get(data, query, function (err, user) {
-    routes.notFoundPage(user, end);
+    return routes.notFoundPage(user, end);
   });
 
 });
@@ -140,14 +137,13 @@ app.ajax.on('signup', function (data, end) {
   log('signup', email);
 
   if (waitlist[email]) {
-    end({ status: 'already-added' });
-    return;
+    return end({ status: 'already-added' });
   }
 
   waitlist[email] = Date.now();
   db.save();
 
-  end({ status: 'added' });
+  return end({ status: 'added' });
 
 });
 
@@ -169,10 +165,9 @@ app.ajax.on('login', function (data, end, query) {
       if (err) {
         var error = err.toString();
         log(error, '(while emailing ' + email + ')');
-        end({ status: 'error', message: error });
-        return;
+        return end({ status: 'error', message: error });
       }
-      end({ status: 'email-sent' });
+      return end({ status: 'email-sent' });
     });
 
   });
