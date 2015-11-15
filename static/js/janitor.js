@@ -2,13 +2,21 @@
 // The following code is covered by the AGPLv3 license.
 
 
+// Polyfill a few basic things.
+
+['forEach', 'map', 'reduce'].forEach(function (name) {
+  Array[name] = function(array, callback, init) {
+    return [][name].call(array, callback, init);
+  };
+});
+
+
 // Alpha sign-up form.
 
-emailForm('#signup-form', 'signup', function (data) {
+ajaxForm('#signup-form', 'signup', function (form, data) {
 
-  var form = document.querySelector('#signup-form');
-  var message = data.message;
   var status = 'error';
+  var message = data.message;
 
   switch (data.status) {
     case 'added':
@@ -28,11 +36,10 @@ emailForm('#signup-form', 'signup', function (data) {
 
 // Email-login form.
 
-emailForm('#login-form', 'login', function (data) {
+ajaxForm('#login-form', 'login', function (form, data) {
 
-  var form = document.querySelector('#login-form');
-  var message = data.message;
   var status = 'error';
+  var message = data.message;
 
   switch (data.status) {
     case 'logged-in':
@@ -55,8 +62,6 @@ emailForm('#login-form', 'login', function (data) {
 
 function updateFormStatus (form, status, message) {
 
-  var submit = form.querySelector('input[type=submit]');
-
   form.classList.remove('has-success', 'has-error');
 
   switch (status) {
@@ -65,14 +70,17 @@ function updateFormStatus (form, status, message) {
       break;
     case 'error':
       form.classList.add('has-error');
-      submit.classList.remove('disabled');
       break;
     default:
-      submit.classList.remove('disabled');
+      Array.map(form.elements, function (element) {
+        element.classList.remove('disabled');
+      });
+      break;
   }
 
-  if (message) {
-    var feedback = form.querySelector('.form-control-feedback');
+  var feedback = form.querySelector('.form-control-feedback');
+
+  if (message && feedback) {
     feedback.dataset.message = message;
     feedback.focus();
   }
@@ -80,9 +88,9 @@ function updateFormStatus (form, status, message) {
 }
 
 
-// Set-up an ajax form to send an email address.
+// Set-up an ajax form.
 
-function emailForm (selector, action, callback) {
+function ajaxForm (selector, action, callback) {
 
   var form = document.querySelector(selector);
 
@@ -90,16 +98,18 @@ function emailForm (selector, action, callback) {
     return;
   }
 
-  var email = form.querySelector('input[type=email]');
-  var submit = form.querySelector('input[type=submit]');
-
+  // Re-enable all fields and hide previous feedback.
   function resetFormStatus () {
     updateFormStatus(form);
   }
 
-  email.addEventListener('change', resetFormStatus);
-  email.addEventListener('keydown', resetFormStatus);
+  // Process all form input elements (like <input>, <textarea>, …).
+  Array.map(form.elements, function (element) {
+    element.addEventListener('change', resetFormStatus);
+    element.addEventListener('keydown', resetFormStatus);
+  });
 
+  // Set-up the feedback message box (a bootstrap popover).
   $(form.querySelector('.form-control-feedback')).popover({
     content: function () {
       return this.dataset.message;
@@ -109,15 +119,33 @@ function emailForm (selector, action, callback) {
     trigger: 'focus'
   });
 
+  // Set-up the form's ajax call.
   Scout(selector).on('submit', function (query) {
     query.action = action;
-    query.data = {
-      email: email.value
-    };
-    query.resp = callback;
-    email.blur();
-    submit.classList.add('disabled');
+    query.data = getFormData(form);
+    query.resp = function (data) {
+      callback(form, data);
+    }
+    Array.map(form.elements, function (element) {
+      element.blur();
+      element.classList.add('disabled');
+    });
   });
+
+}
+
+
+// Extract the values of all named fields in a given form.
+
+function getFormData (form) {
+
+  return Array.reduce(form.elements, function (data, element) {
+    var name = element.name;
+    if (name && !(name in data)) {
+      data[element.name] = element.value;
+    }
+    return data;
+  }, {});
 
 }
 
@@ -133,7 +161,6 @@ function removeQueryString () {
     window.history.replaceState({}, document.title, url);
   }
 
-};
+}
 
 removeQueryString();
-

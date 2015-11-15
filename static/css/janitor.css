@@ -1,3 +1,7 @@
+/* Copyright © 2015 Jan Keromnes. All rights reserved.
+ * The following code is covered by the AGPLv3 license. */
+
+
 html {
   height: 100%;
 }
@@ -21,6 +25,12 @@ section:last-of-type {
   flex-grow: 1;
 }
 
+footer {
+  margin-top: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 h2 {
   border-bottom: 1px solid #e2e2e2;
   margin-bottom: 7px;
@@ -30,6 +40,9 @@ h2 {
 h4 {
   color: #777;
 }
+
+
+/* Responsive navigation bar */
 
 .navbar {
   margin-bottom: 0;
@@ -90,6 +103,9 @@ h4 {
   background-color: #D9534F;
 }
 
+
+/* Landing page */
+
 .jumbotron {
   color: white;
   background-color: #1265AA;
@@ -121,42 +137,6 @@ h4 {
   margin: 10px 0 0 0;
 }
 
-.email-form {
-  max-width: 400px;
-  margin: 0;
-}
-
-.email-form > .form-control-feedback {
-  outline: none;
-  padding: 1px;
-  right: 75px;
-  top: 5px;
-}
-
-.email-form:not(.has-success) > .form-control-feedback > .glyphicon-ok {
-  display: none;
-}
-
-.email-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
-  display: none;
-}
-
-.login-with {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  max-width: 400px;
-  display: flex;
-  flex-direction: row;
-}
-
-.login-with > a {
-  flex: 1;
-}
-
-.login-with > a:not(:last-child) {
-  margin-right: 10px;
-}
-
 .janitor-story {
   margin-top: 15px;
 }
@@ -178,6 +158,54 @@ h4 {
 .janitor-story > h2 > .glyphicon-cloud {
   top: 7px;
 }
+
+
+/* Forms */
+
+.ajax-form {
+  max-width: 400px;
+  margin: 0;
+}
+
+.ajax-form > .form-control-feedback {
+  outline: none;
+  padding: 1px;
+  top: 5px;
+}
+
+.ajax-form.has-button > .form-control-feedback {
+  right: 75px;
+}
+
+.ajax-form:not(.has-success) > .form-control-feedback > .glyphicon-ok {
+  display: none;
+}
+
+.ajax-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
+  display: none;
+}
+
+.login-with {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.login-with {
+  max-width: 400px;
+  display: flex;
+  flex-direction: row;
+}
+
+.login-with > a {
+  flex: 1;
+}
+
+.login-with > a:not(:last-child) {
+  margin-right: 10px;
+}
+
+
+/* Projects */
 
 .panel-project {
   margin-top: 25px;
@@ -215,10 +243,4 @@ h4 {
 
 .project-timestamp {
   border-bottom: 1px dotted lightgrey;
-}
-
-footer {
-  margin-top: 15px;
-  padding-top: 10px;
-  padding-bottom: 10px;
 }
