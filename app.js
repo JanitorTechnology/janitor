@@ -175,6 +175,28 @@ app.ajax.on('login', function (data, end, query) {
 });
 
 
+// Save a new user key, or update an existing one.
+
+app.ajax.on('key', function (data, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (!user || !data.name) {
+      return end();
+    }
+
+    log('key', data.name, user.email);
+
+    user.keys[data.name] = data.key;
+    db.save();
+
+    return end({ status: 'key-saved' });
+
+  });
+
+});
+
+
 // Expose Shipyard over HTTPS on port 1789.
 
 shipyard.start({

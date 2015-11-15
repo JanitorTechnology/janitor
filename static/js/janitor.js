@@ -58,6 +58,22 @@ ajaxForm('#login-form', 'login', function (form, data) {
 });
 
 
+// Account: Cloud9 SSH key form.
+
+ajaxForm('#cloud9-form', 'key', function (form, data) {
+
+  var status = 'error';
+  var message = data.message;
+
+  if (data.status === 'key-saved') {
+    status = 'success';
+  }
+
+  updateFormStatus(form, status, message);
+
+});
+
+
 // Update the visual feedback of an ajax form's status.
 
 function updateFormStatus (form, status, message) {
@@ -107,6 +123,14 @@ function ajaxForm (selector, action, callback) {
   Array.map(form.elements, function (element) {
     element.addEventListener('change', resetFormStatus);
     element.addEventListener('keydown', resetFormStatus);
+
+    // Elements can specify an event to submit the form.
+    var submitOn = element.dataset.submitOn;
+    if (submitOn) {
+      element.addEventListener(submitOn, function () {
+        form.dispatchEvent(new Event('submit'));
+      });
+    }
   });
 
   // Set-up the feedback message box (a bootstrap popover).

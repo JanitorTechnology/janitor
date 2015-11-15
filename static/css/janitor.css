@@ -185,7 +185,7 @@ h4 {
   display: none;
 }
 
-.login-with {
+.account-info, .login-with {
   margin-top: 20px;
   margin-bottom: 10px;
 }

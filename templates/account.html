@@ -1,5 +1,19 @@
     <section>
       <div class="container">
         <h2>Account</h2>
+        <div class="account-info">
+          <label>Email</label>
+          <p>{{= user.email in html}}</p>
+        </div>
+        <form id="cloud9-form" class="ajax-form has-feedback" action="javascript:void(0)">
+          <input type="hidden" name="name" value="cloud9">
+          <label class="control-label">Cloud9 IDE</label>
+          <textarea class="form-control" data-submit-on="blur" name="key" placeholder="SSH key" rows="5">{{= user.keys.cloud9 in html}}</textarea>
+          <div class="form-control-feedback" tabindex="99">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </div>
+          <p>Please enter your <a target="_blank" href="https://c9.io/account/ssh" title="Your public SSH key on c9.io">Cloud9 SSH key</a> to enable Cloud9 access.</p>
+        </form>
       </div>
     </section>
