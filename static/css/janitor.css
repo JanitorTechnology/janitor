@@ -37,6 +37,10 @@ h2 {
   padding-bottom: 7px;
 }
 
+h2.header {
+  margin-bottom: 20px;
+}
+
 h4 {
   color: #777;
 }
@@ -162,11 +166,6 @@ h4 {
 
 /* Forms */
 
-.ajax-form {
-  max-width: 400px;
-  margin: 0;
-}
-
 .ajax-form > .form-control-feedback {
   outline: none;
   padding: 1px;
@@ -185,13 +184,8 @@ h4 {
   display: none;
 }
 
-.account-info, .login-with {
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
 .login-with {
-  max-width: 400px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: row;
 }

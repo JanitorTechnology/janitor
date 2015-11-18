@@ -1,21 +1,25 @@
     <section>
       <div class="container">
-        <h2>Sign in</h2>
-        <div class="login-with">
-          <a href="#" class="btn btn-lg btn-default disabled">GitHub</a>
-          <a href="#" class="btn btn-lg btn-default disabled">Cloud9</a>
+        <h2 class="header">Sign in</h2>
+        <div class="row">
+          <div class="col-md-5">
+            <div class="login-with">
+              <a href="#" class="btn btn-lg btn-default disabled">GitHub</a>
+              <a href="#" class="btn btn-lg btn-default disabled">Cloud9</a>
+            </div>
+            <form id="login-form" class="ajax-form has-feedback has-button" action="javascript:void(0)">
+              <div class="input-group input-group-lg">
+                <input class="form-control" name="email" placeholder="Email address" type="email">
+                <span class="input-group-btn">
+                  <input type="submit" class="btn btn-primary" value="Send">
+                </span>
+              </div>
+              <div class="form-control-feedback" tabindex="99">
+                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+              </div>
+            </form>
+          </div>
         </div>
-        <form id="login-form" class="ajax-form has-feedback has-button" action="javascript:void(0)">
-          <div class="input-group input-group-lg">
-            <input class="form-control" name="email" placeholder="Email address" type="email">
-            <span class="input-group-btn">
-              <input type="submit" class="btn btn-primary" value="Send">
-            </span>
-          </div>
-          <div class="form-control-feedback" tabindex="99">
-            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-          </div>
-        </form>
       </div>
     </section>
