@@ -1,6 +1,6 @@
 # Makefile: Tools to help you install the Janitor on Ubuntu/Debian.
 # Copyright © 2015 Jan Keromnes. All rights reserved.
-# The following code is covered by the AGPLv3 license.
+# The following code is covered by the AGPL-3.0 license.
 
 
 ### READ THIS ###
