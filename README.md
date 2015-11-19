@@ -17,7 +17,7 @@ Clone this repository:
     git clone https://github.com/jankeromnes/janitor
     cd janitor/
 
-Install dependencies:
+Install dependencies (only works for Ubuntu/Debian):
 
     make install
 
