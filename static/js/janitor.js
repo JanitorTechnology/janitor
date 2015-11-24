@@ -11,69 +11,6 @@
 });
 
 
-// Alpha sign-up form.
-
-ajaxForm('#signup-form', 'signup', function (form, data) {
-
-  var status = 'error';
-  var message = data.message;
-
-  switch (data.status) {
-    case 'added':
-      status = 'success';
-      message = 'Email saved!';
-      break;
-    case 'already-added':
-      status = 'success';
-      message = 'We already have this email';
-      break;
-  }
-
-  updateFormStatus(form, status, message);
-
-});
-
-
-// Email-login form.
-
-ajaxForm('#login-form', 'login', function (form, data) {
-
-  var status = 'error';
-  var message = data.message;
-
-  switch (data.status) {
-    case 'logged-in':
-      status = 'success';
-      message = 'Signing you in…';
-      // TODO Redirect.
-      break;
-    case 'email-sent':
-      status = 'success';
-      message = 'You should receive an email shortly';
-      break;
-  }
-
-  updateFormStatus(form, status, message);
-
-});
-
-
-// Account: Cloud9 SSH key form.
-
-ajaxForm('#cloud9-form', 'key', function (form, data) {
-
-  var status = 'error';
-  var message = data.message;
-
-  if (data.status === 'key-saved') {
-    status = 'success';
-  }
-
-  updateFormStatus(form, status, message);
-
-});
-
-
 // Update the visual feedback of an ajax form's status.
 
 function updateFormStatus (form, status, message) {
