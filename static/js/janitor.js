@@ -133,15 +133,10 @@ function ajaxForm (selector, action, callback) {
     }
   });
 
-  // Set-up the feedback message box (a bootstrap popover).
-  $(form.querySelector('.form-control-feedback')).popover({
-    content: function () {
-      return this.dataset.message;
-    },
-    container: 'body',
-    placement: 'bottom',
-    trigger: 'focus'
-  });
+  // Set-up the form's visual feedback if needed.
+  if (form.classList.contains('has-feedback')) {
+    addFormFeedback(form);
+  }
 
   // Set-up the form's ajax call.
   Scout(selector).on('submit', function (query) {
@@ -155,6 +150,38 @@ function ajaxForm (selector, action, callback) {
       element.classList.add('disabled');
     });
   });
+
+}
+
+
+// Add visual feedback elements to a given form.
+
+function addFormFeedback (form) {
+
+  var feedback = document.createElement('div');
+  feedback.classList.add('form-control-feedback');
+  feedback.dataset.message = '';
+  feedback.setAttribute('tabindex', '99');
+
+  // Append icons for 'success' and 'error' states.
+  ['ok', 'remove'].forEach(function (name) {
+    var icon = document.createElement('span');
+    icon.classList.add('glyphicon', 'glyphicon-' + name);
+    icon.setAttribute('aria-hidden', 'true');
+    feedback.appendChild(icon);
+  });
+
+  // Set-up the feedback message box (a bootstrap popover).
+  $(feedback).popover({
+    content: function () {
+      return this.dataset.message;
+    },
+    container: 'body',
+    placement: 'bottom',
+    trigger: 'focus'
+  });
+
+  form.appendChild(feedback);
 
 }
 

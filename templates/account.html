@@ -13,10 +13,6 @@
               <input type="hidden" name="name" value="cloud9">
               <label class="control-label">Cloud9 SSH Key</label>
               <textarea class="form-control" data-submit-on="blur" name="key" placeholder="SSH key" rows="5">{{= user.keys.cloud9 in html}}</textarea>
-              <div class="form-control-feedback" tabindex="99">
-                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-              </div>
               <p>Please add your <a target="_blank" href="https://c9.io/account/ssh" title="Your public SSH key on c9.io">Cloud9 SSH key</a> to enable Cloud9 IDE access.</p>
             </form>
           </div>
