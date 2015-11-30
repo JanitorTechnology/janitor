@@ -6,6 +6,7 @@ var http = require('http');
 
 var db = require('./lib/db');
 var log = require('./lib/log');
+var machines = require('./lib/machines');
 var routes = require('./lib/routes');
 var shipyard = require('./lib/shipyard');
 var users = require('./lib/users');
@@ -205,6 +206,25 @@ app.ajax.on('login', function (data, end, query) {
       }
       return end({ status: 'email-sent' });
     });
+
+  });
+
+});
+
+
+// Change the parameters of a project.
+
+app.ajax.on('projectdb', function (data, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    machines.setProject(data);
+
+    return end({ status: 'success' });
 
   });
 
