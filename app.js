@@ -56,8 +56,14 @@ app.route(/^\/$/, function (data, match, end, query) {
 
 app.route(/^\/logout\/?$/, function (data, match, end, query) {
 
-  users.logout(query, function (err) {
+  users.logout(query, function (error) {
+
+    if (error) {
+      log('logout', error.toString());
+    }
+
     return routes.redirect(query, '/');
+
   });
 
 });
