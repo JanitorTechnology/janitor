@@ -121,6 +121,23 @@ app.route(/^\/account\/?$/, function (data, match, end, query) {
 });
 
 
+// Admin section.
+
+app.route(/^\/admin\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (users.isAdmin(user)) {
+      return routes.adminPage(user, end);
+    }
+
+    return routes.notFoundPage(user, end);
+
+  });
+
+});
+
+
 // 404 Not Found.
 
 app.notfound(/.*/, function (data, match, end, query) {

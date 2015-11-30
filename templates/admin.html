@@ -1,0 +1,96 @@
+    <section>
+      <div class="container">
+        <h2 class="header">Users</h2>
+        <div class="row">
+          <div class="col-sm-6">
+            <label>Users</label>
+            <ul class="list-group">{{ for u in users {{
+              <li class="list-group-item">{{= u.email in html}}</li>}}}}
+            </ul>
+          </div>
+          <div class="col-sm-6">
+            <label>Waitlist</label>
+            <ul class="list-group">{{ for email, timestamp in waitlist {{
+              <li class="list-group-item">{{= email in html}}</li>}}}}
+              <form id="invite-form" class="ajax-form has-feedback has-button">
+                <div class="input-group">
+                  <input class="form-control" name="email" placeholder="Email address" type="email">
+                  <span class="input-group-btn">
+                    <input type="submit" class="btn btn-primary" value="Invite">
+                  </span>
+                </div>
+              </form>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <h2>Projects</h2>{{
+        for id, project in projects {{
+        <div class="panel panel-default panel-project">
+          <div class="panel-heading">
+            <img class="project-icon" src={{= project.icon in json}} alt="{{= project.name in xmlattr}} Logo">
+            <h4 class="project-title">{{= project.name in html}}</h4>
+            <div class="project-actions">
+              <button class="btn btn-default">Rebuild</button>
+              <button class="btn btn-primary">Update</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <form id="{{= id in xmlattr}}-image" data-action="projectdb" class="col-sm-6 ajax-form has-feedback">
+                <input type="hidden" name="id" value={{= id in json}}>
+                <label class="control-label">Image</label>
+                <input class="form-control" data-submit-on="blur" name="docker.image" value={{= project.docker.image in json}}>
+              </form>
+              <form id="{{= id in xmlattr}}-path" data-action="projectdb" class="col-sm-6 ajax-form has-feedback">
+                <input type="hidden" name="id" value={{= id in json}}>
+                <label class="control-label">Path</label>
+                <input class="form-control" data-submit-on="blur" name="docker.path" value={{= project.docker.path in json}}>
+              </form>
+            </div>
+            <form id="{{= id in xmlattr}}-build" data-action="projectdb" class="ajax-form has-feedback">
+              <input type="hidden" name="id" value={{= id in json}}>
+              <label class="control-label">Build</label>
+              <textarea class="form-control" data-submit-on="blur" name="docker.build" rows="9">{{= project.docker.build in html}}</textarea>
+            </form>
+            <form id="{{= id in xmlattr}}-update" data-action="projectdb" class="ajax-form has-feedback">
+              <input type="hidden" name="id" value={{= id in json}}>
+              <label class="control-label">Update</label>
+              <textarea class="form-control" data-submit-on="blur" name="docker.update" rows="5">{{= project.docker.update in html}}</textarea>
+            </form>
+            <form id="{{= id in xmlattr}}-spawn" data-action="projectdb" class="ajax-form has-feedback">
+              <input type="hidden" name="id" value={{= id in json}}>
+              <label class="control-label">Spawn</label>
+              <textarea class="form-control" data-submit-on="blur" name="docker.spawn" rows="5">{{= project.docker.spawn in html}}</textarea>
+            </form>
+            <label>Logs</label>
+            <div class="well well-sm"></div>
+          </div>
+        </div>}}}}
+        <form id="newproject-form" class="ajax-form has-feedback panel panel-default panel-project">
+          <div class="panel-heading">
+            <h4 class="project-title">New Project</h4>
+            <div class="project-actions">
+              <input type="submit" class="btn btn-primary" value="Add">
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-4">
+                <label class="control-label">ID</label>
+                <input class="form-control" name="id" placeholder="Project ID">
+              </div>
+              <div class="col-sm-4">
+                <label class="control-label">Name</label>
+                <input class="form-control" name="name" placeholder="Project Name">
+              </div>
+              <div class="col-sm-4">
+                <label class="control-label">Icon</label>
+                <input class="form-control" name="icon" placeholder="Icon URI">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>

@@ -170,6 +170,19 @@ h4 {
   padding: 0;
 }
 
+#invite-form > .form-control-feedback {
+  top: 0;
+  right: 60px;
+}
+
+#invite-form input[type='email'] {
+  border-top-left-radius: 0;
+}
+
+#invite-form input[type='submit'] {
+  border-top-right-radius: 0;
+}
+
 .ajax-form > .form-control-feedback {
   outline: none;
   padding: 1px;
@@ -178,6 +191,15 @@ h4 {
 
 .ajax-form.has-button > .form-control-feedback {
   right: 75px;
+}
+
+.ajax-form.panel-project > .form-control-feedback {
+  top: 10px;
+  right: 80px;
+}
+
+.row > .ajax-form > .form-control-feedback {
+  right: 15px;
 }
 
 .ajax-form:not(.has-success) > .form-control-feedback > .glyphicon-ok {
@@ -203,7 +225,7 @@ h4 {
 }
 
 
-/* Projects */
+/* Panels */
 
 .panel-project {
   margin-top: 25px;
@@ -232,6 +254,14 @@ h4 {
 
 .panel-project > .panel-body {
   padding: 10px;
+}
+
+.project-actions > .btn:not(:last-child) {
+  margin-right: 5px;
+}
+
+.panel-project .form-control {
+  margin-bottom: 10px;
 }
 
 .project-updated {
