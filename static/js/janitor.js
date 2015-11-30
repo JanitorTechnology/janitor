@@ -11,34 +11,18 @@
 });
 
 
-// Update the visual feedback of an ajax form's status.
+// Automatically set-up simple ajax forms (with 'data-action' attribute).
 
-function updateFormStatus (form, status, message) {
+Array.forEach(document.querySelectorAll('form[data-action]'), function (form) {
 
-  form.classList.remove('has-success', 'has-error');
+  var id = '#' + form.getAttribute('id');
+  var action = form.dataset.action;
 
-  switch (status) {
-    case 'success':
-      form.classList.add('has-success');
-      break;
-    case 'error':
-      form.classList.add('has-error');
-      break;
-    default:
-      Array.map(form.elements, function (element) {
-        element.classList.remove('disabled');
-      });
-      break;
-  }
+  ajaxForm(id, action, function (form, data) {
+    updateFormStatus(form, data.status, data.message);
+  });
 
-  var feedback = form.querySelector('.form-control-feedback');
-
-  if (message && feedback) {
-    feedback.dataset.message = message;
-    feedback.focus();
-  }
-
-}
+});
 
 
 // Set-up an ajax form.
@@ -87,6 +71,36 @@ function ajaxForm (selector, action, callback) {
       element.classList.add('disabled');
     });
   });
+
+}
+
+
+// Update the visual feedback of an ajax form's status.
+
+function updateFormStatus (form, status, message) {
+
+  form.classList.remove('has-success', 'has-error');
+
+  switch (status) {
+    case 'success':
+      form.classList.add('has-success');
+      break;
+    case 'error':
+      form.classList.add('has-error');
+      break;
+    default:
+      Array.map(form.elements, function (element) {
+        element.classList.remove('disabled');
+      });
+      break;
+  }
+
+  var feedback = form.querySelector('.form-control-feedback');
+
+  if (message && feedback) {
+    feedback.dataset.message = message;
+    feedback.focus();
+  }
 
 }
 
