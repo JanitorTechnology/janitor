@@ -154,6 +154,36 @@ app.ajax.on('signup', function (data, end) {
 });
 
 
+// Alpha version invite.
+
+app.ajax.on('invite', function (data, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    var email = data.email;
+
+    if (email in db.get('users')) {
+      return end({ status: 'already-invited' });
+    }
+
+    users.sendInviteEmail(email, query, function (err) {
+      if (err) {
+        var error = err.toString();
+        log(error, '(while inviting ' + email + ')');
+        return end({ status: 'error', message: error });
+      }
+      return end({ status: 'invited' });
+    });
+
+  });
+
+});
+
+
 // Request a log-in key via email.
 
 app.ajax.on('login', function (data, end, query) {
