@@ -32,8 +32,8 @@
             <img class="project-icon" src={{= project.icon in json}} alt="{{= project.name in xmlattr}} Logo">
             <h4 class="project-title">{{= project.name in html}}</h4>
             <div class="project-actions">
-              <button class="btn btn-default">Rebuild</button>
-              <button class="btn btn-primary">Update</button>
+              <button data-action="rebuild" data-id={{= id in json}} class="btn btn-default">Rebuild</button>
+              <button data-action="update" data-id={{= id in json}} class="btn btn-primary">Update</button>
             </div>
           </div>
           <div class="panel-body">
@@ -65,7 +65,7 @@
               <textarea class="form-control" data-submit-on="blur" name="docker.spawn" rows="5">{{= project.docker.spawn in html}}</textarea>
             </form>
             <label>Logs</label>
-            <div class="well well-sm"></div>
+            <pre class="well well-sm project-logs">{{= project.docker.logs in html}}</pre>
           </div>
         </div>}}}}
         <form id="newproject-form" class="ajax-form has-feedback panel panel-default panel-project">

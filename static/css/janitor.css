@@ -272,3 +272,7 @@ h4 {
 .project-timestamp {
   border-bottom: 1px dotted lightgrey;
 }
+
+.project-logs {
+  max-height: 400px;
+}

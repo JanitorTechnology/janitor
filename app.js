@@ -252,6 +252,44 @@ app.ajax.on('projectdb', function (data, end, query) {
 });
 
 
+// Rebuild the base image of a project.
+
+app.ajax.on('rebuild', function (data, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    machines.rebuild(data.id, function (error, logs) {
+      return end({ logs: logs });
+    });
+
+  });
+
+});
+
+
+// Update the base image of a project.
+
+app.ajax.on('update', function (data, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    machines.update(data.id, function (error, logs) {
+      return end({ logs: logs });
+    });
+
+  });
+
+});
+
+
 // Save a new user key, or update an existing one.
 
 app.ajax.on('key', function (data, end, query) {
