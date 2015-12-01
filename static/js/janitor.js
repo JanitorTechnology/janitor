@@ -59,6 +59,9 @@ function ajaxForm (selector, action, callback) {
     addFormFeedback(form);
   }
 
+  // Ensure that submitting the form doesn't reload the page.
+  form.setAttribute('action', 'javascript:void(0)');
+
   // Set-up the form's ajax call.
   Scout(selector).on('submit', function (query) {
     query.action = action;
