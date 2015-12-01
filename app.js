@@ -188,11 +188,11 @@ app.ajax.on('invite', function (data, end, query) {
       return end({ status: 'already-invited' });
     }
 
-    users.sendInviteEmail(email, query, function (err) {
-      if (err) {
-        var error = err.toString();
-        log(error, '(while inviting ' + email + ')');
-        return end({ status: 'error', message: error });
+    users.sendInviteEmail(email, query, function (error) {
+      if (error) {
+        var message = error.toString();
+        log(message, '(while inviting ' + email + ')');
+        return end({ status: 'error', message: message });
       }
       return end({ status: 'invited' });
     });
@@ -215,11 +215,11 @@ app.ajax.on('login', function (data, end, query) {
 
     var email = data.email;
 
-    users.sendLoginEmail(email, query, function (err) {
-      if (err) {
-        var error = err.toString();
-        log(error, '(while emailing ' + email + ')');
-        return end({ status: 'error', message: error });
+    users.sendLoginEmail(email, query, function (error) {
+      if (error) {
+        var message = error.toString();
+        log(message, '(while emailing ' + email + ')');
+        return end({ status: 'error', message: message });
       }
       return end({ status: 'email-sent' });
     });
@@ -237,6 +237,10 @@ app.ajax.on('projectdb', function (data, end, query) {
 
     if (!users.isAdmin(user)) {
       return end();
+    }
+
+    if (!data.id) {
+      return end({ status: 'error', message: 'Invalid Project ID' });
     }
 
     machines.setProject(data);
