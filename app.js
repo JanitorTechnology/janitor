@@ -318,6 +318,13 @@ app.ajax.on('key', function (data, end, query) {
 });
 
 
+// Teach the template system how to generate IDs (matching /[a-z0-9_-]*/).
+
+camp.templateReader.parsers.id = function (text) {
+  return text.replace(/[^\w-]/g, '').toLowerCase();
+};
+
+
 // Expose Shipyard over HTTPS on port 1789.
 
 shipyard.start({
