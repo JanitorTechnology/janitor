@@ -300,9 +300,15 @@ app.ajax.on('key', function (data, end, query) {
       return end();
     }
 
-    log('key', data.name, user.email);
+    // Loosely verify that the input looks like a valid SSH public key.
+    // Regex adapted from https://gist.github.com/paranoiq/1932126.
+    var key = data.key.trim();
+    if (!key.match(/^ssh-rsa [\w+\/]+[=]{0,3} [^@]+@[^@]+$/)) {
+      return end({ status: 'error', message: 'Invalid SSH key' });
+    }
 
-    user.keys[data.name] = data.key;
+    log('key', data.name, user.email);
+    user.keys[data.name] = key;
     db.save();
 
     return end({ status: 'key-saved' });
