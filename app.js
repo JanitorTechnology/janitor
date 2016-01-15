@@ -3,6 +3,7 @@
 
 var camp = require('camp');
 var http = require('http');
+var path = require('path');
 
 var db = require('./lib/db');
 var log = require('./lib/log');
@@ -142,6 +143,38 @@ app.route(/^\/admin\/?$/, function (data, match, end, query) {
 
     if (users.isAdmin(user)) {
       return routes.adminPage(user, end);
+    }
+
+    return routes.notFoundPage(user, end);
+
+  });
+
+});
+
+
+// User secure VNC connection proxy.
+
+app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, function (data, match, end, query) {
+
+  users.get(data, query, function (error, user) {
+
+    if (!user) {
+      return routes.notFoundPage(user, end);
+    }
+
+    var projectId = match[1]
+    var machineId = parseInt(match[2]);
+    var uri = path.normalize(match[3]);
+
+    log('vnc', projectId, machineId, uri);
+
+    var machines = user.machines[projectId];
+
+    if (machines) {
+      var machine = machines[machineId];
+      if (machine) {
+        return routes.vncProxy(user, end, machine, query, uri);
+      }
     }
 
     return routes.notFoundPage(user, end);
