@@ -46,8 +46,21 @@ log('Janitor →  https://localhost' + (ports.https === 443 ? '' : ':' + ports.h
 
 app.route(/^\/$/, function (data, match, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
     return routes.landingPage(user, end);
+  });
+
+});
+
+
+// Projects page.
+
+app.route(/^\/projects\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (error, user) {
+
+    return routes.projectsPage(user, end);
+
   });
 
 });
@@ -74,7 +87,7 @@ app.route(/^\/logout\/?$/, function (data, match, end, query) {
 
 app.route(/^\/login\/?$/, function (data, match, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (user) {
       return routes.redirect(query, '/');
@@ -91,7 +104,7 @@ app.route(/^\/login\/?$/, function (data, match, end, query) {
 
 app.route(/^\/contributions\/?$/, function (data, match, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (user) {
       return routes.contributionsPage(user, end);
@@ -108,7 +121,7 @@ app.route(/^\/contributions\/?$/, function (data, match, end, query) {
 
 app.route(/^\/account\/?$/, function (data, match, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (user) {
       return routes.accountPage(user, end);
@@ -125,7 +138,7 @@ app.route(/^\/account\/?$/, function (data, match, end, query) {
 
 app.route(/^\/admin\/?$/, function (data, match, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (users.isAdmin(user)) {
       return routes.adminPage(user, end);
@@ -144,7 +157,7 @@ app.notfound(/.*/, function (data, match, end, query) {
 
   log('404', match[0]);
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
     return routes.notFoundPage(user, end);
   });
 
@@ -176,7 +189,7 @@ app.ajax.on('signup', function (data, end) {
 
 app.ajax.on('invite', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (!users.isAdmin(user)) {
       return end();
@@ -206,7 +219,7 @@ app.ajax.on('invite', function (data, end, query) {
 
 app.ajax.on('login', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (user) {
       end({ status: 'logged-in' });
@@ -233,7 +246,7 @@ app.ajax.on('login', function (data, end, query) {
 
 app.ajax.on('projectdb', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (!users.isAdmin(user)) {
       return end();
@@ -256,7 +269,7 @@ app.ajax.on('projectdb', function (data, end, query) {
 
 app.ajax.on('rebuild', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (!users.isAdmin(user)) {
       return end();
@@ -283,7 +296,7 @@ app.ajax.on('rebuild', function (data, end, query) {
 
 app.ajax.on('update', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (!users.isAdmin(user)) {
       return end();
@@ -310,7 +323,7 @@ app.ajax.on('update', function (data, end, query) {
 
 app.ajax.on('spawn', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (!user) {
       return end({ status: 'error', message: 'Not signed in' });
@@ -332,7 +345,7 @@ app.ajax.on('spawn', function (data, end, query) {
 
 app.ajax.on('key', function (data, end, query) {
 
-  users.get(data, query, function (err, user) {
+  users.get(data, query, function (error, user) {
 
     if (!user || !data.name) {
       return end();
