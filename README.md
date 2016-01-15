@@ -4,8 +4,6 @@
 
 https://janitor.technology
 
-The fastest development system in the world.
-
 [![Janitor demo video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
 
 ## Try it at home
