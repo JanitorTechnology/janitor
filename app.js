@@ -263,8 +263,16 @@ app.ajax.on('rebuild', function (data, end, query) {
     }
 
     machines.rebuild(data.id, function (error, logs) {
-      return end({ logs: logs });
+      if (error) {
+        return end({ status: 'error', message: error.toString(), logs: logs });
+      }
+      return end({ status: 'success', logs: logs });
     });
+
+    // For longer requests, make sure we reply before the browser retries.
+    setTimeout(function () {
+      return end({ status: 'started' });
+    }, 42000);
 
   });
 
@@ -282,8 +290,16 @@ app.ajax.on('update', function (data, end, query) {
     }
 
     machines.update(data.id, function (error, logs) {
-      return end({ logs: logs });
+      if (error) {
+        return end({ status: 'error', message: error.String(), logs: logs });
+      }
+      return end({ status: 'success', logs: logs });
     });
+
+    // For longer requests, make sure we reply before the browser retries.
+    setTimeout(function () {
+      return end({ status: 'started' });
+    }, 42000);
 
   });
 
@@ -302,9 +318,9 @@ app.ajax.on('spawn', function (data, end, query) {
 
     machines.spawn(data.id, user, function (error, logs) {
       if (error) {
-        return end({ status: 'error', message: error.toString() });
+        return end({ status: 'error', message: error.toString(), logs: logs });
       }
-      return end({ status: 'success' });
+      return end({ status: 'success', logs: logs });
     });
 
   });
