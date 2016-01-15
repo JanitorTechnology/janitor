@@ -2,14 +2,16 @@
       <div class="container">
         <h1>Contribute to incredible software</h1>
         <h4>In just a single click, enter a fully-functional development environment. Yes, it's that easy.</h4>{{
-        for project in projects {{
+        for id, project in projects {{
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
-            <img class="project-icon" src={{= project.icon in json}} alt="{{= project.name in xmlattr}} Logo">
+            <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
             <h4 class="project-title">{{= project.name in html}}</h4>
             <div class="project-actions">
-              <a target="_blank" href="#" class="btn btn-default">SSH</a>
-              <a target="_blank" href="https://c9.io/open/ssh?name={{= project.id in uri }}&host=janitor.technology&port={{= project.docker.port in integer }}&user=user&workspaceDir={{= project.docker.path in uri }}&nodePath=%2Fusr%2Fbin%2Fnodejs" class="btn btn-primary"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              <a class="btn btn-primary" {{if user then
+                {{data-action="spawn" data-id="{{= id in id}}" href="https://c9.io/open/ssh?name={{= id in id}}&description={{= machines[id].name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machines[id].ports.ssh in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fusr%2Fbin%2Fnodejs" target="_blank"}}
+                else {{href="/login"}}
+              }}><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">
