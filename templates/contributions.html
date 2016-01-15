@@ -8,7 +8,7 @@
             <img class="project-icon" src="{{= projects[projectId].icon in xmlattr}}" alt="{{= projects[projectId].name in xmlattr}} Logo">
             <h4 class="project-title">{{= projects[projectId].name in html}}</h4>
             <div class="project-actions">
-              <a class="btn btn-primary" href="https://c9.io/open/ssh?name={{= projectId in uri}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.ports.ssh in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fusr%2Fbin%2Fnodejs" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              <a class="btn btn-primary" data-action="spawn" data-id="{{= projectId in id}}" href="https://c9.io/open/ssh?name={{= projectId in uri}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.ports.ssh in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fusr%2Fbin%2Fnodejs" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">
