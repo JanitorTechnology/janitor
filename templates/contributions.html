@@ -1,12 +1,22 @@
     <section>
       <div class="container">
-        <h2 class="header">My Contributions</h2>
-        <span class="label label-info">Work In Progress</span>
-        <span class="label label-default">Under Review</span>
-        <span class="label label-danger">Update Failed</span>
-        <span class="label label-success">Accepted</span>
-        <span class="label label-warning">Rejected</span>
-        <span class="label label-primary">Merged</span>
-        <button class="btn btn-primary">Merge</button>
+        <h2 class="header">My Contributions</h2>{{
+        for projectId, machines in user.machines {{{{
+          for id, machine in machines {{
+        <div class="panel panel-default panel-project">
+          <div class="panel-heading">
+            <img class="project-icon" src="{{= projects[projectId].icon in xmlattr}}" alt="{{= projects[projectId].name in xmlattr}} Logo">
+            <h4 class="project-title">{{= projects[projectId].name in html}}</h4>
+            <div class="project-actions">
+              <a class="btn btn-primary" href="https://c9.io/open/ssh?name={{= projectId in uri}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.ports.ssh in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fusr%2Fbin%2Fnodejs" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
+            </div>
+          </div>
+          <div class="panel-body">
+            <label>Status</label>
+            <pre class="well well-sm">{{= machine.status.toUpperCase() in html}}</pre>
+            <label>Logs</label>
+            <pre class="well well-sm project-logs">{{= machine.docker.logs in html}}</pre>
+          </div>
+        </div>}}}}}}}}
       </div>
     </section>

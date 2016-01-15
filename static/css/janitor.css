@@ -261,7 +261,7 @@ h4 {
 }
 
 .panel-project .form-control {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .project-updated {
@@ -274,5 +274,5 @@ h4 {
 }
 
 .project-logs {
-  max-height: 400px;
+  max-height: 250px;
 }
