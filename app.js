@@ -290,6 +290,28 @@ app.ajax.on('update', function (data, end, query) {
 });
 
 
+// Spawn a new machine for a project. (Fast!)
+
+app.ajax.on('spawn', function (data, end, query) {
+
+  users.get(data, query, function (err, user) {
+
+    if (!user) {
+      return end({ status: 'error', message: 'Not signed in' });
+    }
+
+    machines.spawn(data.id, user, function (error, logs) {
+      if (error) {
+        return end({ status: 'error', message: error.toString() });
+      }
+      return end({ status: 'success' });
+    });
+
+  });
+
+});
+
+
 // Save a new user key, or update an existing one.
 
 app.ajax.on('key', function (data, end, query) {
