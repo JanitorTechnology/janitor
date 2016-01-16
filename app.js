@@ -374,15 +374,3 @@ app.ajax.on('key', function (data, end, query) {
 camp.templateReader.parsers.id = function (text) {
   return text.replace(/[^\w-]/g, '').toLowerCase();
 };
-
-
-// Expose Shipyard over HTTPS on port 1789.
-
-shipyard.start({
-  port: 1789,
-  key: 'https.key',
-  cert: 'https.crt',
-  ca: []
-});
-
-log('Shipyard →  https://localhost:' + 1789);
