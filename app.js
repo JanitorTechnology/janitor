@@ -374,7 +374,7 @@ app.ajax.on('update', function (data, end, query) {
 
     machines.update(data.id, function (error, logs) {
       if (error) {
-        return end({ status: 'error', message: error.String(), logs: logs });
+        return end({ status: 'error', message: error.toString(), logs: logs });
       }
       return end({ status: 'success', logs: logs });
     });
