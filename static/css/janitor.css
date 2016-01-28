@@ -276,3 +276,12 @@ h4 {
 .project-logs {
   max-height: 250px;
 }
+
+
+/* Tips and tricks */
+
+.protip {
+  color: #777;
+  text-align: center;
+  margin: 0;
+}
