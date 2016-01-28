@@ -152,7 +152,7 @@ app.route(/^\/admin\/?$/, function (data, match, end, query) {
 });
 
 
-// User secure VNC connection proxy.
+// Secure VNC connection proxy.
 
 app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, function (data, match, end, query) {
 
@@ -162,22 +162,59 @@ app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, function (data, match, end, query) {
       return routes.notFoundPage(user, end);
     }
 
-    var projectId = match[1]
+    var projectId = match[1];
     var machineId = parseInt(match[2]);
     var uri = path.normalize(match[3]);
 
     log('vnc', projectId, machineId, uri);
 
-    var machines = user.machines[projectId];
+    var machine = machines.getMatchingMachine(projectId, machineId, user);
 
-    if (machines) {
-      var machine = machines[machineId];
-      if (machine) {
-        return routes.vncProxy(user, end, machine, query, uri);
-      }
+    if (machine) {
+      // Remember this machine for the websocket proxy (see below).
+      user.lastvnc = {
+        project: projectId,
+        machine: machineId
+      };
+      return routes.vncProxy(user, end, machine, query, uri);
     }
 
     return routes.notFoundPage(user, end);
+
+  });
+
+});
+
+
+// Secure WebSocket proxy for VNC connections.
+
+app.on('upgrade', function (request, socket, head) {
+
+  if (request.url !== '/websockify') {
+    return socket.end();
+  }
+
+  // Mock an empty `data` and a partial `query` just to find the user.
+  users.get({ }, { req: request }, function (error, user) {
+
+    if (!user || !user.lastvnc) {
+      return socket.end();
+    }
+
+    // Get the last machine that the user VNC'd into (a hack, but it works).
+    // Note: Parsing the URL in `request.headers.referer` would be better, but
+    // that header never seems to be set on WebSocket requests.
+    var projectId = user.lastvnc.project;
+    var machineId = user.lastvnc.machine;
+    var machine = machines.getMatchingMachine(projectId, machineId, user);
+
+    log('vnc-websocket', projectId, machineId);
+
+    if (machine) {
+      return routes.vncSocketProxy(machine, request, socket, head);
+    }
+
+    return socket.end();
 
   });
 
