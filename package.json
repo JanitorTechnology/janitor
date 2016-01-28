@@ -6,7 +6,7 @@
   },
   "name": "Janitor",
   "description": "Automated development system",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://janitor.technology",
   "repository": {
     "type": "git",
