@@ -417,16 +417,18 @@ app.ajax.on('key', function (data, end, query) {
 
   users.get(data, query, function (error, user) {
 
-    if (!user || !data.name) {
+    if (!user || !data.name || !data.key) {
       return end();
     }
 
-    // Loosely verify that the input looks like a valid SSH public key.
+    // Extract a valid SSH public key from the user's input.
     // Regex adapted from https://gist.github.com/paranoiq/1932126.
-    var key = data.key.trim();
-    if (!key.match(/^ssh-rsa [\w+\/]+[=]{0,3} [^@]+@[^@]+$/)) {
+    var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
+    if (!match) {
       return end({ status: 'error', message: 'Invalid SSH key' });
     }
+
+    var key = match[0];
 
     log('key', data.name, user.email);
     user.keys[data.name] = key;
