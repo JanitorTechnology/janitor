@@ -59,9 +59,7 @@ app.route(/^\/$/, function (data, match, end, query) {
 app.route(/^\/projects\/?$/, function (data, match, end, query) {
 
   users.get(data, query, function (error, user) {
-
     return routes.projectsPage(user, end);
-
   });
 
 });
@@ -145,7 +143,7 @@ app.route(/^\/admin\/?$/, function (data, match, end, query) {
       return routes.adminPage(user, end);
     }
 
-    return routes.notFoundPage(user, end);
+    return routes.notFoundPage(user, end, query);
 
   });
 
@@ -159,7 +157,7 @@ app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, function (data, match, end, query) {
   users.get(data, query, function (error, user) {
 
     if (!user) {
-      return routes.notFoundPage(user, end);
+      return routes.notFoundPage(user, end, query);
     }
 
     var projectId = match[1];
@@ -176,10 +174,10 @@ app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, function (data, match, end, query) {
         project: projectId,
         machine: machineId
       };
-      return routes.vncProxy(user, end, machine, query, uri);
+      return routes.vncProxy(user, machine, end, query, uri);
     }
 
-    return routes.notFoundPage(user, end);
+    return routes.notFoundPage(user, end, query);
 
   });
 
@@ -228,7 +226,7 @@ app.notfound(/.*/, function (data, match, end, query) {
   log('404', match[0]);
 
   users.get(data, query, function (error, user) {
-    return routes.notFoundPage(user, end);
+    return routes.notFoundPage(user, end, query);
   });
 
 });
