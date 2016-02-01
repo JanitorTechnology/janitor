@@ -6,15 +6,16 @@
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <img class="project-icon" src="{{= projects[projectId].icon in xmlattr}}" alt="{{= projects[projectId].name in xmlattr}} Logo">
-            <h4 class="project-title">{{= projects[projectId].name in html}}</h4>
+            <h4 class="project-title">
+              {{= projects[projectId].name in html}} #{{= machine.id in integer}}
+              <small class="project-status" data-status="{{= machine.status in xmlattr}}"></small>
+            </h4>
             <div class="project-actions">
               <a class="btn btn-default" href="/vnc/{{= projectId in id}}/{{= id in id}}/vnc_auto.html" target="_blank">VNC</a>
               <a class="btn btn-primary" data-action="spawn" data-id="{{= projectId in id}}" href="https://c9.io/open/ssh?name={{= projectId in id}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.ports.ssh in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fusr%2Fbin%2Fnodejs" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">
-            <label>Status</label>
-            <pre class="well well-sm">{{= machine.status.toUpperCase() in html}}</pre>
             <label>Logs</label>
             <pre class="well well-sm project-logs">{{= machine.docker.logs in html}}</pre>
           </div>

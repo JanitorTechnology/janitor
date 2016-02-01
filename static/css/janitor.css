@@ -246,6 +246,13 @@ h4 {
   flex-grow: 1;
   padding: 0 10px;
   margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.project-status {
+  margin-left: 10px;
 }
 
 .project-actions {
@@ -274,7 +281,7 @@ h4 {
 }
 
 .project-logs {
-  max-height: 250px;
+  max-height: 200px;
 }
 
 
