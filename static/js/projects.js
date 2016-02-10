@@ -45,3 +45,18 @@ Array.map(document.querySelectorAll('*[data-status]'), function (element) {
   element.appendChild(span);
 
 });
+
+
+// Add fuzzy timestamps to elements with a 'data-timestamp' attribute.
+
+Array.map(document.querySelectorAll('*[data-timestamp]'), function (element) {
+
+  var date = new Date(parseInt(element.dataset.timestamp));
+
+  element.title = date.toISOString();
+  element.setAttribute('datetime', date.toISOString());
+
+  // Use jQuery's live-updating timeago plugin.
+  $(element).timeago();
+
+});
