@@ -13,10 +13,12 @@ ajaxForm('#invite-form', 'invite', function (form, data) {
     case 'already-invited':
       status = 'success';
       message = 'This person is already invited';
+      form.elements.email.value = '';
       break;
     case 'invited':
       status = 'success';
       message = 'Invite sent!';
+      form.elements.email.value = '';
       break;
   }
 
