@@ -2,7 +2,8 @@
       <div class="container">
         <h2 class="header">My Contributions</h2>{{
         for projectId, machines in user.machines {{{{
-          for id, machine in machines {{
+          for id, machine in machines {{{{
+            if {{ machine.status !== "new" }} then {{
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <img class="project-icon" src="{{= projects[projectId].icon in xmlattr}}" alt="{{= projects[projectId].name in xmlattr}} Logo">
@@ -19,6 +20,6 @@
             <label>Logs</label>
             <pre class="well well-sm project-logs">{{= machine.docker.logs in html}}</pre>
           </div>
-        </div>}}}}}}}}
+        </div>}}}}}}}}}}}}
       </div>
     </section>
