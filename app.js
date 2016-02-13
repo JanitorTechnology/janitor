@@ -54,12 +54,29 @@ app.route(/^\/$/, function (data, match, end, query) {
 });
 
 
-// Projects page.
+// Public project pages.
 
-app.route(/^\/projects\/?$/, function (data, match, end, query) {
+app.route(/^\/projects(\/\w+)?\/?$/, function (data, match, end, query) {
 
   users.get(data, query, function (error, user) {
-    return routes.projectsPage(user, end);
+
+    var uri = match[1];
+
+    if (!uri) {
+      // No particular project was requested, show them all.
+      return routes.projectsPage(user, end);
+    }
+
+    var projectId = uri.slice(1);
+    var project = db.get('projects')[projectId];
+
+    if (project) {
+      // Show the requested project-specific page.
+      return routes.projectPage(project, user, end);
+    }
+
+    return routes.notFoundPage(user, end, query);
+
   });
 
 });
