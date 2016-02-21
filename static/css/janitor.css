@@ -284,6 +284,10 @@ h4 {
   max-height: 200px;
 }
 
+.project-graph {
+  padding-top: 40px;
+}
+
 /* Data */
 
 .numbers {
