@@ -54,6 +54,17 @@ app.route(/^\/$/, function (data, match, end, query) {
 });
 
 
+// Public live data page.
+
+app.route(/^\/data\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (error, user) {
+    return routes.dataPage(user, end);
+  });
+
+});
+
+
 // Public project pages.
 
 app.route(/^\/projects(\/\w+)?\/?$/, function (data, match, end, query) {
