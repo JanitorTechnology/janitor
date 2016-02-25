@@ -6,10 +6,10 @@
 ### READ THIS ###
 
 # Install necessary files, npm modules, and docker containers.
-install: db https npm daemon ports shipyard localengine welcome
+install: db https npm daemon ports localengine welcome
 
 # Delete everything that was created by `make install`.
-uninstall: undb unhttps unnpm undaemon unports unlocalengine unshipyard unwelcome
+uninstall: undb unhttps unnpm undaemon unports unlocalengine unwelcome
 
 
 ### JSON DATABASE ###
@@ -106,31 +106,6 @@ unports:
 	sudo mv /etc/rc.local.old /etc/rc.local
 
 
-### SHIPYARD ###
-
-# Install Shipyard (see http://shipyard-project.com/docs/quickstart/).
-shipyard:
-	sudo docker run -it -d --name shipyard-rethinkdb-data --entrypoint /bin/bash shipyard/rethinkdb -l
-	sudo docker run -it -d --name shipyard-rethinkdb --volumes-from shipyard-rethinkdb-data shipyard/rethinkdb
-	sudo docker run -it -d --name shipyard -p 127.0.0.1:8080:8080 --link shipyard-rethinkdb:rethinkdb shipyard/shipyard
-	sleep 5 && sudo docker start shipyard
-	echo "\nWaiting for Docker container \"shipyard\" to start...\n"
-	while [ -z "$$(curl -s http://127.0.0.1:8080/auth/login 2>/dev/null)" ] ; do sleep 1 ; done
-	$(eval SHIPYARD_PASSWORD := $(shell cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w8 | head -n1))
-	SHIPYARD_TOKEN="admin:$$(curl -s -H 'Content-Type: application/json' -X POST -d '{"username":"admin","password":"shipyard"}' http://127.0.0.1:8080/auth/login | sed 's/.*"auth_token":"\([^"]\+\)".*/\1/')" \
-	&& curl -s -H "X-Access-Token: $$SHIPYARD_TOKEN" -X POST -d '{"username":"admin","password":"$(SHIPYARD_PASSWORD)"}' http://localhost:8080/account/changepassword \
-	&& curl -s -H "X-Access-Token: $$SHIPYARD_TOKEN" -X POST -d '{"description":"janitor key"}' http://localhost:8080/api/servicekeys | sed 's/.*"key":"\([^"]\+\)".*/\1/' > shipyard.apikey
-	chmod 400 shipyard.apikey # read by owner
-	echo "Shipyard installed! Log in with \"admin\" and the password \"$(SHIPYARD_PASSWORD)\"."
-
-# Uninstall Shipyard.
-unshipyard:
-	rm -f shipyard.apikey
-	sudo docker rm -f shipyard
-	sudo docker rm -f shipyard-rethinkdb
-	sudo docker rm -f shipyard-rethinkdb-data
-
-
 ### LOCAL DOCKER ENGINE ###
 
 # Use local eth0 address for containers to contact the host.
@@ -141,22 +116,15 @@ ifeq ($(strip $(DOCKER_HOST_IP)),)
   DOCKER_HOST_IP := $(shell ip a | grep -e "inet.*wlan0" | sed 's_.*inet \([^/]\+\)/.*_\1_')
 endif
 
-# Install the local Docker daemon as a Shipyard engine.
+# Install the local Docker daemon as a Janitor engine.
 localengine: ca.crt docker.crt docker.key shipyard.crt shipyard.key
 	sudo cp ca.crt docker.ca
 	sudo chown root:root docker.crt docker.key docker.ca
 	sudo cp /etc/default/docker /etc/default/docker.old
-	echo "\n# Accept secure TLS connections from Shipyard.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"" | sudo tee -a /etc/default/docker
+	echo "\n# Accept secure TLS connections from the Janitor.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"" | sudo tee -a /etc/default/docker
 	sudo service docker restart && sleep 1
-	sudo docker start shipyard-rethinkdb-data
-	sudo docker start shipyard-rethinkdb
-	sudo docker start shipyard
-	sleep 5 && sudo docker start shipyard
-	echo "\nWaiting for Docker container \"shipyard\" to start...\n"
-	while [ -z "$$(curl -s http://127.0.0.1:8080/auth/login 2>/dev/null)" ] ; do sleep 1 ; done
-	curl -s -H 'X-Service-Key: $(shell cat shipyard.apikey)' -X POST -d '{"id":"local-docker","ssl_cert":"$(shell cat shipyard.crt | sed 's_$$_\\n_' | tr -d '\n')","ssl_key":"$(shell cat shipyard.key | sed 's_$$_\\n_' | tr -d '\n')","ca_cert":"$(shell cat ca.crt | sed 's_$$_\\n_' | tr -d '\n')","engine":{"id":"local-docker","addr":"https://$(DOCKER_HOST_IP):2376","cpus":4.0,"memory":4096,"labels":["local"]}}' http://localhost:8080/api/engines
 
-# Create a certificate authority (CA) for Docker and Shipyard.
+# Create a certificate authority (CA) for Docker and the Janitor.
 ca.crt: ca.key
 	openssl req -subj '/CN=ca' -new -x509 -days 365 -key ca.key -sha256 -out ca.crt
 	chmod 444 ca.crt # read by all
@@ -180,7 +148,7 @@ docker.key:
 	openssl genrsa -out docker.key 2048
 	chmod 400 docker.key # read by owner
 
-# Create a certificate for Shipyard.
+# Create a certificate for the Janitor.
 shipyard.crt: shipyard.csr ca.crt ca.key
 	echo 'extendedKeyUsage = clientAuth' > extfile.cnf
 	openssl x509 -req -days 365 -in shipyard.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out shipyard.crt -extfile extfile.cnf
@@ -195,9 +163,8 @@ shipyard.key:
 	openssl genrsa -out shipyard.key 2048
 	chmod 400 shipyard.key # read by owner
 
-# Remove the local Docker daemon from the Shipyard engines.
+# Remove the local Docker daemon from the Janitor engines.
 unlocalengine:
-	# TODO Remove the local engine with the Shipyard API.
 	sudo mv /etc/default/docker.old /etc/default/docker
 	sudo rm -f docker.crt docker.key docker.ca
 	rm -f extfile.cnf ca.crt ca.key ca.srl docker.crt docker.csr docker.key shipyard.crt shipyard.csr shipyard.key
@@ -207,10 +174,7 @@ unlocalengine:
 ### HELP ###
 
 # Welcome and guide the user.
-# TODO Print generated Shipyard admin/password.
 welcome:
-	@echo
-	@echo "To use Shipyard, log in as \"admin\" with the password \"$(SHIPYARD_PASSWORD)\"."
 	@echo
 	@echo "Janitor was successfully installed. Welcome!"
 	@echo "You can now start it with:"
@@ -229,4 +193,4 @@ help:
 	cat Makefile | less
 
 
-.PHONY: install uninstall db undb https unhttps npm unnpm daemon undaemon start stop ports unports shipyard unshipyard localengine unlocalengine welcome unwelcome help
+.PHONY: install uninstall db undb https unhttps npm unnpm daemon undaemon start stop ports unports localengine unlocalengine welcome unwelcome help
