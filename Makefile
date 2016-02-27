@@ -5,11 +5,11 @@
 
 ### READ THIS ###
 
-# Install necessary files, npm modules, and docker containers.
-install: db https npm daemon ports localengine welcome
+# Install necessary files, npm modules, and certificates.
+install: db npm https ports localengine welcome
 
 # Delete everything that was created by `make install`.
-uninstall: undb unhttps unnpm undaemon unports unlocalengine unwelcome
+uninstall: undb unnpm unhttps unports unlocalengine unwelcome
 
 
 ### JSON DATABASE ###
@@ -25,6 +25,17 @@ db.json:
 # WARNING: This deletes your data!
 undb:
 	rm -f db.json
+
+
+### NPM DEPENDENCIES ###
+
+# Install NPM dependencies.
+npm:
+	npm install
+
+# Delete NPM dependencies.
+unnpm:
+	rm -rf node_modules/
 
 
 ### HTTPS CERTIFICATE ###
@@ -55,18 +66,7 @@ unhttps:
 	rm -f https.key https.csr https.crt
 
 
-### NPM DEPENDENCIES ###
-
-# Install NPM dependencies.
-npm:
-	npm install
-
-# Delete NPM dependencies.
-unnpm:
-	rm -rf node_modules/
-
-
-### DAEMON ###
+### INIT.D DAEMON ###
 
 daemon:
 	cat init.d/janitor | sed "s_/path/to/janitor_$$(pwd)_g" | sudo tee /etc/init.d/janitor >/dev/null
@@ -182,7 +182,7 @@ welcome:
 	@echo "  node app"
 	@echo
 
-# Say good bye to the user.
+# Say goodbye to the user.
 unwelcome:
 	@echo
 	@echo "Janitor was successfully uninstalled!"
