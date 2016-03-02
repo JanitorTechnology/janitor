@@ -9,7 +9,6 @@ var db = require('./lib/db');
 var log = require('./lib/log');
 var machines = require('./lib/machines');
 var routes = require('./lib/routes');
-var shipyard = require('./lib/shipyard');
 var users = require('./lib/users');
 
 // Use `make ports` to set up these unprivileged ports.
