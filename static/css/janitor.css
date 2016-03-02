@@ -291,7 +291,7 @@ h4 {
 /* Data */
 
 .numbers {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .numbers > .number:not(:first-of-type) {
