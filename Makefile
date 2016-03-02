@@ -6,10 +6,10 @@
 ### READ THIS ###
 
 # Install necessary files, npm modules, and certificates.
-install: db npm https ports localengine welcome
+install: db npm https ports docker welcome
 
 # Delete everything that was created by `make install`.
-uninstall: undb unnpm unhttps unports unlocalengine unwelcome
+uninstall: undb unnpm unhttps unports undocker unwelcome
 
 
 ### JSON DATABASE ###
@@ -108,20 +108,17 @@ unports:
 
 ### LOCAL DOCKER ENGINE ###
 
-# Use local eth0 address for containers to contact the host.
-DOCKER_HOST_IP := $(shell ip a | grep -e "inet.*eth0" | sed 's_.*inet \([^/]\+\)/.*_\1_')
-
-# Fall back on wlan0 if eth0 has no assigned address.
-ifeq ($(strip $(DOCKER_HOST_IP)),)
-  DOCKER_HOST_IP := $(shell ip a | grep -e "inet.*wlan0" | sed 's_.*inet \([^/]\+\)/.*_\1_')
+# If no HOST is defined, default to "localhost".
+ifeq ($(strip $(HOST)),)
+  HOST := localhost
 endif
 
-# Install the local Docker daemon as a Janitor engine.
-localengine: ca.crt docker.crt docker.key shipyard.crt shipyard.key
+# Install certificates allowing secure remote access to the local Docker host.
+docker: ca.crt docker.crt docker.key client.crt client.key
 	sudo cp ca.crt docker.ca
 	sudo chown root:root docker.crt docker.key docker.ca
 	sudo cp /etc/default/docker /etc/default/docker.old
-	echo "\n# Accept secure TLS connections from the Janitor.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"" | sudo tee -a /etc/default/docker
+	echo "\n# Accept secure remote access from the Janitor via TLS.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"" | sudo tee -a /etc/default/docker
 	sudo service docker restart && sleep 1
 
 # Create a certificate authority (CA) for Docker and the Janitor.
@@ -135,39 +132,39 @@ ca.key:
 
 # Create a certificate for Docker.
 docker.crt: docker.csr ca.crt ca.key
-	echo "subjectAltName = IP:$(DOCKER_HOST_IP)" > extfile.cnf
+	echo "subjectAltName = DNS:localhost,IP:127.0.0.1" > extfile.cnf
 	openssl x509 -req -days 365 -in docker.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out docker.crt -extfile extfile.cnf
 	rm -f extfile.cnf docker.csr
 	chmod 444 docker.crt # read by all
 
 docker.csr: docker.key
-	openssl req -subj '/CN=localhost' -new -sha256 -key docker.key -out docker.csr
+	openssl req -subj '/CN=$(HOST)' -new -sha256 -key docker.key -out docker.csr
 	chmod 400 docker.csr # read by owner
 
 docker.key:
 	openssl genrsa -out docker.key 2048
 	chmod 400 docker.key # read by owner
 
-# Create a certificate for the Janitor.
-shipyard.crt: shipyard.csr ca.crt ca.key
+# Create a certificate for the client.
+client.crt: client.csr ca.crt ca.key
 	echo 'extendedKeyUsage = clientAuth' > extfile.cnf
-	openssl x509 -req -days 365 -in shipyard.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out shipyard.crt -extfile extfile.cnf
-	rm -f extfile.cnf shipyard.csr
-	chmod 444 shipyard.crt # read by all
+	openssl x509 -req -days 365 -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -extfile extfile.cnf
+	rm -f extfile.cnf client.csr
+	chmod 444 client.crt # read by all
 
-shipyard.csr: shipyard.key
-	openssl req -subj '/CN=client' -new -key shipyard.key -out shipyard.csr
-	chmod 400 shipyard.csr # read by owner
+client.csr: client.key
+	openssl req -subj '/CN=client' -new -key client.key -out client.csr
+	chmod 400 client.csr # read by owner
 
-shipyard.key:
-	openssl genrsa -out shipyard.key 2048
-	chmod 400 shipyard.key # read by owner
+client.key:
+	openssl genrsa -out client.key 2048
+	chmod 400 client.key # read by owner
 
-# Remove the local Docker daemon from the Janitor engines.
-unlocalengine:
+# Delete all the created certificates.
+undocker:
 	sudo mv /etc/default/docker.old /etc/default/docker
 	sudo rm -f docker.crt docker.key docker.ca
-	rm -f extfile.cnf ca.crt ca.key ca.srl docker.crt docker.csr docker.key shipyard.crt shipyard.csr shipyard.key
+	rm -f extfile.cnf ca.crt ca.key ca.srl docker.csr client.crt client.csr client.key
 	sudo service docker restart && sleep 1
 
 
@@ -188,9 +185,9 @@ unwelcome:
 	@echo "Janitor was successfully uninstalled!"
 	@echo
 
-# This is a self-documenting Makefile.
+# This is a self-documented Makefile.
 help:
 	cat Makefile | less
 
 
-.PHONY: install uninstall db undb https unhttps npm unnpm daemon undaemon start stop ports unports localengine unlocalengine welcome unwelcome help
+.PHONY: install uninstall db undb npm unnpm https unhttps daemon undaemon start stop ports unports docker undocker welcome unwelcome help
