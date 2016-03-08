@@ -13,7 +13,7 @@
             </h4>
             <div class="project-actions">
               <a class="btn btn-default" data-action="spawn" data-id="{{= projectId in id}}" href="/vnc/{{= projectId in id}}/{{= id in id}}/vnc_auto.html" target="_blank">VNC</a>
-              <a class="btn btn-primary" data-action="spawn" data-id="{{= projectId in id}}" href="https://c9.io/open/ssh?name={{= projectId in id}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.ports.ssh in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              <a class="btn btn-primary" data-action="spawn" data-id="{{= projectId in id}}" href="https://c9.io/open/ssh?name={{= projectId in id}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.docker.ports['22'] in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">
