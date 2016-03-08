@@ -370,11 +370,11 @@ app.ajax.on('rebuild', function (data, end, query) {
       return end();
     }
 
-    machines.rebuild(data.id, function (error, logs) {
+    machines.rebuild(data.id, function (error) {
       if (error) {
-        return end({ status: 'error', message: error.toString(), logs: logs });
+        return end({ status: 'error', message: error.toString() });
       }
-      return end({ status: 'success', logs: logs });
+      return end({ status: 'success' });
     });
 
     // For longer requests, make sure we reply before the browser retries.
@@ -397,11 +397,11 @@ app.ajax.on('update', function (data, end, query) {
       return end();
     }
 
-    machines.update(data.id, function (error, logs) {
+    machines.update(data.id, function (error) {
       if (error) {
-        return end({ status: 'error', message: error.toString(), logs: logs });
+        return end({ status: 'error', message: error.toString() });
       }
-      return end({ status: 'success', logs: logs });
+      return end({ status: 'success' });
     });
 
     // For longer requests, make sure we reply before the browser retries.
@@ -424,11 +424,11 @@ app.ajax.on('spawn', function (data, end, query) {
       return end({ status: 'error', message: 'Not signed in' });
     }
 
-    machines.spawn(data.id, user, function (error, logs) {
+    machines.spawn(data.id, user, function (error) {
       if (error) {
-        return end({ status: 'error', message: error.toString(), logs: logs });
+        return end({ status: 'error', message: error.toString() });
       }
-      return end({ status: 'success', logs: logs });
+      return end({ status: 'success' });
     });
 
   });
