@@ -4,9 +4,9 @@
 
 [![Janitor demo video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
 
-## Try it online ##
+## Try it live
 
-https://janitor.technology
+Sign in to [janitor.technology](https://janitor.technology).
 
 ## Try it at home
 
