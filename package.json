@@ -15,7 +15,7 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "camp": "~16.0.0",
-    "dockerode": "~2.2.9",
+    "dockerode": "~2.2.10",
     "email-login": "~0.1.2"
   }
 }
