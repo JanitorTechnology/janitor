@@ -5,8 +5,8 @@
     "url": "http://jan.tools"
   },
   "name": "Janitor",
-  "description": "Automated development system",
-  "version": "0.0.1",
+  "description": "The fastest development system in the world.",
+  "version": "0.0.2",
   "homepage": "https://janitor.technology",
   "repository": {
     "type": "git",
