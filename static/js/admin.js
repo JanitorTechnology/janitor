@@ -54,7 +54,7 @@ Array.map(document.querySelectorAll('button[data-action]'), function (button) {
   button.addEventListener('click', Scout.send(function (query) {
     query.action = button.dataset.action;
     query.data = {
-      id: button.dataset.id
+      project: button.dataset.project
     };
     query.resp = function (data) {
       document.location.reload();

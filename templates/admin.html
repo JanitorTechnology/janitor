@@ -32,8 +32,8 @@
             <img class="project-icon" src={{= project.icon in json}} alt="{{= project.name in xmlattr}} Logo">
             <h4 class="project-title">{{= project.name in html}}</h4>
             <div class="project-actions">
-              <button data-action="rebuild" data-id={{= id in json}} class="btn btn-default">Rebuild</button>
-              <button data-action="update" data-id={{= id in json}} class="btn btn-primary">Update</button>
+              <button data-action="rebuild" data-project={{= id in json}} class="btn btn-default">Rebuild</button>
+              <button data-action="update" data-project={{= id in json}} class="btn btn-primary">Update</button>
             </div>
           </div>
           <div class="panel-body">

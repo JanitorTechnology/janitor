@@ -370,7 +370,7 @@ app.ajax.on('rebuild', function (data, end, query) {
       return end();
     }
 
-    machines.rebuild(data.id, function (error) {
+    machines.rebuild(data.project, function (error) {
       if (error) {
         return end({ status: 'error', message: error.toString() });
       }
@@ -397,7 +397,7 @@ app.ajax.on('update', function (data, end, query) {
       return end();
     }
 
-    machines.update(data.id, function (error) {
+    machines.update(data.project, function (error) {
       if (error) {
         return end({ status: 'error', message: error.toString() });
       }
@@ -424,7 +424,7 @@ app.ajax.on('spawn', function (data, end, query) {
       return end({ status: 'error', message: 'Not signed in' });
     }
 
-    machines.spawn(data.id, user, function (error) {
+    machines.spawn(data.project, user, function (error) {
       if (error) {
         return end({ status: 'error', message: error.toString() });
       }

@@ -9,7 +9,7 @@ Array.map(document.querySelectorAll('a[data-action="spawn"]'), function (link) {
   link.addEventListener('click', Scout.send(function (query) {
     query.action = link.dataset.action;
     query.data = {
-      id: link.dataset.id
+      project: link.dataset.project
     };
     query.resp = function (data) {
       document.location = '/contributions/';
