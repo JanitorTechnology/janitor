@@ -436,6 +436,28 @@ app.ajax.on('spawn', function (data, end, query) {
 });
 
 
+// Destroy a machine.
+
+app.ajax.on('destroy', function (data, end, query) {
+
+  users.get(data, query, function (error, user) {
+
+    if (!user) {
+      return end({ status: 'error', message: 'Not signed in' });
+    }
+
+    machines.destroy(data.machine, data.project, user, function (error) {
+      if (error) {
+        return end({ status: 'error', message: String(error) });
+      }
+      return end({ status: 'success' });
+    });
+
+  });
+
+});
+
+
 // Save a new user key, or update an existing one.
 
 app.ajax.on('key', function (data, end, query) {
