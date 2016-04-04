@@ -264,12 +264,17 @@ app.notfound(/.*/, function (data, match, end, query) {
 app.ajax.on('signup', function (data, end) {
 
   var email = data.email;
+  var users = db.get('users');
   var waitlist = db.get('waitlist');
 
   log('signup', email);
 
   if (waitlist[email]) {
     return end({ status: 'already-added' });
+  }
+
+  if (users[email]) {
+    return end({ status: 'already-invited' });
   }
 
   waitlist[email] = Date.now();

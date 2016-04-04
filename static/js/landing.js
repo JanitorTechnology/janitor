@@ -18,6 +18,10 @@ ajaxForm('#signup-form', 'signup', function (form, data) {
       status = 'success';
       message = 'We already have this email';
       break;
+    case 'already-invited':
+      status = 'success';
+      message = 'This email is already invited';
+      break;
   }
 
   updateFormStatus(form, status, message);
