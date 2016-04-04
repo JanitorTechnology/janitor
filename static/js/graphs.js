@@ -19,7 +19,8 @@ Array.map(document.querySelectorAll('*[data-data]'), function (div) {
       y: {
         valueFormatter: formatTime,
         axisLabelFormatter: formatTime,
-        axisLabelWidth: 60
+        axisLabelWidth: 60,
+        includeZero: true
       }
     },
     labelsUTC: true,
@@ -49,7 +50,7 @@ function formatTime (milliseconds) {
   }
 
   return (Math.round(value * 10) / 10) + ' ' + unit.code;
-  
+
 }
 
 
