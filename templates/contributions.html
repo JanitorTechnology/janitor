@@ -11,7 +11,13 @@
               {{= projects[projectId].name in html}} #{{= id in id}}
               <small class="project-status" data-status="{{= machine.status in xmlattr}}"></small>
             </h4>
-            <div class="project-actions">
+            <div class="project-actions dropdown">
+              <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a data-action="destroy" data-confirm="Delete {{= projects[projectId].name in html}} #{{= id in id}}?" data-details="This action can't be undone, please make sure you've backed up everything valuable." data-machine={{= id in json}} data-project={{= projectId in json}} data-toggle="modal" data-target="#confirm" href="#">Delete</a></li>
+              </ul>
               <a class="btn btn-default" href="/vnc/{{= projectId in id}}/{{= id in id}}/vnc_auto.html" target="_blank">VNC</a>
               <a class="btn btn-primary" href="https://c9.io/open/ssh?name={{= projectId in id}}&description={{= machine.name in uri}}%20on%20janitor.technology&host=janitor.technology&port={{= machine.docker.ports['22'] in integer}}&user=user&workspaceDir={{= projects[projectId].docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
@@ -21,5 +27,22 @@
             <pre class="well well-sm project-logs">{{= machine.docker.logs in html}}</pre>
           </div>
         </div>}}}}}}}}}}}}
+      </div>
+      <div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="confirm-title">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="confirm-title"></h4>
+            </div>
+            <div class="modal-body">
+              <p id="confirm-details"></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-danger" id="confirm-button"></button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>

@@ -2,7 +2,7 @@
 // The following code is covered by the AGPL-3.0 license.
 
 
-// Spawn a project-specific machine when its link is clicked.
+// Spawn a project-specific machine when one of its links is clicked.
 
 Array.map(document.querySelectorAll('a[data-action="spawn"]'), function (link) {
 
@@ -59,5 +59,57 @@ Array.map(document.querySelectorAll('*[data-timestamp]'), function (element) {
 
   // Use jQuery's live-updating timeago plugin.
   $(element).timeago();
+
+});
+
+
+// Request confirmation before deleting a project-specific machine.
+
+$('#confirm').on('show.bs.modal', function (event) {
+
+  var link = event.relatedTarget;
+  var title = this.querySelector('#confirm-title');
+  var details = this.querySelector('#confirm-details');
+  var button = this.querySelector('#confirm-button');
+
+  title.textContent = link.dataset.confirm;
+  details.textContent = link.dataset.details;
+  button.textContent = link.textContent;
+
+  button.onclick = Scout.send(function (query) {
+    query.action = link.dataset.action;
+    query.data = {
+      machine: link.dataset.machine,
+      project: link.dataset.project
+    };
+    query.resp = function (data) {
+      switch (data.status) {
+        case 'success':
+          document.location.reload();
+          break;
+        case 'error':
+          // FIXME: Display errors better.
+          alert(data.message);
+          break;
+      }
+    };
+  });
+
+});
+
+
+// Clean up the confirmation screen when dismissed.
+
+$('#confirm').on('hidden.bs.modal', function (event) {
+
+  var title = this.querySelector('#confirm-title');
+  var details = this.querySelector('#confirm-details');
+  var button = this.querySelector('#confirm-button');
+
+  title.textContent = '';
+  details.textContent = '';
+  button.textContent = '';
+
+  button.onclick = null;
 
 });
