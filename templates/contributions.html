@@ -25,6 +25,7 @@
           <div class="panel-body">
             <label>Logs</label>
             <pre class="well well-sm project-logs">{{= machine.docker.logs in html}}</pre>
+            <p class="project-updated">Updated <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}"></time>.</p>
           </div>
         </div>}}}}}}}}}}}}
       </div>
