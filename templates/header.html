@@ -2,12 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="application-name" content="The Janitor">
     <meta name="theme-color" content="#333">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> {{= title in html}}{{if title then {{ • }}}}The Janitor </title>
+    <link href="/manifest.json" rel="manifest">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/janitor.css" rel="stylesheet">
-    <link href="/img/janitor.svg" rel="icon">
+    <link href="/img/janitor.svg" rel="icon" sizes="any" type="image/svg+xml">
   </head>
   <body>
     <header class="navbar navbar-inverse navbar-static-top" role="navigation">

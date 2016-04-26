@@ -1,0 +1,14 @@
+{
+  "name": "The Janitor",
+  "short_name": "Janitor",
+  "start_url": "/",
+  "icons": [{
+    "src": "img/janitor.svg",
+    "sizes": "any",
+    "type": "image/svg+xml"
+  }],
+  "dir": "ltr",
+  "display": "minimal-ui",
+  "lang": "en",
+  "theme_color": "#333"
+}
