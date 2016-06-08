@@ -53,6 +53,19 @@ app.route(/^\/$/, function (data, match, end, query) {
 });
 
 
+// Public blog page.
+
+app.route(/^\/blog\/?$/, function (data, match, end, query) {
+
+  log('blog');
+
+  users.get(data, query, function (error, user) {
+    return routes.blogPage(user, end);
+  });
+
+});
+
+
 // Public live data page.
 
 app.route(/^\/data\/?$/, function (data, match, end, query) {
