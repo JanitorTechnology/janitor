@@ -183,7 +183,7 @@ h4 {
   border-top-right-radius: 0;
 }
 
-#cloud9-form, #cloud9user-form {
+.account-form {
   margin-bottom: 15px;
 }
 
