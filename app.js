@@ -502,8 +502,8 @@ app.ajax.on('key', function (data, end, query) {
         break;
 
       case 'cloud9user':
-        // Cloud9 usernames consist of lowercase letters and numbers only.
-        var match = data.key.trim().match(/^[a-z0-9]+$/);
+        // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
+        var match = data.key.trim().match(/^[a-z0-9_]+$/);
         if (!match) {
           return end({ status: 'error', message: 'Invalid Cloud9 username' });
         }
