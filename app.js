@@ -486,16 +486,36 @@ app.ajax.on('key', function (data, end, query) {
       return end();
     }
 
-    // Extract a valid SSH public key from the user's input.
-    // Regex adapted from https://gist.github.com/paranoiq/1932126.
-    var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
-    if (!match) {
-      return end({ status: 'error', message: 'Invalid SSH key' });
+    var key = '';
+
+    switch (data.name) {
+
+      case 'cloud9':
+        // Extract a valid SSH public key from the user's input.
+        // Regex adapted from https://gist.github.com/paranoiq/1932126.
+        var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
+        if (!match) {
+          return end({ status: 'error', message: 'Invalid SSH key' });
+        }
+        key = match[0];
+        log('key', data.name, user.email);
+        break;
+
+      case 'cloud9user':
+        // Cloud9 usernames consist of lowercase letters and numbers only.
+        var match = data.key.trim().match(/^[a-z0-9]+$/);
+        if (!match) {
+          return end({ status: 'error', message: 'Invalid Cloud9 username' });
+        }
+        key = match[0];
+        log('key', data.name, user.email, key);
+        break;
+
+      default:
+        return end({ status: 'error', message: 'Unknown key name' });
+
     }
 
-    var key = match[0];
-
-    log('key', data.name, user.email);
     user.keys[data.name] = key;
     db.save();
 
