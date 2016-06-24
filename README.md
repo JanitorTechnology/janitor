@@ -32,3 +32,8 @@ Then hit [localhost](https://localhost/)!
 - If you find bugs, please open [issues](https://github.com/jankeromnes/janitor/issues).
 - To suggest changes, please open [pull requests](https://help.github.com/articles/using-pull-requests/).
 - For general questions, please join our IRC channel [#janitor](https://webchat.freenode.net/?channels=janitor).
+
+## Thanks
+
+- [IRILL](http://www.irill.org/) for the server and hosting
+- Mozilla
