@@ -36,4 +36,5 @@ Then hit [localhost](https://localhost/)!
 ## Thanks
 
 - [IRILL](http://www.irill.org/) for the server and hosting
-- Mozilla
+- [Cloud9 IDE](https://c9.io/) for sponsoring alpha accounts
+- [Mozilla](https://www.mozilla.org/)
