@@ -290,6 +290,13 @@ h4 {
 
 .project-graph {
   padding-top: 40px;
+  padding-right: 25px;
+}
+
+.project-graph > div[data-data] {
+  height: 300px;
+  width: 500px;
+  max-width: 100%;
 }
 
 /* Data */
