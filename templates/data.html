@@ -5,9 +5,9 @@
           <div class="col-sm-6 col-lg-4">
             <div>Users</div>
             <div class="numbers">
-              <span class="number">{{= data.users.users in integer}}</span>
+              <span class="number">{{= data.users.users.length in integer}}</span>
               <span class="unit">confirmed</span>
-              <span class="number">{{= data.users.waitlist in integer}}</span>
+              <span class="number">{{= data.users.waitlist.length in integer}}</span>
               <span class="unit">waitlist</span>
             </div>
           </div>
