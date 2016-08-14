@@ -321,7 +321,11 @@ h4 {
 }
 
 
-/* Tips and tricks */
+/* Sections */
+
+.tabs {
+  margin-bottom: 0;
+}
 
 .protip {
   color: #777;

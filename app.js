@@ -173,17 +173,23 @@ app.route(/^\/account\/?$/, function (data, match, end, query) {
 });
 
 
-// Admin section.
+// Admin sections.
 
-app.route(/^\/admin\/?$/, function (data, match, end, query) {
+app.route(/^\/admin(\/\w+)?\/?$/, function (data, match, end, query) {
 
   users.get(data, query, function (error, user) {
 
-    if (users.isAdmin(user)) {
-      return routes.adminPage(user, end);
+    if (!users.isAdmin(user)) {
+      return routes.notFoundPage(user, end, query);
     }
 
-    return routes.notFoundPage(user, end, query);
+    // Select the requested section, or serve the default one.
+    var uri = match[1];
+    var section = uri ? uri.slice(1) : 'users';
+
+    log('admin', section, '(' + user.email + ')');
+
+    return routes.adminPage(section, user, end, query);
 
   });
 

@@ -1,31 +1,5 @@
     <section>
-      <div class="container">
-        <h2 class="header">Users</h2>
-        <div class="row">
-          <div class="col-sm-6">
-            <label>Users</label>
-            <ul class="list-group">{{ for u in users {{
-              <li class="list-group-item">{{= u.email in html}}</li>}}}}
-            </ul>
-          </div>
-          <div class="col-sm-6">
-            <label>Waitlist</label>
-            <ul class="list-group">{{ for email, timestamp in waitlist {{
-              <li class="list-group-item">{{= email in html}}</li>}}}}
-              <form id="invite-form" class="ajax-form has-feedback has-button">
-                <div class="input-group">
-                  <input class="form-control" name="email" placeholder="Email address" type="email">
-                  <span class="input-group-btn">
-                    <input type="submit" class="btn btn-primary" value="Invite">
-                  </span>
-                </div>
-              </form>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <h2>Projects</h2>{{
+      <div class="container">{{
         for id, project in projects {{
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
