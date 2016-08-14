@@ -12,12 +12,20 @@
           </div>
           <div class="panel-body">
             <div class="row">
-              <form id="{{= id in xmlattr}}-image" data-action="projectdb" class="col-sm-6 ajax-form has-feedback">
+              <form id="{{= id in xmlattr}}-host" data-action="projectdb" class="col-sm-4 ajax-form has-feedback has-select">
+                <input type="hidden" name="id" value={{= id in json}}>
+                <label class="control-label">Host</label>
+                <select class="form-control" data-submit-on="blur" name="docker.host">{{
+                  for host, hostinfo in hosts {{
+                  <option value={{= host in json}} {{if {{host === project.docker.host}} then {{selected}}}}>{{= host in html}}</option>}}}}
+                </select>
+              </form>
+              <form id="{{= id in xmlattr}}-image" data-action="projectdb" class="col-sm-4 ajax-form has-feedback">
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Image</label>
                 <input class="form-control" data-submit-on="blur" name="docker.image" value={{= project.docker.image in json}}>
               </form>
-              <form id="{{= id in xmlattr}}-path" data-action="projectdb" class="col-sm-6 ajax-form has-feedback">
+              <form id="{{= id in xmlattr}}-path" data-action="projectdb" class="col-sm-4 ajax-form has-feedback">
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Path</label>
                 <input class="form-control" data-submit-on="blur" name="docker.path" value={{= project.docker.path in json}}>
