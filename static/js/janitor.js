@@ -169,3 +169,19 @@ function removeQueryString () {
 }
 
 removeQueryString();
+
+
+// If the web browser supports it, register and install a Service Worker.
+
+if ('serviceWorker' in navigator) {
+
+  navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+    .then(function (registration) {
+      // Successfully registered.
+    })
+    .catch(function (error) {
+      // Couldn't register.
+      console.error(error);
+    });
+
+}
