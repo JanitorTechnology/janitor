@@ -305,8 +305,9 @@ h4 {
 
 /* Data */
 
-.numbers {
-  margin-bottom: 20px;
+.data-topic {
+  padding: 20px;
+  padding-top: 15px;
 }
 
 .numbers > .number:not(:first-of-type) {
