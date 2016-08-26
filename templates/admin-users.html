@@ -3,8 +3,8 @@
         <div class="row">
           <div class="col-sm-6">
             <label>Users</label>
-            <ul class="list-group">{{ for (let u of users) { }}
-              <li class="list-group-item">{{= u.email in html}}</li>{{ } }}
+            <ul class="list-group">{{ for (let email in users) { }}
+              <li class="list-group-item">{{= email in html}}</li>{{ } }}
             </ul>
           </div>
           <div class="col-sm-6">
