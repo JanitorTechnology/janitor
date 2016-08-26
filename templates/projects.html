@@ -2,7 +2,9 @@
       <div class="container">
         <h1>Contribute to incredible software</h1>
         <h4>In just a single click, enter a fully-functional development environment. Yes, it's that easy.</h4>{{
-        for id, project in projects {{
+          for (let id in projects) {
+            let project = projects[id];
+        }}
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
@@ -17,6 +19,8 @@
           <div class="panel-body">
             <p class="project-updated">Updated <time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}"></time>.</p>
           </div>
-        </div>}}}}
+        </div>{{
+          }
+        }}
       </div>
     </section>

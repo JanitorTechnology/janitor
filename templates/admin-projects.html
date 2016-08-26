@@ -1,6 +1,8 @@
     <section>
       <div class="container">{{
-        for id, project in projects {{
+          for (let id in projects) {
+            let project = projects[id];
+        }}
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <img class="project-icon" src={{= project.icon in json}} alt="{{= project.name in xmlattr}} Logo">
@@ -16,8 +18,11 @@
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Host</label>
                 <select class="form-control" data-submit-on="blur" name="docker.host">{{
-                  for host, hostinfo in hosts {{
-                  <option value={{= host in json}} {{if {{host === project.docker.host}} then {{selected}}}}>{{= host in html}}</option>}}}}
+                  for (let host in hosts) {
+                }}
+                  <option value={{= host in json}} {{if {{host === project.docker.host}} then selected}}>{{= host in html}}</option>{{
+                  }
+                }}
                 </select>
               </form>
               <form id="{{= id in xmlattr}}-image" data-action="projectdb" class="col-sm-4 ajax-form has-feedback">
@@ -49,7 +54,9 @@
             <label>Logs</label>
             <pre class="well well-sm project-logs">{{= project.docker.logs in html}}</pre>
           </div>
-        </div>}}}}
+        </div>{{
+          }
+        }}
         <form id="newproject-form" class="ajax-form has-feedback panel panel-default panel-project">
           <div class="panel-heading">
             <h4 class="project-title">New Project</h4>
