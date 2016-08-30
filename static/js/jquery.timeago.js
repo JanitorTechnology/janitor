@@ -3,7 +3,7 @@
  * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
  *
  * @name timeago
- * @version 1.5.1
+ * @version 1.5.3
  * @requires jQuery v1.2.3+
  * @author Ryan McGeary
  * @license MIT License - http://www.opensource.org/licenses/mit-license.php
@@ -150,7 +150,9 @@
     update: function(timestamp) {
       var date = (timestamp instanceof Date) ? timestamp : $t.parse(timestamp);
       $(this).data('timeago', { datetime: date });
-      if ($t.settings.localeTitle) $(this).attr("title", date.toLocaleString());
+      if ($t.settings.localeTitle) {
+        $(this).attr("title", date.toLocaleString());
+      }
       refresh.apply(this);
     },
     updateFromDOM: function() {
@@ -190,8 +192,12 @@
     var data = prepareData(this);
 
     if (!isNaN(data.datetime)) {
-      if ( $s.cutoff == 0 || Math.abs(distance(data.datetime)) < $s.cutoff) {
+      if ( $s.cutoff === 0 || Math.abs(distance(data.datetime)) < $s.cutoff) {
         $(this).text(inWords(data.datetime));
+      } else {
+        if ($(this).attr('title').length > 0) {
+            $(this).text($(this).attr('title'));
+        }
       }
     }
     return this;
