@@ -116,7 +116,7 @@ ca.crt: ca.key
 	chmod 444 ca.crt # read by all
 
 ca.key:
-	openssl genrsa -out ca.key 2048
+	openssl genrsa -out ca.key 4096
 	chmod 400 ca.key # read by owner
 
 # Create a certificate for the Docker client.
@@ -131,7 +131,7 @@ client.csr: client.key
 	chmod 400 client.csr # read by owner
 
 client.key:
-	openssl genrsa -out client.key 2048
+	openssl genrsa -out client.key 4096
 	chmod 400 client.key # read by owner
 
 unclient:
@@ -140,9 +140,14 @@ unclient:
 
 ### DOCKER HOST CERTIFICATE ###
 
-# If no HOST is defined, default to "localhost".
-ifeq ($(strip $(HOST)),)
-  HOST := localhost
+# If no DOCKER_HOSTNAME is defined, default to "localhost".
+ifeq ($(strip $(DOCKER_HOSTNAME)),)
+  DOCKER_HOSTNAME := localhost
+endif
+
+# If no DOCKER_IP is defined, default to "127.0.0.1".
+ifeq ($(strip $(DOCKER_IP)),)
+  DOCKER_IP := 127.0.0.1
 endif
 
 # Install certificates allowing secure remote access to the local Docker host.
@@ -155,17 +160,17 @@ docker: ca.crt docker.crt docker.key
 
 # Create a certificate for Docker.
 docker.crt: docker.csr ca.crt ca.key
-	echo "subjectAltName = DNS:localhost,IP:127.0.0.1" > extfile.cnf
+	echo 'subjectAltName = IP:$(DOCKER_IP),IP:127.0.0.1,DNS:localhost' > extfile.cnf
 	openssl x509 -req -days 365 -in docker.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out docker.crt -extfile extfile.cnf
 	rm -f extfile.cnf docker.csr
 	chmod 444 docker.crt # read by all
 
 docker.csr: docker.key
-	openssl req -subj '/CN=$(HOST)' -new -sha256 -key docker.key -out docker.csr
+	openssl req -subj '/CN=$(DOCKER_HOSTNAME)' -new -sha256 -key docker.key -out docker.csr
 	chmod 400 docker.csr # read by owner
 
 docker.key:
-	openssl genrsa -out docker.key 2048
+	openssl genrsa -out docker.key 4096
 	chmod 400 docker.key # read by owner
 
 # Delete all the installed certificates.
