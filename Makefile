@@ -19,7 +19,7 @@ db: db.json
 
 # Create a clean JSON file.
 db.json:
-	echo "{}" > db.json
+	printf "{}\n" > db.json
 	chmod 600 db.json # read/write by owner
 
 # WARNING: This deletes your data!
@@ -43,14 +43,14 @@ unnpm:
 daemon:
 	cat init.d/janitor | sed "s_/path/to/janitor_$$(pwd)_g" | sudo tee /etc/init.d/janitor >/dev/null
 	sudo chmod 755 /etc/init.d/janitor # read/write/exec by owner, read/exec by all
-	echo "\nYou can now start the Janitor daemon with:\n\n  service janitor start\n"
+	printf "\nYou can now start the Janitor daemon with:\n\n  service janitor start\n\n"
 
 start: stop
-	node app >> janitor.log 2>&1 & [ $$! -ne "0" ] && echo $$! > janitor.pid
-	echo "\n[$$(date +%s)] Janitor daemon started (PID $$(cat janitor.pid), LOGS $$(pwd)/janitor.log).\n"
+	node app >> janitor.log 2>&1 & [ $$! -ne "0" ] && printf "$$!\n" > janitor.pid
+	printf "\n[$$(date +%s)] Janitor daemon started (PID $$(cat janitor.pid), LOGS $$(pwd)/janitor.log).\n\n"
 
 stop:
-	if [ -e janitor.pid -a -n "$$(ps h $$(cat janitor.pid))" ] ; then kill $$(cat janitor.pid) && echo "\n[$$(date +%s)] Janitor daemon stopped (PID $$(cat janitor.pid)).\n" ; fi
+	if [ -e janitor.pid -a -n "$$(ps h $$(cat janitor.pid))" ] ; then kill $$(cat janitor.pid) && printf "\n[$$(date +%s)] Janitor daemon stopped (PID $$(cat janitor.pid)).\n\n" ; fi
 	rm -f janitor.pid
 
 undaemon:
@@ -61,12 +61,12 @@ undaemon:
 
 ports:
 	cat /etc/rc.local | grep -ve "^exit 0$$" > rc.local
-	echo "# Non-sudo web ports for the Janitor." >> rc.local
-	echo "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 1080" >> rc.local
-	echo "iptables -t nat -I OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 1080" >> rc.local
-	echo "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 1443" >> rc.local
-	echo "iptables -t nat -I OUTPUT -o lo -p tcp --dport 443 -j REDIRECT --to-port 1443" >> rc.local
-	echo "\nexit 0" >> rc.local
+	printf "\n# Non-sudo web ports for the Janitor.\n" >> rc.local
+	printf "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 1080\n" >> rc.local
+	printf "iptables -t nat -I OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 1080\n" >> rc.local
+	printf "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 1443\n" >> rc.local
+	printf "iptables -t nat -I OUTPUT -o lo -p tcp --dport 443 -j REDIRECT --to-port 1443\n" >> rc.local
+	printf "\nexit 0\n" >> rc.local
 	sudo chown root:root rc.local
 	sudo chmod 755 rc.local # read/write/exec by owner, read/exec by all
 	sudo mv /etc/rc.local /etc/rc.local.old
@@ -97,7 +97,7 @@ https.csr: https.key
 
 # Generate an SSL certificate secret key. Never share this!
 https.key:
-	echo "\nGenerating HTTPS credentials for the main Janitor web app...\n"
+	printf "\nGenerating HTTPS credentials for the main Janitor web app...\n\n"
 	openssl genrsa -out https.key 4096
 	chmod 400 https.key # read by owner
 
@@ -121,7 +121,7 @@ ca.key:
 
 # Create a certificate for the Docker client.
 client.crt: client.csr ca.crt ca.key
-	echo 'extendedKeyUsage = clientAuth' > extfile.cnf
+	printf "extendedKeyUsage = clientAuth\n" > extfile.cnf
 	openssl x509 -req -days 365 -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out client.crt -extfile extfile.cnf
 	rm -f extfile.cnf client.csr
 	chmod 444 client.crt # read by all
@@ -155,12 +155,12 @@ docker: ca.crt docker.crt docker.key
 	sudo cp ca.crt docker.ca
 	sudo chown root:root docker.crt docker.key docker.ca
 	sudo cp /etc/default/docker /etc/default/docker.old
-	echo "\n# Accept secure remote access from the Janitor via TLS.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"" | sudo tee -a /etc/default/docker
+	printf "\n# Accept secure remote access from the Janitor via TLS.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"\n" | sudo tee -a /etc/default/docker
 	sudo service docker restart && sleep 1
 
 # Create a certificate for Docker.
 docker.crt: docker.csr ca.crt ca.key
-	echo 'subjectAltName = IP:$(DOCKER_IP),IP:127.0.0.1,DNS:localhost' > extfile.cnf
+	printf "subjectAltName = IP:$(DOCKER_IP),IP:127.0.0.1,DNS:localhost\n" > extfile.cnf
 	openssl x509 -req -days 365 -in docker.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out docker.crt -extfile extfile.cnf
 	rm -f extfile.cnf docker.csr
 	chmod 444 docker.crt # read by all
