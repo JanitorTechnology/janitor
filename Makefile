@@ -47,10 +47,10 @@ daemon:
 
 start: stop
 	node app >> janitor.log 2>&1 & [ $$! -ne "0" ] && printf "$$!\n" > janitor.pid
-	printf "\n[$$(date +%s)] Janitor daemon started (PID $$(cat janitor.pid), LOGS $$(pwd)/janitor.log).\n\n"
+	printf "\n[$$(date -uIs)] Janitor daemon started (PID $$(cat janitor.pid), LOGS $$(pwd)/janitor.log).\n\n"
 
 stop:
-	if [ -e janitor.pid -a -n "$$(ps h $$(cat janitor.pid))" ] ; then kill $$(cat janitor.pid) && printf "\n[$$(date +%s)] Janitor daemon stopped (PID $$(cat janitor.pid)).\n\n" ; fi
+	if [ -e janitor.pid -a -n "$$(ps h $$(cat janitor.pid))" ] ; then kill $$(cat janitor.pid) && printf "\n[$$(date -uIs)] Janitor daemon stopped (PID $$(cat janitor.pid)).\n\n" ; fi
 	rm -f janitor.pid
 
 undaemon:
