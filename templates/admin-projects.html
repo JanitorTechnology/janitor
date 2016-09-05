@@ -17,7 +17,7 @@
               <form id="{{= id in xmlattr}}-host" data-action="projectdb" class="col-sm-4 ajax-form has-feedback has-select">
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Host</label>
-                <select class="form-control" data-submit-on="blur" name="docker.host">{{
+                <select class="form-control" data-submit-on="blur" name="/docker/host">{{
                   for (let host in hosts) {
                 }}
                   <option value={{= host in json}} {{if {{host === project.docker.host}} then selected}}>{{= host in html}}</option>{{
@@ -28,28 +28,28 @@
               <form id="{{= id in xmlattr}}-image" data-action="projectdb" class="col-sm-4 ajax-form has-feedback">
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Image</label>
-                <input class="form-control" data-submit-on="blur" name="docker.image" value={{= project.docker.image in json}}>
+                <input class="form-control" data-submit-on="blur" name="/docker/image" value={{= project.docker.image in json}}>
               </form>
               <form id="{{= id in xmlattr}}-path" data-action="projectdb" class="col-sm-4 ajax-form has-feedback">
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Path</label>
-                <input class="form-control" data-submit-on="blur" name="docker.path" value={{= project.docker.path in json}}>
+                <input class="form-control" data-submit-on="blur" name="/docker/path" value={{= project.docker.path in json}}>
               </form>
             </div>
             <form id="{{= id in xmlattr}}-build" data-action="projectdb" class="ajax-form has-feedback">
               <input type="hidden" name="id" value={{= id in json}}>
               <label class="control-label">Build</label>
-              <textarea class="form-control" data-submit-on="blur" name="docker.build" rows="9">{{= project.docker.build in html}}</textarea>
+              <textarea class="form-control" data-submit-on="blur" name="/docker/build" rows="9">{{= project.docker.build in html}}</textarea>
             </form>
             <form id="{{= id in xmlattr}}-update" data-action="projectdb" class="ajax-form has-feedback">
               <input type="hidden" name="id" value={{= id in json}}>
               <label class="control-label">Update</label>
-              <textarea class="form-control" data-submit-on="blur" name="docker.update" rows="5">{{= project.docker.update in html}}</textarea>
+              <textarea class="form-control" data-submit-on="blur" name="/docker/update" rows="5">{{= project.docker.update in html}}</textarea>
             </form>
             <form id="{{= id in xmlattr}}-spawn" data-action="projectdb" class="ajax-form has-feedback">
               <input type="hidden" name="id" value={{= id in json}}>
               <label class="control-label">Spawn</label>
-              <textarea class="form-control" data-submit-on="blur" name="docker.spawn" rows="5">{{= project.docker.spawn in html}}</textarea>
+              <textarea class="form-control" data-submit-on="blur" name="/docker/spawn" rows="5">{{= project.docker.spawn in html}}</textarea>
             </form>
             <label>Logs</label>
             <pre class="well well-sm project-logs">{{= project.docker.logs in html}}</pre>
