@@ -303,6 +303,23 @@ h4 {
   max-width: 100%;
 }
 
+/* Blog */
+
+.blog {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.blog-post {
+  margin-bottom: 45px;
+}
+
+.blog-post > h2.header {
+  margin-bottom: 35px;
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
 /* Data */
 
 .data-topic {
