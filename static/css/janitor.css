@@ -246,8 +246,16 @@ h4 {
 }
 
 .project-icon {
-  width: 35px;
   height: 35px;
+  width: 35px;
+}
+
+.project-icon.glyphicon {
+  top: 0;
+  color: #777;
+  height: 20px;
+  font-size: 20px;
+  text-align: center;
 }
 
 .project-title {

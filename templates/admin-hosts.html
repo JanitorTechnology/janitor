@@ -1,0 +1,54 @@
+    <section>
+      <div class="container">{{
+          for (let id in hosts) {
+            let host = hosts[id];
+        }}
+        <div class="panel panel-default panel-project">
+          <div class="panel-heading">
+            <span class="project-icon glyphicon glyphicon-globe" aria-hidden="true"></span>
+            <h4 class="project-title">{{= id in html}}</h4>
+            <div class="project-actions"></div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <form id="{{= id in xmlattr}}-host" data-action="hostdb" class="col-sm-6 ajax-form has-feedback">
+                <input type="hidden" name="id" value={{= id in json}}>
+                <label class="control-label">Host</label>
+                <input class="form-control" data-submit-on="blur" name="/host" value={{= host.host in json}}>
+              </form>
+              <form id="{{= id in xmlattr}}-port" data-action="hostdb" class="col-sm-6 ajax-form has-feedback">
+                <input type="hidden" name="id" value={{= id in json}}>
+                <label class="control-label">Port</label>
+                <input class="form-control" data-submit-on="blur" name="/port" type="number" value={{= host.port in json}}>
+              </form>
+            </div>
+          </div>
+        </div>{{
+          }
+        }}
+        <form id="newhost-form" class="ajax-form has-feedback panel panel-default panel-project">
+          <div class="panel-heading">
+            <h4 class="project-title">New Host</h4>
+            <div class="project-actions">
+              <input type="submit" class="btn btn-primary" value="Add">
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-4">
+                <label class="control-label">ID</label>
+                <input class="form-control" name="id" placeholder="Host ID">
+              </div>
+              <div class="col-sm-4">
+                <label class="control-label">Host</label>
+                <input class="form-control" name="/host" placeholder="Host address">
+              </div>
+              <div class="col-sm-4">
+                <label class="control-label">Port</label>
+                <input class="form-control" name="/port" placeholder="Host port" type="number">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>

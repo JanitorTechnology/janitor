@@ -186,7 +186,7 @@ app.route(/^\/admin(\/\w+)?\/?$/, function (data, match, end, query) {
 
     // Select the requested section, or serve the default one.
     var uri = match[1];
-    var section = uri ? uri.slice(1) : 'users';
+    var section = uri ? uri.slice(1) : 'hosts';
 
     log('admin', section, '(' + user.email + ')');
 
