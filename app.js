@@ -6,6 +6,7 @@ var http = require('http');
 var path = require('path');
 
 var db = require('./lib/db');
+var docker = require('./lib/docker');
 var log = require('./lib/log');
 var machines = require('./lib/machines');
 var routes = require('./lib/routes');
@@ -355,6 +356,29 @@ app.ajax.on('login', function (data, end, query) {
       }
       return end({ status: 'email-sent' });
     });
+
+  });
+
+});
+
+
+// Change the configuration of a Docker host.
+
+app.ajax.on('hostdb', function (data, end, query) {
+
+  users.get(data, query, function (error, user) {
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    if (!data.id) {
+      return end({ status: 'error', message: 'Invalid Host ID' });
+    }
+
+    docker.setHost(data);
+
+    return end({ status: 'success' });
 
   });
 
