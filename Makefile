@@ -155,7 +155,8 @@ docker: ca.crt docker.crt docker.key
 	sudo cp ca.crt docker.ca
 	sudo chown root:root docker.crt docker.key docker.ca
 	sudo cp /etc/default/docker /etc/default/docker.old
-	printf "\n# Accept secure remote access from the Janitor via TLS.\nDOCKER_OPTS=\"--tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"\n" | sudo tee -a /etc/default/docker
+	printf "\n# Accept secure remote access from the Janitor via TLS.\nDOCKER_OPTS=\"\$$DOCKER_OPTS --tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"\n" | sudo tee -a /etc/default/docker
+	printf "\n# Allow containers and images to grow larger than 10G.\nDOCKER_OPTS=\"\$$DOCKER_OPTS --storage-opt dm.basesize=100G\"\n" | sudo tee -a /etc/default/docker
 	sudo service docker restart && sleep 1
 
 # Create a certificate for Docker.
