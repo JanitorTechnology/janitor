@@ -112,7 +112,7 @@ client: ca.crt client.crt client.key
 
 # Create a certificate authority (CA) for Docker and the Janitor.
 ca.crt: ca.key
-	openssl req -subj '/CN=ca' -new -x509 -days 365 -key ca.key -sha256 -out ca.crt
+	openssl req -subj "/CN=ca" -new -x509 -days 365 -key ca.key -sha256 -out ca.crt
 	chmod 444 ca.crt # read by all
 
 ca.key:
@@ -127,7 +127,7 @@ client.crt: client.csr ca.crt ca.key
 	chmod 444 client.crt # read by all
 
 client.csr: client.key
-	openssl req -subj '/CN=client' -new -key client.key -out client.csr
+	openssl req -subj "/CN=client" -new -key client.key -out client.csr
 	chmod 400 client.csr # read by owner
 
 client.key:
@@ -161,13 +161,13 @@ docker: ca.crt docker.crt docker.key
 
 # Create a certificate for Docker.
 docker.crt: docker.csr ca.crt ca.key
-	printf "subjectAltName = IP:$(DOCKER_IP),IP:127.0.0.1,DNS:localhost\n" > extfile.cnf
+	printf "subjectAltName = DNS:$(DOCKER_HOSTNAME),DNS:localhost,IP:$(DOCKER_IP),IP:127.0.0.1\n" > extfile.cnf
 	openssl x509 -req -days 365 -in docker.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out docker.crt -extfile extfile.cnf
 	rm -f extfile.cnf docker.csr
 	chmod 444 docker.crt # read by all
 
 docker.csr: docker.key
-	openssl req -subj '/CN=$(DOCKER_HOSTNAME)' -new -sha256 -key docker.key -out docker.csr
+	openssl req -subj "/CN=$(DOCKER_HOSTNAME)" -new -sha256 -key docker.key -out docker.csr
 	chmod 400 docker.csr # read by owner
 
 docker.key:
