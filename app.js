@@ -157,17 +157,34 @@ app.route(/^\/contributions\/?$/, function (data, match, end, query) {
 });
 
 
-// User account.
+// User settings.
+
+app.route(/^\/settings(\/\w+)?\/?$/, function (data, match, end, query) {
+
+  users.get(data, query, function (error, user) {
+
+    if (!user) {
+      return routes.loginPage(end);
+    }
+
+    // Select the requested section, or serve the default one.
+    var uri = match[1];
+    var section = uri ? uri.slice(1) : 'account';
+
+    return routes.settingsPage(section, user, end, query);
+
+  });
+
+});
+
+
+// User account (now part of settings).
 
 app.route(/^\/account\/?$/, function (data, match, end, query) {
 
   users.get(data, query, function (error, user) {
 
-    if (user) {
-      return routes.accountPage(user, end);
-    }
-
-    return routes.loginPage(end);
+    return routes.redirect(query, '/settings/account/', true);
 
   });
 
