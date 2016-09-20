@@ -46,6 +46,8 @@ daemon:
 	printf "\nYou can now start the Janitor daemon with:\n\n  service janitor start\n\n"
 
 start: stop
+	touch janitor.log janitor.pid
+	chmod 600 janitor.log janitor.pid # read/write by owner
 	node app >> janitor.log 2>&1 & [ $$! -ne "0" ] && printf "$$!\n" > janitor.pid
 	printf "\n[$$(date -uIs)] Janitor daemon started (PID $$(cat janitor.pid), LOGS $$(pwd)/janitor.log).\n\n"
 
