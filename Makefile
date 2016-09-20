@@ -6,10 +6,10 @@
 ### READ THIS ###
 
 # Install necessary files, npm modules, and certificates.
-install: db npm ports https client docker welcome
+install: db npm https client docker welcome
 
 # Delete everything that was created by `make install`.
-uninstall: undb unnpm unports unhttps unclient undocker unwelcome
+uninstall: undb unnpm unhttps unclient undocker unwelcome
 
 
 ### JSON DATABASE ###

@@ -4,7 +4,7 @@
 
 [![Janitor demo video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
 
-## Try it live
+## See it live
 
 Sign in to [janitor.technology](https://janitor.technology).
 
@@ -25,7 +25,7 @@ Start the server:
 
     node app
 
-Then hit [localhost](https://localhost/)!
+Then hit [https://localhost:1443](https://localhost:1443/)!
 
 ## Help wanted!
 
