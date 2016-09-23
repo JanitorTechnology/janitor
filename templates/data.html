@@ -29,10 +29,10 @@
             </div>
           </div>
           <div class="data-topic col-sm-6">
-            <div>Back-ends</div>
+            <div>Cluster</div>
             <div class="numbers">
               <span class="number">{{= data.hosts.docker.length in integer}}</span>
-              <span class="unit">Docker</span>
+              <span class="unit">Docker node{{if {{data.hosts.docker.length !== 1}} then s}}</span>
             </div>
           </div>
         </div>
