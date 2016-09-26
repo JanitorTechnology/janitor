@@ -20,7 +20,7 @@
                 <select class="form-control" data-submit-on="blur" name="/docker/host">{{
                   for (let host in hosts) {
                 }}
-                  <option value={{= host in json}} {{if {{host === project.docker.host}} then selected}}>{{= host in html}}</option>{{
+                  <option value={{= host in json}} {{if {{host === project.docker.host}} then selected}}>{{= hosts[host].properties.hostname in html}}</option>{{
                   }
                 }}
                 </select>
