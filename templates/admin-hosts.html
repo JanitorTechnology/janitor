@@ -14,12 +14,12 @@
               <form id="{{= id in xmlattr}}-host" data-action="hostdb" class="col-sm-6 ajax-form has-feedback">
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Host</label>
-                <input class="form-control" data-submit-on="blur" name="/host" value={{= host.host in json}}>
+                <input class="form-control" data-submit-on="blur" name="/hostname" value={{= host.properties.hostname in json}}>
               </form>
               <form id="{{= id in xmlattr}}-port" data-action="hostdb" class="col-sm-6 ajax-form has-feedback">
                 <input type="hidden" name="id" value={{= id in json}}>
-                <label class="control-label">Port</label>
-                <input class="form-control" data-submit-on="blur" name="/port" type="number" value={{= host.port in json}}>
+                <label class="control-label">Docker port</label>
+                <input class="form-control" data-submit-on="blur" name="/port" type="number" value={{= host.properties.port in json}}>
               </form>
             </div>
           </div>
@@ -41,11 +41,11 @@
               </div>
               <div class="col-sm-4">
                 <label class="control-label">Host</label>
-                <input class="form-control" name="/host" placeholder="Host address">
+                <input class="form-control" name="/hostname" placeholder="Host name">
               </div>
               <div class="col-sm-4">
-                <label class="control-label">Port</label>
-                <input class="form-control" name="/port" placeholder="Host port" type="number">
+                <label class="control-label">Docker port</label>
+                <input class="form-control" name="/port" placeholder="Docker Remote API port" type="number">
               </div>
             </div>
           </div>

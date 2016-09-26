@@ -23,7 +23,7 @@
                 <li><a data-action="destroy" data-confirm="Delete {{= project.name in html}} #{{= id in id}}?" data-details="This action can't be undone, please make sure you've backed up everything valuable." data-machine={{= id in json}} data-project={{= projectId in json}} data-toggle="modal" data-target="#confirm" href="#">Delete</a></li>
               </ul>
               <a class="btn btn-default" href="/vnc/{{= projectId in id}}/{{= id in id}}/vnc_auto.html" target="_blank">VNC</a>
-              <a class="btn btn-primary" href="https://c9.io/open/ssh?name={{= projectId in id}}&description={{= machine.name in uri}}%20on%20janitor.technology&host={{= hosts[machine.docker.host].host in uri}}&port={{= machine.docker.ports['22'] in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              <a class="btn btn-primary" href="https://c9.io/open/ssh?name={{= projectId in id}}&description={{= machine.name in uri}}%20on%20janitor.technology&host={{= hosts[machine.docker.host].properties.hostname in uri}}&port={{= machine.docker.ports['22'] in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
           </div>
           <div class="panel-body">

@@ -11,7 +11,7 @@
             <h4 class="project-title">{{= project.name in html}}</h4>
             <div class="project-actions">
               <a class="btn btn-primary" {{if user then
-                {{data-action="spawn" data-project="{{= id in id}}" href="https://c9.io/open/ssh?name={{= id in id}}&description={{= machines[id].name in uri}}%20on%20janitor.technology&host={{= hosts[project.docker.host].host in uri}}&port={{= machines[id].docker.ports['22'] in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"}}
+                {{data-action="spawn" data-project="{{= id in id}}" href="https://c9.io/open/ssh?name={{= id in id}}&description={{= machines[id].name in uri}}%20on%20janitor.technology&host={{= hosts[project.docker.host].properties.hostname in uri}}&port={{= machines[id].docker.ports['22'] in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"}}
                 else {{href="/login"}}
               }}><span class="hidden-xs">Edit in </span>Cloud9</a>
             </div>
