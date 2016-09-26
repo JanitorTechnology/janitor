@@ -40,7 +40,8 @@ var app = camp.start({
   ca: []
 });
 
-log('Janitor →  https://localhost' + (ports.https === 443 ? '' : ':' + ports.https));
+log('Janitor →  https://' + db.get('hostname', 'localhost') +
+  (ports.https === 443 ? '' : ':' + ports.https));
 
 
 // Public landing page.
