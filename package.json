@@ -1,23 +1,29 @@
 {
+  "name": "Janitor",
+  "version": "0.0.6",
+  "description": "The fastest development system in the world.",
+  "homepage": "https://janitor.technology",
+  "bugs": {
+    "url": "https://github.com/jankeromnes/janitor/issues"
+  },
+  "license": "AGPL-3.0",
   "author": {
     "name": "Jan Keromnes",
     "email": "janx@linux.com",
     "url": "http://jan.tools"
   },
-  "name": "Janitor",
-  "description": "The fastest development system in the world.",
-  "version": "0.0.6",
-  "homepage": "https://janitor.technology",
   "repository": {
     "type": "git",
     "url": "https://github.com/jankeromnes/janitor"
   },
-  "license": "AGPL-3.0",
   "dependencies": {
     "camp": "~16.2.3",
     "dockerode": "~2.3.1",
     "email-login": "~1.0.1",
     "fast-json-patch": "~1.1.0",
     "tar-stream": "~1.5.2"
+  },
+  "engines" : {
+    "node" : ">=6.0.0"
   }
 }
