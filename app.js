@@ -1,4 +1,4 @@
-// Copyright © 2015 Jan Keromnes. All rights reserved.
+// Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
 var camp = require('camp');
@@ -40,81 +40,97 @@ var app = camp.start({
   ca: []
 });
 
-log('Janitor →  https://' + db.get('hostname', 'localhost') +
+log('Janitor → https://' + db.get('hostname', 'localhost') +
   (ports.https === 443 ? '' : ':' + ports.https));
+
+
+// Authenticate all user requests with a server middleware.
+
+app.handle((request, response, next) => {
+
+  users.get(request, response, (error, user) => {
+
+    if (error) {
+      log('authentication error', String(error));
+    }
+
+    request.user = user;
+    next();
+
+  });
+
+});
 
 
 // Public landing page.
 
-app.route(/^\/$/, function (data, match, end, query) {
+app.route(/^\/$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
-    return routes.landingPage(user, end);
-  });
+  var user = query.req.user;
+
+  return routes.landingPage(user, end);
 
 });
 
 
 // Public blog page.
 
-app.route(/^\/blog\/?$/, function (data, match, end, query) {
+app.route(/^\/blog\/?$/, (data, match, end, query) => {
+
+  var user = query.req.user;
 
   log('blog');
 
-  users.get(data, query, function (error, user) {
-    return routes.blogPage(user, end);
-  });
+  return routes.blogPage(user, end);
 
 });
 
 
 // Public live data page.
 
-app.route(/^\/data\/?$/, function (data, match, end, query) {
+app.route(/^\/data\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
-    return routes.dataPage(user, end);
-  });
+  var user = query.req.user;
+
+  return routes.dataPage(user, end);
 
 });
 
 
 // Public project pages.
 
-app.route(/^\/projects(\/\w+)?\/?$/, function (data, match, end, query) {
+app.route(/^\/projects(\/\w+)?\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
+  var projectUri = match[1];
 
-    var uri = match[1];
+  if (!projectUri) {
+    // No particular project was requested, show them all.
+    return routes.projectsPage(user, end);
+  }
 
-    if (!uri) {
-      // No particular project was requested, show them all.
-      return routes.projectsPage(user, end);
-    }
+  var projectId = projectUri.slice(1);
+  var project = db.get('projects')[projectId];
 
-    var projectId = uri.slice(1);
-    var project = db.get('projects')[projectId];
-
-    if (project) {
-      // Show the requested project-specific page.
-      return routes.projectPage(project, user, end);
-    }
+  if (project) {
+    // Show the requested project-specific page.
+    return routes.projectPage(project, user, end);
+  }
 
     return routes.notFoundPage(user, end, query);
 
-  });
 
 });
 
 
 // User logout.
 
-app.route(/^\/logout\/?$/, function (data, match, end, query) {
+app.route(/^\/logout\/?$/, (data, match, end, query) => {
 
-  users.logout(query, function (error) {
+  users.logout(query.req, (error) => {
 
     if (error) {
-      log('logout', error.toString());
+      log('logout', String(error));
     }
 
     return routes.redirect(query, '/');
@@ -126,180 +142,163 @@ app.route(/^\/logout\/?$/, function (data, match, end, query) {
 
 // User login.
 
-app.route(/^\/login\/?$/, function (data, match, end, query) {
+app.route(/^\/login\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (user) {
-      return routes.redirect(query, '/');
-    }
+  if (user) {
+    return routes.redirect(query, '/');
+  }
 
-    return routes.loginPage(end);
-
-  });
+  return routes.loginPage(end);
 
 });
 
 
 // User contributions list.
 
-app.route(/^\/contributions\/?$/, function (data, match, end, query) {
+app.route(/^\/contributions\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (user) {
-      return routes.contributionsPage(user, end);
-    }
+  if (user) {
+    return routes.contributionsPage(user, end);
+  }
 
-    return routes.loginPage(end);
-
-  });
+  return routes.loginPage(end);
 
 });
 
 
 // User settings.
 
-app.route(/^\/settings(\/\w+)?\/?$/, function (data, match, end, query) {
+app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!user) {
-      return routes.loginPage(end);
-    }
+  if (!user) {
+    return routes.loginPage(end);
+  }
 
-    // Select the requested section, or serve the default one.
-    var uri = match[1];
-    var section = uri ? uri.slice(1) : 'account';
+  // Select the requested section, or serve the default one.
+  var sectionUri = match[1];
+  var section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    return routes.settingsPage(section, user, end, query);
-
-  });
+  return routes.settingsPage(section, user, end, query);
 
 });
 
 
 // User account (now part of settings).
 
-app.route(/^\/account\/?$/, function (data, match, end, query) {
+app.route(/^\/account\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
-
-    return routes.redirect(query, '/settings/account/', true);
-
-  });
+  return routes.redirect(query, '/settings/account/', true);
 
 });
 
 
 // Admin sections.
 
-app.route(/^\/admin(\/\w+)?\/?$/, function (data, match, end, query) {
+app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!users.isAdmin(user)) {
-      return routes.notFoundPage(user, end, query);
-    }
+  if (!users.isAdmin(user)) {
+    return routes.notFoundPage(user, end, query);
+  }
 
-    // Select the requested section, or serve the default one.
-    var uri = match[1];
-    var section = uri ? uri.slice(1) : 'hosts';
+  // Select the requested section, or serve the default one.
+  var sectionUri = match[1];
+  var section = sectionUri ? sectionUri.slice(1) : 'hosts';
 
-    log('admin', section, '(' + user.email + ')');
+  log('admin', section, '(' + user.email + ')');
 
-    return routes.adminPage(section, user, end, query);
-
-  });
+  return routes.adminPage(section, user, end, query);
 
 });
 
 
 // Secure VNC connection proxy.
 
-app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, function (data, match, end, query) {
+app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!user) {
-      return routes.notFoundPage(user, end, query);
-    }
-
-    var projectId = match[1];
-    var machineId = parseInt(match[2]);
-    var uri = path.normalize(match[3]);
-
-    log('vnc', projectId, machineId, uri);
-
-    var machine = machines.getMatchingMachine(projectId, machineId, user);
-
-    if (machine) {
-      // Remember this machine for the websocket proxy (see below).
-      user.lastvnc = {
-        project: projectId,
-        machine: machineId
-      };
-      return routes.vncProxy(user, machine, end, query, uri);
-    }
-
+  if (!user) {
     return routes.notFoundPage(user, end, query);
+  }
 
-  });
+  var projectId = match[1];
+  var machineId = parseInt(match[2]);
+  var uri = path.normalize(match[3]);
+
+  log('vnc', projectId, machineId, uri);
+
+  var machine = machines.getMatchingMachine(projectId, machineId, user);
+
+  if (machine) {
+    // Remember this machine for the websocket proxy (see below).
+    user.lastvnc = {
+      project: projectId,
+      machine: machineId
+    };
+    return routes.vncProxy(user, machine, end, query, uri);
+  }
+
+  return routes.notFoundPage(user, end, query);
 
 });
 
 
 // Secure WebSocket proxy for VNC connections.
 
-app.on('upgrade', function (request, socket, head) {
+app.on('upgrade', (request, socket, head) => {
 
   if (request.url !== '/websockify') {
     return socket.end();
   }
 
-  // Mock an empty `data` and a partial `query` just to find the user.
-  users.get({ }, { req: request }, function (error, user) {
+  var user = request.user;
 
-    if (!user || !user.lastvnc) {
-      return socket.end();
-    }
-
-    // Get the last machine that the user VNC'd into (a hack, but it works).
-    // Note: Parsing the URL in `request.headers.referer` would be better, but
-    // that header never seems to be set on WebSocket requests.
-    var projectId = user.lastvnc.project;
-    var machineId = user.lastvnc.machine;
-    var machine = machines.getMatchingMachine(projectId, machineId, user);
-
-    log('vnc-websocket', projectId, machineId);
-
-    if (machine) {
-      return routes.vncSocketProxy(machine, request, socket, head);
-    }
-
+  if (!user || !user.lastvnc) {
     return socket.end();
+  }
 
-  });
+  // Get the last machine that the user VNC'd into (a hack, but it works).
+  // Note: Parsing the URL in `request.headers.referer` would be better, but
+  // that header never seems to be set on WebSocket requests.
+  var projectId = user.lastvnc.project;
+  var machineId = user.lastvnc.machine;
+  var machine = machines.getMatchingMachine(projectId, machineId, user);
+
+  log('vnc-websocket', projectId, machineId);
+
+  if (machine) {
+    return routes.vncSocketProxy(machine, request, socket, head);
+  }
+
+  return socket.end();
 
 });
 
 
 // 404 Not Found.
 
-app.notfound(/.*/, function (data, match, end, query) {
+app.notfound(/.*/, (data, match, end, query) => {
+
+  var user = query.req.user;
 
   log('404', match[0]);
 
-  users.get(data, query, function (error, user) {
-    return routes.notFoundPage(user, end, query);
-  });
+  return routes.notFoundPage(user, end, query);
 
 });
 
 
 // Alpha version sign-up.
 
-app.ajax.on('signup', function (data, end) {
+app.ajax.on('signup', (data, end) => {
 
   var email = data.email;
   var users = db.get('users');
@@ -325,29 +324,27 @@ app.ajax.on('signup', function (data, end) {
 
 // Alpha version invite.
 
-app.ajax.on('invite', function (data, end, query) {
+app.ajax.on('invite', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!users.isAdmin(user)) {
-      return end();
+  if (!users.isAdmin(user)) {
+    return end();
+  }
+
+  var email = data.email;
+
+  if (email in db.get('users')) {
+    return end({ status: 'already-invited' });
+  }
+
+  users.sendInviteEmail(email, (error) => {
+    if (error) {
+      var message = String(error);
+      log(message, '(while inviting ' + email + ')');
+      return end({ status: 'error', message: message });
     }
-
-    var email = data.email;
-
-    if (email in db.get('users')) {
-      return end({ status: 'already-invited' });
-    }
-
-    users.sendInviteEmail(email, query, function (error) {
-      if (error) {
-        var message = error.toString();
-        log(message, '(while inviting ' + email + ')');
-        return end({ status: 'error', message: message });
-      }
-      return end({ status: 'invited' });
-    });
-
+    return end({ status: 'invited' });
   });
 
 });
@@ -355,26 +352,24 @@ app.ajax.on('invite', function (data, end, query) {
 
 // Request a log-in key via email.
 
-app.ajax.on('login', function (data, end, query) {
+app.ajax.on('login', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (user) {
-      end({ status: 'logged-in' });
-      return;
+  if (user) {
+    end({ status: 'logged-in' });
+    return;
+  }
+
+  var email = data.email;
+
+  users.sendLoginEmail(email, query.req, (error) => {
+    if (error) {
+      var message = String(error);
+      log(message, '(while emailing ' + email + ')');
+      return end({ status: 'error', message: message });
     }
-
-    var email = data.email;
-
-    users.sendLoginEmail(email, query, function (error) {
-      if (error) {
-        var message = error.toString();
-        log(message, '(while emailing ' + email + ')');
-        return end({ status: 'error', message: message });
-      }
-      return end({ status: 'email-sent' });
-    });
-
+    return end({ status: 'email-sent' });
   });
 
 });
@@ -382,121 +377,111 @@ app.ajax.on('login', function (data, end, query) {
 
 // Change the configuration of a Docker host.
 
-app.ajax.on('hostdb', function (data, end, query) {
+app.ajax.on('hostdb', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!users.isAdmin(user)) {
-      return end();
-    }
+  if (!users.isAdmin(user)) {
+    return end();
+  }
 
-    if (!data.id) {
-      return end({ status: 'error', message: 'Invalid Host ID' });
-    }
+  if (!data.id) {
+    return end({ status: 'error', message: 'Invalid Host ID' });
+  }
 
-    docker.setHost(data);
+  docker.setHost(data);
 
-    return end({ status: 'success' });
-
-  });
+  return end({ status: 'success' });
 
 });
 
 
 // Change the parameters of a project.
 
-app.ajax.on('projectdb', function (data, end, query) {
+app.ajax.on('projectdb', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!users.isAdmin(user)) {
-      return end();
-    }
+  if (!users.isAdmin(user)) {
+    return end();
+  }
 
-    if (!data.id) {
-      return end({ status: 'error', message: 'Invalid Project ID' });
-    }
+  if (!data.id) {
+    return end({ status: 'error', message: 'Invalid Project ID' });
+  }
 
-    machines.setProject(data);
+  machines.setProject(data);
 
-    return end({ status: 'success' });
-
-  });
+  return end({ status: 'success' });
 
 });
 
 
 // Rebuild the base image of a project.
 
-app.ajax.on('rebuild', function (data, end, query) {
+app.ajax.on('rebuild', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!users.isAdmin(user)) {
-      return end();
+  if (!users.isAdmin(user)) {
+    return end();
+  }
+
+  machines.rebuild(data.project, (error) => {
+    if (error) {
+      return end({ status: 'error', message: String(error) });
     }
-
-    machines.rebuild(data.project, function (error) {
-      if (error) {
-        return end({ status: 'error', message: error.toString() });
-      }
-      return end({ status: 'success' });
-    });
-
-    // For longer requests, make sure we reply before the browser retries.
-    setTimeout(function () {
-      return end({ status: 'started' });
-    }, 42000);
-
+    return end({ status: 'success' });
   });
+
+  // For longer requests, make sure we reply before the browser retries.
+  setTimeout(() => {
+    return end({ status: 'started' });
+  }, 42000);
 
 });
 
 
 // Update the base image of a project.
 
-app.ajax.on('update', function (data, end, query) {
+app.ajax.on('update', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!users.isAdmin(user)) {
-      return end();
+  if (!users.isAdmin(user)) {
+    return end();
+  }
+
+  machines.update(data.project, (error) => {
+    if (error) {
+      return end({ status: 'error', message: String(error) });
     }
-
-    machines.update(data.project, function (error) {
-      if (error) {
-        return end({ status: 'error', message: error.toString() });
-      }
-      return end({ status: 'success' });
-    });
-
-    // For longer requests, make sure we reply before the browser retries.
-    setTimeout(function () {
-      return end({ status: 'started' });
-    }, 42000);
-
+    return end({ status: 'success' });
   });
+
+  // For longer requests, make sure we reply before the browser retries.
+  setTimeout(() => {
+    return end({ status: 'started' });
+  }, 42000);
 
 });
 
 
 // Spawn a new machine for a project. (Fast!)
 
-app.ajax.on('spawn', function (data, end, query) {
+app.ajax.on('spawn', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!user) {
-      return end({ status: 'error', message: 'Not signed in' });
+  if (!user) {
+    return end({ status: 'error', message: 'Not signed in' });
+  }
+
+  machines.spawn(data.project, user, (error) => {
+    if (error) {
+      return end({ status: 'error', message: String(error) });
     }
-
-    machines.spawn(data.project, user, function (error) {
-      if (error) {
-        return end({ status: 'error', message: error.toString() });
-      }
-      return end({ status: 'success' });
-    });
-
+    return end({ status: 'success' });
   });
 
 });
@@ -504,21 +489,19 @@ app.ajax.on('spawn', function (data, end, query) {
 
 // Destroy a machine.
 
-app.ajax.on('destroy', function (data, end, query) {
+app.ajax.on('destroy', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!user) {
-      return end({ status: 'error', message: 'Not signed in' });
+  if (!user) {
+    return end({ status: 'error', message: 'Not signed in' });
+  }
+
+  machines.destroy(data.machine, data.project, user, (error) => {
+    if (error) {
+      return end({ status: 'error', message: String(error) });
     }
-
-    machines.destroy(data.machine, data.project, user, function (error) {
-      if (error) {
-        return end({ status: 'error', message: String(error) });
-      }
-      return end({ status: 'success' });
-    });
-
+    return end({ status: 'success' });
   });
 
 });
@@ -526,56 +509,54 @@ app.ajax.on('destroy', function (data, end, query) {
 
 // Save a new user key, or update an existing one.
 
-app.ajax.on('key', function (data, end, query) {
+app.ajax.on('key', (data, end, query) => {
 
-  users.get(data, query, function (error, user) {
+  var user = query.req.user;
 
-    if (!user || !data.name || !data.key) {
-      return end();
-    }
+  if (!user || !data.name || !data.key) {
+    return end();
+  }
 
-    var key = '';
+  var key = '';
 
-    switch (data.name) {
+  switch (data.name) {
 
-      case 'cloud9':
-        // Extract a valid SSH public key from the user's input.
-        // Regex adapted from https://gist.github.com/paranoiq/1932126.
-        var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
-        if (!match) {
-          return end({ status: 'error', message: 'Invalid SSH key' });
-        }
-        key = match[0];
-        log('key', data.name, user.email);
-        break;
+    case 'cloud9':
+      // Extract a valid SSH public key from the user's input.
+      // Regex adapted from https://gist.github.com/paranoiq/1932126.
+      var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
+      if (!match) {
+        return end({ status: 'error', message: 'Invalid SSH key' });
+      }
+      key = match[0];
+      log('key', data.name, user.email);
+      break;
 
-      case 'cloud9user':
-        // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
-        var match = data.key.trim().match(/^[a-z0-9_]+$/);
-        if (!match) {
-          return end({ status: 'error', message: 'Invalid Cloud9 username' });
-        }
-        key = match[0];
-        log('key', data.name, user.email, key);
-        break;
+    case 'cloud9user':
+      // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
+      var match = data.key.trim().match(/^[a-z0-9_]+$/);
+      if (!match) {
+        return end({ status: 'error', message: 'Invalid Cloud9 username' });
+      }
+      key = match[0];
+      log('key', data.name, user.email, key);
+      break;
 
-      default:
-        return end({ status: 'error', message: 'Unknown key name' });
+    default:
+      return end({ status: 'error', message: 'Unknown key name' });
 
-    }
+  }
 
-    user.keys[data.name] = key;
-    db.save();
+  user.keys[data.name] = key;
+  db.save();
 
-    return end({ status: 'key-saved' });
-
-  });
+  return end({ status: 'key-saved' });
 
 });
 
 
 // Teach the template system how to generate IDs (matching /[a-z0-9_-]*/).
 
-camp.templateReader.parsers.id = function (text) {
+camp.templateReader.parsers.id = (text) => {
   return text.replace(/[^\w-]/g, '').toLowerCase();
 };
