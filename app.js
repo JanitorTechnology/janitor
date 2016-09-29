@@ -198,6 +198,15 @@ app.route(/^\/account\/?$/, (data, match, end, query) => {
 });
 
 
+// These are not the droids you're looking for.
+
+app.route(/^\/favicon\.ico$/, (data, match, end, query) => {
+
+  return routes.redirect(query, '/img/janitor.svg', true);
+
+});
+
+
 // Admin sections.
 
 app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
