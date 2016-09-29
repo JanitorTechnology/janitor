@@ -48,7 +48,7 @@ log('Janitor → https://' + db.get('hostname', 'localhost') +
 
 app.handle((request, response, next) => {
 
-  users.get(request, response, (error, user) => {
+  users.get(request, (error, user) => {
 
     if (error) {
       log('authentication error', String(error));
@@ -259,26 +259,29 @@ app.on('upgrade', (request, socket, head) => {
     return socket.end();
   }
 
-  var user = request.user;
+  // Authenticate the user (our middleware only works for 'request' events).
+  users.get(request, (error, user) => {
 
-  if (!user || !user.lastvnc) {
+    if (!user || !user.lastvnc) {
+      return socket.end();
+    }
+
+    // Get the last machine that the user VNC'd into (a hack, but it works).
+    // Note: Parsing the URL in `request.headers.referer` would be better, but
+    // that header never seems to be set on WebSocket requests.
+    var projectId = user.lastvnc.project;
+    var machineId = user.lastvnc.machine;
+    var machine = machines.getMatchingMachine(projectId, machineId, user);
+
+    log('vnc-websocket', projectId, machineId);
+
+    if (machine) {
+      return routes.vncSocketProxy(machine, request, socket, head);
+    }
+
     return socket.end();
-  }
 
-  // Get the last machine that the user VNC'd into (a hack, but it works).
-  // Note: Parsing the URL in `request.headers.referer` would be better, but
-  // that header never seems to be set on WebSocket requests.
-  var projectId = user.lastvnc.project;
-  var machineId = user.lastvnc.machine;
-  var machine = machines.getMatchingMachine(projectId, machineId, user);
-
-  log('vnc-websocket', projectId, machineId);
-
-  if (machine) {
-    return routes.vncSocketProxy(machine, request, socket, head);
-  }
-
-  return socket.end();
+  });
 
 });
 
