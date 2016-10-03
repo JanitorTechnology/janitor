@@ -1,19 +1,20 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-var camp = require('camp');
-var http = require('http');
-var path = require('path');
+let camp = require('camp');
+let http = require('http');
+let path = require('path');
 
-var db = require('./lib/db');
-var docker = require('./lib/docker');
-var log = require('./lib/log');
-var machines = require('./lib/machines');
-var routes = require('./lib/routes');
-var users = require('./lib/users');
+let certificates = require('./lib/certificates');
+let db = require('./lib/db');
+let docker = require('./lib/docker');
+let log = require('./lib/log');
+let machines = require('./lib/machines');
+let routes = require('./lib/routes');
+let users = require('./lib/users');
 
 // Use `make ports` to set up these unprivileged ports.
-var ports = {
+let ports = {
   http: 1080,
   https: 1443
 };
@@ -21,9 +22,20 @@ var ports = {
 
 // Permanently redirect all HTTP requests to HTTPS.
 
-var forwarder = http.Server(function (req, res) {
-  res.writeHead(301, { 'Location': 'https://' + req.headers.host + req.url });
-  res.end();
+let forwarder = http.Server((request, response) => {
+
+  // Make an exception for Let's Encrypt HTTP challenges.
+  if (request.url.startsWith(certificates.letsEncryptChallengePrefix)) {
+    let token = certificates.getLetsEncryptChallengeToken(request.url);
+    if (token) {
+      response.end(token);
+      return;
+    }
+  }
+
+  let url = 'https://' + request.headers.host + request.url;
+  return routes.redirect(response, url, true);
+
 });
 
 forwarder.listen(ports.http);
@@ -31,7 +43,7 @@ forwarder.listen(ports.http);
 
 // The main Janitor server.
 
-var app = camp.start({
+let app = camp.start({
   documentRoot: process.cwd() + '/static',
   port: ports.https,
   secure: true,
@@ -40,7 +52,7 @@ var app = camp.start({
   ca: []
 });
 
-var hostname = db.get('hostname', 'localhost');
+let hostname = db.get('hostname', 'localhost');
 log('Janitor → https://' + hostname + ':' + ports.https);
 
 
