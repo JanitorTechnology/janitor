@@ -51,6 +51,7 @@ app.handle((request, response, next) => {
   // Only accept requests addressed to our hostname, no IP address or CDN here.
   if (request.headers.host !== hostname) {
     log('dropping request for', request.headers.host);
+    response.statusCode = 400;
     response.end();
     return;
   }
