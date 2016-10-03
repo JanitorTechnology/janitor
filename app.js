@@ -40,8 +40,33 @@ var app = camp.start({
   ca: []
 });
 
-log('Janitor → https://' + db.get('hostname', 'localhost') +
-  (ports.https === 443 ? '' : ':' + ports.https));
+var hostname = db.get('hostname', 'localhost');
+log('Janitor → https://' + hostname + ':' + ports.https);
+
+
+// Protect the server and its users with a security policies middleware.
+
+app.handle((request, response, next) => {
+
+  // Only accept requests addressed to our hostname, no IP address or CDN here.
+  if (request.headers.host !== hostname) {
+    log('dropping request for', request.headers.host);
+    response.end();
+    return;
+  }
+
+  // Tell browsers to only use secure HTTPS connections for this web app.
+  response.setHeader('Strict-Transport-Security', 'max-age=31536000');
+
+  // Prevent browsers from accidentally detecting scripts where they shouldn't.
+  response.setHeader('X-Content-Type-Options', 'nosniff');
+
+  // Tell browsers this web app should never be embedded into an iframe.
+  response.setHeader('X-Frame-Options', 'DENY');
+
+  next();
+
+});
 
 
 // Authenticate all user requests with a server middleware.
