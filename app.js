@@ -159,7 +159,7 @@ app.route(/^\/logout\/?$/, (data, match, end, query) => {
       log('logout', String(error));
     }
 
-    return routes.redirect(query, '/');
+    return routes.redirect(query.res, '/');
 
   });
 
@@ -173,7 +173,7 @@ app.route(/^\/login\/?$/, (data, match, end, query) => {
   var user = query.req.user;
 
   if (user) {
-    return routes.redirect(query, '/');
+    return routes.redirect(query.res, '/');
   }
 
   return routes.loginPage(end);
@@ -219,7 +219,7 @@ app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
 
 app.route(/^\/account\/?$/, (data, match, end, query) => {
 
-  return routes.redirect(query, '/settings/account/', true);
+  return routes.redirect(query.res, '/settings/account/', true);
 
 });
 
@@ -228,7 +228,7 @@ app.route(/^\/account\/?$/, (data, match, end, query) => {
 
 app.route(/^\/favicon\.ico$/, (data, match, end, query) => {
 
-  return routes.redirect(query, '/img/janitor.svg', true);
+  return routes.redirect(query.res, '/img/janitor.svg', true);
 
 });
 
