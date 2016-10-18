@@ -6,25 +6,10 @@
 ### READ THIS ###
 
 # Install necessary files, npm modules, and certificates.
-install: db npm https client docker welcome
+install: npm https client docker welcome
 
 # Delete everything that was created by `make install`.
-uninstall: undb unnpm unhttps unclient undocker unwelcome
-
-
-### JSON DATABASE ###
-
-# Set up a simple JSON database.
-db: db.json
-
-# Create a clean JSON file.
-db.json:
-	printf "{}\n" > db.json
-	chmod 600 db.json # read/write by owner
-
-# WARNING: This deletes your data!
-undb:
-	rm -f db.json
+uninstall: unnpm unhttps unclient undocker unwelcome
 
 
 ### NPM DEPENDENCIES ###
