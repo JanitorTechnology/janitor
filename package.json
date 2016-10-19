@@ -9,7 +9,6 @@
   "license": "AGPL-3.0",
   "author": {
     "name": "Jan Keromnes",
-    "email": "janx@linux.com",
     "url": "http://jan.tools"
   },
   "repository": {
@@ -23,6 +22,7 @@
     "fast-json-patch": "~1.1.0",
     "le-acme-core": "~2.0.7",
     "node-forge": "~0.6.42",
+    "oauth": "~0.9.14",
     "oauth2provider": "~0.0.0",
     "tar-stream": "~1.5.2"
   },
