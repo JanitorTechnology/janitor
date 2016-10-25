@@ -12,23 +12,7 @@ install: npm https client docker welcome
 uninstall: unnpm unhttps unclient undocker unwelcome
 
 
-### NPM DEPENDENCIES ###
-
-# Install NPM dependencies.
-npm:
-	npm install
-
-# Delete NPM dependencies.
-unnpm:
-	rm -rf node_modules/
-
-
-### INIT.D DAEMON ###
-
-daemon:
-	cat init.d/janitor | sed "s_/path/to/janitor_$$(pwd)_g" | sudo tee /etc/init.d/janitor >/dev/null
-	sudo chmod 755 /etc/init.d/janitor # read/write/exec by owner, read/exec by all
-	printf "\nYou can now start the Janitor daemon with:\n\n  service janitor start\n\n"
+### JANITOR DAEMON ###
 
 start: stop
 	touch janitor.log janitor.pid
@@ -40,8 +24,16 @@ stop:
 	if [ -e janitor.pid -a -n "$$(ps h $$(cat janitor.pid))" ] ; then kill $$(cat janitor.pid) && printf "\n[$$(date -uIs)] Janitor daemon stopped (PID $$(cat janitor.pid)).\n\n" ; fi
 	rm -f janitor.pid
 
-undaemon:
-	sudo rm -f /etc/init.d/janitor
+
+### NPM DEPENDENCIES ###
+
+# Install NPM dependencies.
+npm:
+	npm install
+
+# Delete NPM dependencies.
+unnpm:
+	rm -rf node_modules/
 
 
 ### NON-SUDO WEB PORTS ###
@@ -191,4 +183,4 @@ help:
 	cat Makefile | less
 
 
-.PHONY: install uninstall db undb npm unnpm daemon undaemon start stop ports unports https unhttps client unclient docker undocker welcome unwelcome help
+.PHONY: install uninstall start stop npm unnpm ports unports https unhttps client unclient docker undocker welcome unwelcome help
