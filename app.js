@@ -4,7 +4,9 @@
 let camp = require('@jankeromnes/camp');
 let http = require('http');
 let path = require('path');
+let selfapi = require('selfapi');
 
+let api = require('./api');
 let certificates = require('./lib/certificates');
 let db = require('./lib/db');
 let docker = require('./lib/docker');
@@ -52,13 +54,16 @@ let app = camp.start({
   ca: []
 });
 
+// Convenient express-like alias.
+app.use = app.handle;
+
 let hostname = db.get('hostname', 'localhost');
 log('Janitor → https://' + hostname + ':' + ports.https);
 
 
 // Protect the server and its users with a security policies middleware.
 
-app.handle((request, response, next) => {
+app.use((request, response, next) => {
 
   // Only accept requests addressed to our hostname, no IP address or CDN here.
   if (request.headers.host !== hostname) {
@@ -84,7 +89,7 @@ app.handle((request, response, next) => {
 
 // Authenticate all user requests with a server middleware.
 
-app.handle((request, response, next) => {
+app.use((request, response, next) => {
 
   users.get(request, (error, user) => {
 
@@ -98,6 +103,11 @@ app.handle((request, response, next) => {
   });
 
 });
+
+
+// Mount the Janitor API.
+
+selfapi(app, '/api', api);
 
 
 // Public landing page.
