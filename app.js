@@ -6,10 +6,9 @@ let http = require('http');
 let path = require('path');
 let selfapi = require('selfapi');
 
-let api = require('./api');
+let api = require('./api/');
 let certificates = require('./lib/certificates');
 let db = require('./lib/db');
-let docker = require('./lib/docker');
 let log = require('./lib/log');
 let machines = require('./lib/machines');
 let routes = require('./lib/routes');
@@ -287,7 +286,7 @@ app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
   }
 
   var projectId = match[1];
-  var machineId = parseInt(match[2]);
+  var machineId = parseInt(match[2], 10);
   var uri = path.normalize(match[3]);
 
   log('vnc', projectId, machineId, uri);
@@ -431,27 +430,6 @@ app.ajax.on('login', (data, end, query) => {
     }
     return end({ status: 'email-sent' });
   });
-
-});
-
-
-// Change the configuration of a Docker host.
-
-app.ajax.on('hostdb', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!users.isAdmin(user)) {
-    return end();
-  }
-
-  if (!data.id) {
-    return end({ status: 'error', message: 'Invalid Host ID' });
-  }
-
-  docker.setHost(data);
-
-  return end({ status: 'success' });
 
 });
 

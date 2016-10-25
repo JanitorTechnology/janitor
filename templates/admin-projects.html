@@ -18,9 +18,9 @@
                 <input type="hidden" name="id" value={{= id in json}}>
                 <label class="control-label">Host</label>
                 <select class="form-control" data-submit-on="blur" name="/docker/host">{{
-                  for (let host in hosts) {
+                  for (let hostname in hosts) {
                 }}
-                  <option value={{= host in json}} {{if {{host === project.docker.host}} then selected}}>{{= hosts[host].properties.hostname in html}}</option>{{
+                  <option value={{= hostname in json}} {{if {{hostname === project.docker.host}} then selected}}>{{= hostname in html}}</option>{{
                   }
                 }}
                 </select>

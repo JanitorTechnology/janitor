@@ -1,54 +1,48 @@
     <section>
       <div class="container">{{
-          for (let id in hosts) {
-            let host = hosts[id];
+          for (let hostname in hosts) {
+            let host = hosts[hostname];
         }}
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <span class="project-icon glyphicon glyphicon-globe" aria-hidden="true"></span>
-            <h4 class="project-title">{{= id in html}}</h4>
+            <h4 class="project-title">{{= hostname in html}}</h4>
             <div class="project-actions"></div>
           </div>
           <div class="panel-body">
             <div class="row">
-              <form id="{{= id in xmlattr}}-host" data-action="hostdb" class="col-sm-6 ajax-form has-feedback">
-                <input type="hidden" name="id" value={{= id in json}}>
-                <label class="control-label">Host</label>
-                <input class="form-control" data-submit-on="blur" name="/hostname" value={{= host.properties.hostname in json}}>
-              </form>
-              <form id="{{= id in xmlattr}}-port" data-action="hostdb" class="col-sm-6 ajax-form has-feedback">
-                <input type="hidden" name="id" value={{= id in json}}>
-                <label class="control-label">Docker port</label>
-                <input class="form-control" data-submit-on="blur" name="/port" type="number" value={{= host.properties.port in json}}>
-              </form>
+              <div class="col-sm-6">
+                <label class="control-label">Docker Remote API port</label>
+                <input class="form-control" disabled="true" type="number" value={{= host.properties.port in json}}>
+              </div>
             </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <label class="control-label">Docker TLS ca</label>
+                <textarea class="form-control" disabled="true" placeholder="-----BEGIN CERTIFICATE-----" rows="6">{{= host.properties.ca in html}}</textarea>
+              </div>
+              <div class="col-sm-4">
+                <label class="control-label">Docker TLS certificate</label>
+                <textarea class="form-control" disabled="true" placeholder="-----BEGIN CERTIFICATE-----" rows="6">{{= host.properties.crt in html}}</textarea>
+              </div>
+              <div class="col-sm-4">
+                <label class="control-label">Docker TLS key</label>
+                <textarea class="form-control" disabled="true" placeholder="-----BEGIN RSA PRIVATE KEY-----" rows="6">{{= host.properties.key in html}}</textarea>
+              </div>
+            </div>{{if {{'oauth2client' in host}} then {{
+            <div class="row">
+              <div class="col-sm-6">
+                <label class="control-label">OAuth2 ID</label>
+                <input class="form-control" disabled="true" type="text" value={{= host.oauth2client.id in json}}>
+              </div>
+              <div class="col-sm-6">
+                <label class="control-label">OAuth2 secret</label>
+                <input class="form-control" disabled="true" type="text" value={{= host.oauth2client.secret in json}}>
+              </div>
+            </div>}}}}
           </div>
         </div>{{
           }
         }}
-        <form id="newhost-form" class="ajax-form has-feedback panel panel-default panel-project">
-          <div class="panel-heading">
-            <h4 class="project-title">New Host</h4>
-            <div class="project-actions">
-              <input type="submit" class="btn btn-primary" value="Add">
-            </div>
-          </div>
-          <div class="panel-body">
-            <div class="row">
-              <div class="col-sm-4">
-                <label class="control-label">ID</label>
-                <input class="form-control" name="id" placeholder="Host ID">
-              </div>
-              <div class="col-sm-4">
-                <label class="control-label">Host</label>
-                <input class="form-control" name="/hostname" placeholder="Host name">
-              </div>
-              <div class="col-sm-4">
-                <label class="control-label">Docker port</label>
-                <input class="form-control" name="/port" placeholder="Docker Remote API port" type="number">
-              </div>
-            </div>
-          </div>
-        </form>
       </div>
     </section>
