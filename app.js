@@ -1,7 +1,7 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-let camp = require('camp');
+let camp = require('@jankeromnes/camp');
 let http = require('http');
 let path = require('path');
 
