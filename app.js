@@ -2,44 +2,24 @@
 // The following code is covered by the AGPL-3.0 license.
 
 let camp = require('@jankeromnes/camp');
-let http = require('http');
 let path = require('path');
 let selfapi = require('selfapi');
 
 let api = require('./api/');
-let certificates = require('./lib/certificates');
+let boot = require('./lib/boot');
 let db = require('./lib/db');
 let log = require('./lib/log');
 let machines = require('./lib/machines');
 let routes = require('./lib/routes');
 let users = require('./lib/users');
 
-// Use `make ports` to set up these unprivileged ports.
-let ports = {
-  http: 1080,
-  https: 1443
-};
+// You can customize these values in './db.json'.
+let hostname = db.get('hostname', 'localhost');
+let ports = db.get('ports');
 
-
-// Permanently redirect all HTTP requests to HTTPS.
-
-let forwarder = http.Server((request, response) => {
-
-  // Make an exception for Let's Encrypt HTTP challenges.
-  if (request.url.startsWith(certificates.letsEncryptChallengePrefix)) {
-    let token = certificates.getLetsEncryptChallengeToken(request.url);
-    if (token) {
-      response.end(token);
-      return;
-    }
-  }
-
-  let url = 'https://' + request.headers.host + request.url;
-  return routes.redirect(response, url, true);
-
+boot.executeInParallel([ boot.forwardHttp ], () => {
+  // TODO: Also ensure HTTPS certificates, then start the Janitor app from here.
 });
-
-forwarder.listen(ports.http);
 
 
 // The main Janitor server.
@@ -53,11 +33,10 @@ let app = camp.start({
   ca: []
 });
 
+log('Janitor → https://' + hostname + ':' + ports.https);
+
 // Convenient express-like alias.
 app.use = app.handle;
-
-let hostname = db.get('hostname', 'localhost');
-log('Janitor → https://' + hostname + ':' + ports.https);
 
 
 // Protect the server and its users with a security policies middleware.
