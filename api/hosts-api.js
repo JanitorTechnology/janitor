@@ -123,6 +123,119 @@ hostAPI.get({
 });
 
 
+hostAPI.post({
+
+  title: 'Create a host',
+
+  description: 'Create a new host and add it to the cluster.',
+
+  handler: (request, response) => {
+    let user = request.user;
+    let scope = request.scope;
+    let hostname = request.query.hostname;
+
+    if (!hostname) {
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Invalid hostname' });
+      return;
+    }
+
+    // Host OAuth2 authentication.
+    if (scope.hostname && scope.hostname === hostname) {
+      updateHost();
+      return;
+    }
+
+    // User authentication.
+    if (user && users.isAdmin(user)) {
+      if (hosts.get(hostname)) {
+        updateHost();
+        return;
+      }
+      createHost();
+      return;
+    }
+
+    // No authentication.
+    response.statusCode = 403; // Forbidden
+    response.json({ error: 'Unauthorized' });
+    return;
+
+    function createHost () {
+      getHostProperties(properties => {
+        hosts.create(hostname, properties, (error, host) => {
+          if (error) {
+            response.statusCode = 500; // Internal Server Error
+            response.json({ error: 'Could not create host' });
+            return;
+          }
+          response.statusCode = 201; // Created
+          response.json(host.properties);
+        });
+      });
+    }
+
+    function updateHost () {
+      getHostProperties(properties => {
+        hosts.update(hostname, properties, (error, host) => {
+          if (error) {
+            response.statusCode = 500; // Internal Server Error
+            response.json({ error: 'Could not update host' });
+            return;
+          }
+          response.json(host.properties);
+        });
+      });
+    }
+
+    function getHostProperties (callback) {
+      if (request.headers['content-type'] !== 'application/json') {
+        // If this POST request doesn't contain JSON, assume the data comes in
+        // another form (e.g. via query parameters, or as <form> data).
+        callback(request.query);
+        return;
+      }
+      let json = '';
+      request.on('data', chunk => {
+        json += String(chunk);
+      });
+      request.on('end', () => {
+        let parameters = null;
+        try {
+          parameters = JSON.parse(String(json));
+        } catch (error) {
+          response.statusCode = 400; // Bad Request
+          response.json({ error: 'Problems parsing JSON' });
+          return;
+        }
+        callback(parameters);
+      });
+    }
+  },
+
+  examples: [{
+    request: {
+      urlParameters: { hostname: 'host.name' },
+      queryParameters: { client_id: '1234', client_secret: '123456' },
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ port: '2376' }, null, 2)
+    }
+  }, {
+    request: {
+      urlParameters: { hostname: 'unauthorized.host.name' },
+      queryParameters: { client_id: '1234', client_secret: '123456' },
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ port: '2345' }, null, 2)
+    },
+    response: {
+      status: 403,
+      body: JSON.stringify({ error: 'Unauthorized' }, null, 2)
+    }
+  }]
+
+});
+
+
 hostAPI.get('/credentials', {
 
   title: 'Show host credentials',
