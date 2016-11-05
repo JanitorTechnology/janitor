@@ -4,7 +4,9 @@
 let selfapi = require('selfapi');
 
 let db = require('../lib/db');
+let docker = require('../lib/docker');
 let hosts = require('../lib/hosts');
+let log = require('../lib/log');
 let users = require('../lib/users');
 
 
@@ -185,6 +187,53 @@ hostAPI.delete('/credentials', {
   examples: [{
     request: {
       urlParameters: { hostname: 'host.name' }
+    }
+  }]
+
+});
+
+
+hostAPI.get('/version', {
+
+  title: 'Show host version',
+
+  handler: (request, response) => {
+    let user = request.user;
+    if (!users.isAdmin(user)) {
+      response.statusCode = 404;
+      response.json({ error: 'Host not found' });
+      return;
+    }
+
+    let hostname = request.query.hostname;
+    if (!hosts.get(hostname)) {
+      response.statusCode = 404;
+      response.json({ error: 'Host not found' });
+      return;
+    }
+
+    docker.version({ host: hostname }, (error, version) => {
+      if (error) {
+        log('host version', error);
+        response.statusCode = 404;
+        response.json({ error: 'Host unreachable' });
+        return;
+      }
+      response.json({ docker: version });
+    });
+  },
+
+  examples: [{
+    request: {
+      urlParameters: { hostname: 'host.name' }
+    }
+  }, {
+    request: {
+      urlParameters: { hostname: 'unexistant.host.name' }
+    },
+    response: {
+      status: 404,
+      body: JSON.stringify({ error: 'Host not found' }, null, 2)
     }
   }]
 
