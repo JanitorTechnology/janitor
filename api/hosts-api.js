@@ -113,3 +113,79 @@ hostAPI.get({
   }]
 
 });
+
+
+hostAPI.get('/credentials', {
+
+  title: 'Show host credentials',
+
+  description: 'Show a host\'s OAuth2 client credentials.',
+
+  handler: (request, response) => {
+    let user = request.user;
+    if (!users.isAdmin(user)) {
+      response.statusCode = 404;
+      response.json({ error: 'Host not found' });
+      return;
+    }
+
+    let host = hosts.get(request.query.hostname);
+    if (!host) {
+      response.statusCode = 404;
+      response.json({ error: 'Host not found' });
+      return;
+    }
+
+    response.json(host.oauth2client);
+  },
+
+  examples: [{
+    request: {
+      urlParameters: { hostname: 'host.name' }
+    },
+    response: {
+      body: JSON.stringify({ id: '1234', secret: '123456' }, null, 2)
+    }
+  }]
+
+});
+
+
+hostAPI.delete('/credentials', {
+
+  title: 'Reset host credentials',
+
+  description: 'Reset a host\'s OAuth2 client secret.',
+
+  handler: (request, response) => {
+    let user = request.user;
+    if (!users.isAdmin(user)) {
+      response.statusCode = 404;
+      response.json({ error: 'Host not found' });
+      return;
+    }
+
+    let host = hosts.get(request.query.hostname);
+    if (!host) {
+      response.statusCode = 404;
+      response.json({ error: 'Host not found' });
+      return;
+    }
+
+    hosts.resetOAuth2ClientSecret(host, (error) => {
+      if (error) {
+        response.statusCode = 500; // Internal Server Error
+        response.json({ error: 'Could not reset host credentials' });
+        return;
+      }
+      response.json(host.oauth2client);
+    });
+  },
+
+  examples: [{
+    request: {
+      urlParameters: { hostname: 'host.name' }
+    }
+  }]
+
+});
