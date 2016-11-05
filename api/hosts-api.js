@@ -81,20 +81,26 @@ hostAPI.get({
 
   handler: (request, response) => {
     let user = request.user;
-    if (!users.isAdmin(user)) {
-      response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+    let scope = request.scope;
+    let hostname = request.query.hostname;
+
+    if (!hostname) {
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Invalid hostname' });
       return;
     }
 
-    let host = hosts.get(request.query.hostname);
-    if (!host) {
-      response.statusCode = 404;
-      response.json({ error: 'Host not found' });
-      return;
+    // User or host OAuth2 authentication.
+    if (users.isAdmin(user) || scope.hostname === hostname) {
+      let host = hosts.get(hostname);
+      if (host) {
+        response.json(host.properties);
+        return;
+      }
     }
 
-    response.json(host.properties);
+    response.statusCode = 404;
+    response.json({ error: 'Host not found' });
   },
 
   examples: [{
