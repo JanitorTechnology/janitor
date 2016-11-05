@@ -24,7 +24,7 @@
     "node-forge": "~0.6.45",
     "oauth": "~0.9.14",
     "oauth2provider": "~0.0.0",
-    "selfapi": "~0.0.5",
+    "selfapi": "~0.0.12",
     "tar-stream": "~1.5.2"
   },
   "engines" : {
