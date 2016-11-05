@@ -44,10 +44,10 @@ hostsAPI.get({
   description: 'List all cluster hosts owned by the authenticated user.',
 
   handler: (request, response) => {
-
     let user = request.user;
     if (!users.isAdmin(user)) {
-      response.json([]);
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' });
       return;
     }
 
@@ -57,10 +57,13 @@ hostsAPI.get({
     }
 
     response.json(list);
-
   },
 
-  examples: []
+  examples: [{
+    response: {
+      body: JSON.stringify([ 'host.name' ], null, 2)
+    }
+  }]
 
 });
 
@@ -75,7 +78,6 @@ hostAPI.get({
   title: 'Get a single host',
 
   handler: (request, response) => {
-
     let user = request.user;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
@@ -91,9 +93,23 @@ hostAPI.get({
     }
 
     response.json(host.properties);
-
   },
 
-  examples: []
+  examples: [{
+    request: {
+      urlParameters: { hostname: 'host.name' }
+    },
+    response: {
+      body: JSON.stringify({ port: '2376' }, null, 2)
+    }
+  }, {
+    request: {
+      urlParameters: { hostname: 'unexistant.host.name' }
+    },
+    response: {
+      status: 404,
+      body: JSON.stringify({ error: 'Host not found' }, null, 2)
+    }
+  }]
 
 });
