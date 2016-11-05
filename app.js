@@ -8,6 +8,7 @@ let selfapi = require('selfapi');
 let api = require('./api/');
 let boot = require('./lib/boot');
 let db = require('./lib/db');
+let hosts = require('./lib/hosts');
 let log = require('./lib/log');
 let machines = require('./lib/machines');
 let routes = require('./lib/routes');
@@ -79,6 +80,28 @@ app.use((request, response, next) => {
     next();
 
   });
+
+});
+
+
+// Authenticate OAuth2 requests by enabling authorized access scopes.
+
+app.use((request, response, next) => {
+
+  // Example scopes:
+  // - `'hostname': 'host.name'` allows managing the cluster host 'host.name'.
+  request.scope = {};
+
+  let clientId = request.query.client_id || null;
+  let clientSecret = request.query.client_secret || null;
+  if (clientId && clientSecret) {
+    let hostname = hosts.authenticate(clientId, clientSecret);
+    if (hostname) {
+      request.scope.hostname = hostname;
+    }
+  }
+
+  next();
 
 });
 
