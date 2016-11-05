@@ -11,7 +11,27 @@ let users = require('../lib/users');
 // API resource to manage Janitor cluster hosts.
 
 let hostsAPI = selfapi({
-  title: 'Hosts'
+
+  title: 'Hosts',
+
+  beforeTests: (callback) => {
+    hosts.create('host.name', { port: '2376' }, (error, host) => {
+      if (error) {
+        callback(error);
+        return;
+      }
+      host.oauth2client.id = '1234';
+      host.oauth2client.secret = '123456';
+      callback();
+    });
+  },
+
+  afterTests: (callback) => {
+    hosts.destroy('host.name', (error) => {
+      callback(error);
+    });
+  }
+
 });
 
 module.exports = hostsAPI;
