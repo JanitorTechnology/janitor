@@ -15,6 +15,15 @@
     "type": "git",
     "url": "https://github.com/jankeromnes/janitor"
   },
+  "scripts": {
+    "app": "SCRIPT=app npm start",
+    "join": "SCRIPT=join npm start",
+    "rebase": "git pull -q --rebase origin master && git submodule -q update --rebase && npm update",
+    "prestart": "npm stop && npm run rebase && touch janitor.log janitor.pid && chmod 600 janitor.log janitor.pid",
+    "start": "if [ -z \"$SCRIPT\" ] ; then printf \"Run which Janitor script? [join/app]:\" && read SCRIPT ; fi ; node \"$SCRIPT\" >> janitor.log 2>&1 & printf \"$!\\n\" > janitor.pid",
+    "poststart": "printf \"[$(date -uIs)] Background process started (PID $(cat janitor.pid), LOGS $(pwd)/janitor.log).\\n\"",
+    "stop": "if [ -e janitor.pid -a -n \"$(ps h $(cat janitor.pid))\" ] ; then kill $(cat janitor.pid) && printf \"[$(date -uIs)] Background process stopped (PID $(cat janitor.pid)).\\n\" ; fi ; rm -f janitor.pid"
+  },
   "dependencies": {
     "@jankeromnes/camp": "~16.2.8",
     "dockerode": "~2.3.1",
