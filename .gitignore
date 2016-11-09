@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+npm-debug.log
+node_modules
+
+db.json
+docker.ca
+docker.crt
+docker.key
+janitor.log
+janitor.pid
+backups
+tokens
