@@ -314,8 +314,16 @@ h4 {
 /* Blog */
 
 .blog {
+  color: #444;
   font-size: 18px;
   line-height: 1.6;
+  margin-top: 30px;
+}
+
+.blog > .container {
+  max-width: 700px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 .blog-post {
