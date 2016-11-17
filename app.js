@@ -14,589 +14,476 @@ let machines = require('./lib/machines');
 let routes = require('./lib/routes');
 let users = require('./lib/users');
 
-// You can customize these values in './db.json'.
-let hostname = db.get('hostname', 'localhost');
-let ports = db.get('ports');
+boot.executeInParallel([
+  boot.forwardHttp,
+  boot.ensureHttpsCertificates,
+  boot.ensureDockerTlsCertificates
+], () => {
 
-boot.executeInParallel([ boot.forwardHttp ], () => {
-  // TODO: Also ensure HTTPS certificates, then start the Janitor app from here.
-});
+  // You can customize these values in './db.json'.
+  let hostname = db.get('hostname', 'localhost');
+  let https = db.get('https');
+  let ports = db.get('ports');
 
+  // The main Janitor server.
+  let app = camp.start({
+    documentRoot: process.cwd() + '/static',
+    port: ports.https,
+    secure: true,
+    key: https.key,
+    cert: https.crt,
+    ca: https.ca
+  });
 
-// The main Janitor server.
+  log('Janitor → https://' + hostname + ':' + ports.https);
 
-let app = camp.start({
-  documentRoot: process.cwd() + '/static',
-  port: ports.https,
-  secure: true,
-  key: 'https.key',
-  cert: 'https.crt',
-  ca: []
-});
+  // Convenient express-like alias.
+  app.use = app.handle;
 
-log('Janitor → https://' + hostname + ':' + ports.https);
-
-// Convenient express-like alias.
-app.use = app.handle;
-
-
-// Protect the server and its users with a security policies middleware.
-
-app.use((request, response, next) => {
-
-  // Only accept requests addressed to our hostname, no IP address or CDN here.
-  if (request.headers.host !== hostname) {
-    log('dropping request for', request.headers.host);
-    response.statusCode = 400;
-    response.end();
-    return;
-  }
-
-  // Tell browsers to only use secure HTTPS connections for this web app.
-  response.setHeader('Strict-Transport-Security', 'max-age=31536000');
-
-  // Prevent browsers from accidentally detecting scripts where they shouldn't.
-  response.setHeader('X-Content-Type-Options', 'nosniff');
-
-  // Tell browsers this web app should never be embedded into an iframe.
-  response.setHeader('X-Frame-Options', 'DENY');
-
-  next();
-
-});
-
-
-// Authenticate all user requests with a server middleware.
-
-app.use((request, response, next) => {
-
-  users.get(request, (error, user) => {
-
-    if (error) {
-      log('authentication error', String(error));
+  // Protect the server and its users with a security policies middleware.
+  app.use((request, response, next) => {
+    // Only accept requests addressed to our hostname, no CDN here.
+    if (request.headers.host !== hostname) {
+      log('dropping request for', request.headers.host);
+      response.statusCode = 400;
+      response.end();
+      return;
     }
 
-    request.user = user;
+    // Tell browsers to only use secure HTTPS connections for this web app.
+    response.setHeader('Strict-Transport-Security', 'max-age=31536000');
+
+    // Prevent browsers from accidentally detecting scripts where they shouldn't.
+    response.setHeader('X-Content-Type-Options', 'nosniff');
+
+    // Tell browsers this web app should never be embedded into an iframe.
+    response.setHeader('X-Frame-Options', 'DENY');
+
     next();
-
   });
 
-});
+  // Authenticate all user requests with a server middleware.
+  app.use((request, response, next) => {
+    users.get(request, (error, user) => {
+      if (error) {
+        log('authentication error', String(error));
+      }
 
+      request.user = user;
+      next();
+    });
+  });
 
-// Authenticate OAuth2 requests by enabling authorized access scopes.
+  // Authenticate OAuth2 requests by enabling authorized access scopes.
+  app.use((request, response, next) => {
+    // Example scopes:
+    // - `'hostname': 'host.name'` allows managing the cluster host 'host.name'.
+    request.scope = {};
 
-app.use((request, response, next) => {
-
-  // Example scopes:
-  // - `'hostname': 'host.name'` allows managing the cluster host 'host.name'.
-  request.scope = {};
-
-  let clientId = request.query.client_id || null;
-  let clientSecret = request.query.client_secret || null;
-  if (clientId && clientSecret) {
-    let hostname = hosts.authenticate(clientId, clientSecret);
-    if (hostname) {
-      request.scope.hostname = hostname;
+    let clientId = request.query.client_id || null;
+    let clientSecret = request.query.client_secret || null;
+    if (clientId && clientSecret) {
+      let hostname = hosts.authenticate(clientId, clientSecret);
+      if (hostname) {
+        request.scope.hostname = hostname;
+      }
     }
-  }
 
-  next();
+    next();
+  });
 
-});
+  // Mount the Janitor API.
+  selfapi(app, '/api', api);
 
+  // Public landing page.
+  app.route(/^\/$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-// Mount the Janitor API.
+    return routes.landingPage(user, end);
+  });
 
-selfapi(app, '/api', api);
+  // Public blog page.
+  app.route(/^\/blog\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
 
+    log('blog');
 
-// Public landing page.
+    return routes.blogPage(user, end);
+  });
 
-app.route(/^\/$/, (data, match, end, query) => {
+  // Public live data page.
+  app.route(/^\/data\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-  var user = query.req.user;
+    return routes.dataPage(user, end);
+  });
 
-  return routes.landingPage(user, end);
+  // Public project pages.
+  app.route(/^\/projects(\/\w+)?\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
+    var projectUri = match[1];
 
-});
+    if (!projectUri) {
+      // No particular project was requested, show them all.
+      return routes.projectsPage(user, end);
+    }
 
+    var projectId = projectUri.slice(1);
+    var project = db.get('projects')[projectId];
 
-// Public blog page.
-
-app.route(/^\/blog\/?$/, (data, match, end, query) => {
-
-  var user = query.req.user;
-
-  log('blog');
-
-  return routes.blogPage(user, end);
-
-});
-
-
-// Public live data page.
-
-app.route(/^\/data\/?$/, (data, match, end, query) => {
-
-  var user = query.req.user;
-
-  return routes.dataPage(user, end);
-
-});
-
-
-// Public project pages.
-
-app.route(/^\/projects(\/\w+)?\/?$/, (data, match, end, query) => {
-
-  var user = query.req.user;
-  var projectUri = match[1];
-
-  if (!projectUri) {
-    // No particular project was requested, show them all.
-    return routes.projectsPage(user, end);
-  }
-
-  var projectId = projectUri.slice(1);
-  var project = db.get('projects')[projectId];
-
-  if (project) {
-    // Show the requested project-specific page.
-    return routes.projectPage(project, user, end);
-  }
+    if (project) {
+      // Show the requested project-specific page.
+      return routes.projectPage(project, user, end);
+    }
 
     return routes.notFoundPage(user, end, query);
-
-
-});
-
-
-// User logout.
-
-app.route(/^\/logout\/?$/, (data, match, end, query) => {
-
-  users.logout(query.req, (error) => {
-
-    if (error) {
-      log('logout', String(error));
-    }
-
-    return routes.redirect(query.res, '/');
-
   });
 
-});
+  // User logout.
+  app.route(/^\/logout\/?$/, (data, match, end, query) => {
+    users.logout(query.req, (error) => {
+      if (error) {
+        log('logout', String(error));
+      }
 
+      return routes.redirect(query.res, '/');
+    });
+  });
 
-// User login.
+  // User login.
+  app.route(/^\/login\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-app.route(/^\/login\/?$/, (data, match, end, query) => {
+    if (user) {
+      return routes.redirect(query.res, '/');
+    }
 
-  var user = query.req.user;
-
-  if (user) {
-    return routes.redirect(query.res, '/');
-  }
-
-  return routes.loginPage(end);
-
-});
-
-
-// User contributions list.
-
-app.route(/^\/contributions\/?$/, (data, match, end, query) => {
-
-  var user = query.req.user;
-
-  if (user) {
-    return routes.contributionsPage(user, end);
-  }
-
-  return routes.loginPage(end);
-
-});
-
-
-// User settings.
-
-app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
-
-  var user = query.req.user;
-
-  if (!user) {
     return routes.loginPage(end);
-  }
+  });
 
-  // Select the requested section, or serve the default one.
-  var sectionUri = match[1];
-  var section = sectionUri ? sectionUri.slice(1) : 'account';
+  // User contributions list.
+  app.route(/^\/contributions\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-  return routes.settingsPage(section, user, end, query);
+    if (user) {
+      return routes.contributionsPage(user, end);
+    }
 
-});
+    return routes.loginPage(end);
+  });
 
+  // User settings.
+  app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-// User account (now part of settings).
+    if (!user) {
+      return routes.loginPage(end);
+    }
 
-app.route(/^\/account\/?$/, (data, match, end, query) => {
+    // Select the requested section, or serve the default one.
+    var sectionUri = match[1];
+    var section = sectionUri ? sectionUri.slice(1) : 'account';
 
-  return routes.redirect(query.res, '/settings/account/', true);
+    return routes.settingsPage(section, user, end, query);
+  });
 
-});
+  // User account (now part of settings).
+  app.route(/^\/account\/?$/, (data, match, end, query) => {
+    return routes.redirect(query.res, '/settings/account/', true);
+  });
 
+  // These are not the droids you're looking for.
+  app.route(/^\/favicon\.ico$/, (data, match, end, query) => {
+    return routes.redirect(query.res, '/img/janitor.svg', true);
+  });
 
-// These are not the droids you're looking for.
+  // Admin sections.
+  app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-app.route(/^\/favicon\.ico$/, (data, match, end, query) => {
+    if (!users.isAdmin(user)) {
+      return routes.notFoundPage(user, end, query);
+    }
 
-  return routes.redirect(query.res, '/img/janitor.svg', true);
+    // Select the requested section, or serve the default one.
+    var sectionUri = match[1];
+    var section = sectionUri ? sectionUri.slice(1) : 'hosts';
 
-});
+    log('admin', section, '(' + user.email + ')');
 
+    return routes.adminPage(section, user, end, query);
+  });
 
-// Admin sections.
+  // Secure VNC connection proxy.
+  app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
+    var user = query.req.user;
 
-app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
+    if (!user) {
+      return routes.notFoundPage(user, end, query);
+    }
 
-  var user = query.req.user;
+    var projectId = match[1];
+    var machineId = parseInt(match[2], 10);
+    var uri = path.normalize(match[3]);
 
-  if (!users.isAdmin(user)) {
+    log('vnc', projectId, machineId, uri);
+
+    var machine = machines.getMatchingMachine(projectId, machineId, user);
+
+    if (machine) {
+      // Remember this machine for the websocket proxy (see below).
+      user.lastvnc = {
+        project: projectId,
+        machine: machineId
+      };
+      return routes.vncProxy(user, machine, end, query, uri);
+    }
+
     return routes.notFoundPage(user, end, query);
-  }
+  });
 
-  // Select the requested section, or serve the default one.
-  var sectionUri = match[1];
-  var section = sectionUri ? sectionUri.slice(1) : 'hosts';
-
-  log('admin', section, '(' + user.email + ')');
-
-  return routes.adminPage(section, user, end, query);
-
-});
-
-
-// Secure VNC connection proxy.
-
-app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
-
-  var user = query.req.user;
-
-  if (!user) {
-    return routes.notFoundPage(user, end, query);
-  }
-
-  var projectId = match[1];
-  var machineId = parseInt(match[2], 10);
-  var uri = path.normalize(match[3]);
-
-  log('vnc', projectId, machineId, uri);
-
-  var machine = machines.getMatchingMachine(projectId, machineId, user);
-
-  if (machine) {
-    // Remember this machine for the websocket proxy (see below).
-    user.lastvnc = {
-      project: projectId,
-      machine: machineId
-    };
-    return routes.vncProxy(user, machine, end, query, uri);
-  }
-
-  return routes.notFoundPage(user, end, query);
-
-});
-
-
-// Secure WebSocket proxy for VNC connections.
-
-app.on('upgrade', (request, socket, head) => {
-
-  if (request.url !== '/websockify') {
-    return socket.end();
-  }
-
-  // Authenticate the user (our middleware only works for 'request' events).
-  users.get(request, (error, user) => {
-
-    if (!user || !user.lastvnc) {
+  // Secure WebSocket proxy for VNC connections.
+  app.on('upgrade', (request, socket, head) => {
+    if (request.url !== '/websockify') {
       return socket.end();
     }
 
-    // Get the last machine that the user VNC'd into (a hack, but it works).
-    // Note: Parsing the URL in `request.headers.referer` would be better, but
-    // that header never seems to be set on WebSocket requests.
-    var projectId = user.lastvnc.project;
-    var machineId = user.lastvnc.machine;
-    var machine = machines.getMatchingMachine(projectId, machineId, user);
-
-    log('vnc-websocket', projectId, machineId);
-
-    if (machine) {
-      return routes.vncSocketProxy(machine, request, socket, head);
-    }
-
-    return socket.end();
-
-  });
-
-});
-
-
-// 404 Not Found.
-
-app.notfound(/.*/, (data, match, end, query) => {
-
-  var user = query.req.user;
-
-  log('404', match[0]);
-
-  return routes.notFoundPage(user, end, query);
-
-});
-
-
-// Alpha version sign-up.
-
-app.ajax.on('signup', (data, end) => {
-
-  var email = data.email;
-  var users = db.get('users');
-  var waitlist = db.get('waitlist');
-
-  log('signup', email);
-
-  if (waitlist[email]) {
-    return end({ status: 'already-added' });
-  }
-
-  if (users[email]) {
-    return end({ status: 'already-invited' });
-  }
-
-  waitlist[email] = Date.now();
-  db.save();
-
-  return end({ status: 'added' });
-
-});
-
-
-// Alpha version invite.
-
-app.ajax.on('invite', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!users.isAdmin(user)) {
-    return end();
-  }
-
-  var email = data.email;
-
-  if (email in db.get('users')) {
-    return end({ status: 'already-invited' });
-  }
-
-  users.sendInviteEmail(email, (error) => {
-    if (error) {
-      var message = String(error);
-      log(message, '(while inviting ' + email + ')');
-      return end({ status: 'error', message: message });
-    }
-    return end({ status: 'invited' });
-  });
-
-});
-
-
-// Request a log-in key via email.
-
-app.ajax.on('login', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (user) {
-    end({ status: 'logged-in' });
-    return;
-  }
-
-  var email = data.email;
-
-  users.sendLoginEmail(email, query.req, (error) => {
-    if (error) {
-      var message = String(error);
-      log(message, '(while emailing ' + email + ')');
-      return end({ status: 'error', message: message });
-    }
-    return end({ status: 'email-sent' });
-  });
-
-});
-
-
-// Change the parameters of a project.
-
-app.ajax.on('projectdb', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!users.isAdmin(user)) {
-    return end();
-  }
-
-  if (!data.id) {
-    return end({ status: 'error', message: 'Invalid Project ID' });
-  }
-
-  machines.setProject(data);
-
-  return end({ status: 'success' });
-
-});
-
-
-// Rebuild the base image of a project.
-
-app.ajax.on('rebuild', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!users.isAdmin(user)) {
-    return end();
-  }
-
-  machines.rebuild(data.project, (error) => {
-    if (error) {
-      return end({ status: 'error', message: String(error) });
-    }
-    return end({ status: 'success' });
-  });
-
-  // For longer requests, make sure we reply before the browser retries.
-  setTimeout(() => {
-    return end({ status: 'started' });
-  }, 42000);
-
-});
-
-
-// Update the base image of a project.
-
-app.ajax.on('update', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!users.isAdmin(user)) {
-    return end();
-  }
-
-  machines.update(data.project, (error) => {
-    if (error) {
-      return end({ status: 'error', message: String(error) });
-    }
-    return end({ status: 'success' });
-  });
-
-  // For longer requests, make sure we reply before the browser retries.
-  setTimeout(() => {
-    return end({ status: 'started' });
-  }, 42000);
-
-});
-
-
-// Spawn a new machine for a project. (Fast!)
-
-app.ajax.on('spawn', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!user) {
-    return end({ status: 'error', message: 'Not signed in' });
-  }
-
-  machines.spawn(data.project, user, (error) => {
-    if (error) {
-      return end({ status: 'error', message: String(error) });
-    }
-    return end({ status: 'success' });
-  });
-
-});
-
-
-// Destroy a machine.
-
-app.ajax.on('destroy', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!user) {
-    return end({ status: 'error', message: 'Not signed in' });
-  }
-
-  machines.destroy(data.machine, data.project, user, (error) => {
-    if (error) {
-      return end({ status: 'error', message: String(error) });
-    }
-    return end({ status: 'success' });
-  });
-
-});
-
-
-// Save a new user key, or update an existing one.
-
-app.ajax.on('key', (data, end, query) => {
-
-  var user = query.req.user;
-
-  if (!user || !data.name || !data.key) {
-    return end();
-  }
-
-  var key = '';
-
-  switch (data.name) {
-
-    case 'cloud9':
-      // Extract a valid SSH public key from the user's input.
-      // Regex adapted from https://gist.github.com/paranoiq/1932126.
-      var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
-      if (!match) {
-        return end({ status: 'error', message: 'Invalid SSH key' });
+    // Authenticate the user (our middleware only works for 'request' events).
+    users.get(request, (error, user) => {
+      if (!user || !user.lastvnc) {
+        return socket.end();
       }
-      key = match[0];
-      log('key', data.name, user.email);
-      break;
 
-    case 'cloud9user':
-      // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
-      var match = data.key.trim().match(/^[a-z0-9_]+$/);
-      if (!match) {
-        return end({ status: 'error', message: 'Invalid Cloud9 username' });
+      // Get the last machine that the user VNC'd into (a hack, but it works).
+      // Note: Parsing the URL in `request.headers.referer` would be better, but
+      // that header never seems to be set on WebSocket requests.
+      var projectId = user.lastvnc.project;
+      var machineId = user.lastvnc.machine;
+      var machine = machines.getMatchingMachine(projectId, machineId, user);
+
+      log('vnc-websocket', projectId, machineId);
+
+      if (machine) {
+        return routes.vncSocketProxy(machine, request, socket, head);
       }
-      key = match[0];
-      log('key', data.name, user.email, key);
-      break;
 
-    default:
-      return end({ status: 'error', message: 'Unknown key name' });
+      return socket.end();
+    });
+  });
 
-  }
+  // 404 Not Found.
+  app.notfound(/.*/, (data, match, end, query) => {
+    var user = query.req.user;
 
-  user.keys[data.name] = key;
-  db.save();
+    log('404', match[0]);
 
-  return end({ status: 'key-saved' });
+    return routes.notFoundPage(user, end, query);
+  });
 
+  // Alpha version sign-up.
+  app.ajax.on('signup', (data, end) => {
+    var email = data.email;
+    var users = db.get('users');
+    var waitlist = db.get('waitlist');
+
+    log('signup', email);
+
+    if (waitlist[email]) {
+      return end({ status: 'already-added' });
+    }
+
+    if (users[email]) {
+      return end({ status: 'already-invited' });
+    }
+
+    waitlist[email] = Date.now();
+    db.save();
+
+    return end({ status: 'added' });
+  });
+
+  // Alpha version invite.
+  app.ajax.on('invite', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    var email = data.email;
+
+    if (email in db.get('users')) {
+      return end({ status: 'already-invited' });
+    }
+
+    users.sendInviteEmail(email, (error) => {
+      if (error) {
+        var message = String(error);
+        log(message, '(while inviting ' + email + ')');
+        return end({ status: 'error', message: message });
+      }
+      return end({ status: 'invited' });
+    });
+  });
+
+  // Request a log-in key via email.
+  app.ajax.on('login', (data, end, query) => {
+    var user = query.req.user;
+
+    if (user) {
+      end({ status: 'logged-in' });
+      return;
+    }
+
+    var email = data.email;
+
+    users.sendLoginEmail(email, query.req, (error) => {
+      if (error) {
+        var message = String(error);
+        log(message, '(while emailing ' + email + ')');
+        return end({ status: 'error', message: message });
+      }
+      return end({ status: 'email-sent' });
+    });
+  });
+
+  // Change the parameters of a project.
+  app.ajax.on('projectdb', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    if (!data.id) {
+      return end({ status: 'error', message: 'Invalid Project ID' });
+    }
+
+    machines.setProject(data);
+
+    return end({ status: 'success' });
+  });
+
+  // Rebuild the base image of a project.
+  app.ajax.on('rebuild', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    machines.rebuild(data.project, (error) => {
+      if (error) {
+        return end({ status: 'error', message: String(error) });
+      }
+      return end({ status: 'success' });
+    });
+
+    // For longer requests, make sure we reply before the browser retries.
+    setTimeout(() => {
+      return end({ status: 'started' });
+    }, 42000);
+  });
+
+  // Update the base image of a project.
+  app.ajax.on('update', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!users.isAdmin(user)) {
+      return end();
+    }
+
+    machines.update(data.project, (error) => {
+      if (error) {
+        return end({ status: 'error', message: String(error) });
+      }
+      return end({ status: 'success' });
+    });
+
+    // For longer requests, make sure we reply before the browser retries.
+    setTimeout(() => {
+      return end({ status: 'started' });
+    }, 42000);
+  });
+
+  // Spawn a new machine for a project. (Fast!)
+  app.ajax.on('spawn', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!user) {
+      return end({ status: 'error', message: 'Not signed in' });
+    }
+
+    machines.spawn(data.project, user, (error) => {
+      if (error) {
+        return end({ status: 'error', message: String(error) });
+      }
+      return end({ status: 'success' });
+    });
+  });
+
+  // Destroy a machine.
+  app.ajax.on('destroy', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!user) {
+      return end({ status: 'error', message: 'Not signed in' });
+    }
+
+    machines.destroy(data.machine, data.project, user, (error) => {
+      if (error) {
+        return end({ status: 'error', message: String(error) });
+      }
+      return end({ status: 'success' });
+    });
+  });
+
+  // Save a new user key, or update an existing one.
+  app.ajax.on('key', (data, end, query) => {
+    var user = query.req.user;
+
+    if (!user || !data.name || !data.key) {
+      return end();
+    }
+
+    var key = '';
+
+    switch (data.name) {
+
+      case 'cloud9':
+        // Extract a valid SSH public key from the user's input.
+        // Regex adapted from https://gist.github.com/paranoiq/1932126.
+        var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
+        if (!match) {
+          return end({ status: 'error', message: 'Invalid SSH key' });
+        }
+        key = match[0];
+        log('key', data.name, user.email);
+        break;
+
+      case 'cloud9user':
+        // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
+        var match = data.key.trim().match(/^[a-z0-9_]+$/);
+        if (!match) {
+          return end({ status: 'error', message: 'Invalid Cloud9 username' });
+        }
+        key = match[0];
+        log('key', data.name, user.email, key);
+        break;
+
+      default:
+        return end({ status: 'error', message: 'Unknown key name' });
+
+    }
+
+    user.keys[data.name] = key;
+    db.save();
+
+    return end({ status: 'key-saved' });
+  });
 });
-
 
 // Teach the template system how to generate IDs (matching /[a-z0-9_-]*/).
-
 camp.templateReader.parsers.id = (text) => {
   return text.replace(/[^\w-]/g, '').toLowerCase();
 };
