@@ -97,14 +97,14 @@ boot.executeInParallel([
 
   // Public landing page.
   app.route(/^\/$/, (data, match, end, query) => {
-    var user = query.req.user;
+    let user = query.req.user;
 
     return routes.landingPage(user, end);
   });
 
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
+    let user = query.req.user;
 
     log('blog');
 
@@ -113,7 +113,7 @@ boot.executeInParallel([
 
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
+    let user = query.req.user;
 
     return routes.dataPage(user, end);
   });
@@ -152,10 +152,10 @@ boot.executeInParallel([
 
   // User login.
   app.route(/^\/login\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (user) {
-      return routes.redirect(query.res, '/');
+      routes.redirect(query.res, '/');
+      return;
     }
 
     return routes.loginPage(end);
@@ -163,72 +163,72 @@ boot.executeInParallel([
 
   // User contributions list.
   app.route(/^\/contributions\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
-
-    if (user) {
-      return routes.contributionsPage(user, end);
+    let user = query.req.user;
+    if (!user) {
+      routes.loginPage(end);
+      return;
     }
 
-    return routes.loginPage(end);
+    routes.contributionsPage(user, end);
   });
 
   // User settings.
   app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!user) {
-      return routes.loginPage(end);
+      routes.loginPage(end);
+      return;
     }
 
     // Select the requested section, or serve the default one.
-    var sectionUri = match[1];
-    var section = sectionUri ? sectionUri.slice(1) : 'account';
+    let sectionUri = match[1];
+    let section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    return routes.settingsPage(section, user, end, query);
+    routes.settingsPage(section, user, end, query);
   });
 
   // User account (now part of settings).
   app.route(/^\/account\/?$/, (data, match, end, query) => {
-    return routes.redirect(query.res, '/settings/account/', true);
+    routes.redirect(query.res, '/settings/account/', true);
   });
 
   // These are not the droids you're looking for.
   app.route(/^\/favicon\.ico$/, (data, match, end, query) => {
-    return routes.redirect(query.res, '/img/janitor.svg', true);
+    routes.redirect(query.res, '/img/janitor.svg', true);
   });
 
   // Admin sections.
   app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!users.isAdmin(user)) {
-      return routes.notFoundPage(user, end, query);
+      routes.notFoundPage(user, end, query);
+      return;
     }
 
     // Select the requested section, or serve the default one.
-    var sectionUri = match[1];
-    var section = sectionUri ? sectionUri.slice(1) : 'hosts';
+    let sectionUri = match[1];
+    let section = sectionUri ? sectionUri.slice(1) : 'hosts';
 
     log('admin', section, '(' + user.email + ')');
 
-    return routes.adminPage(section, user, end, query);
+    routes.adminPage(section, user, end, query);
   });
 
   // Secure VNC connection proxy.
   app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!user) {
-      return routes.notFoundPage(user, end, query);
+      routes.notFoundPage(user, end, query);
+      return;
     }
 
-    var projectId = match[1];
-    var machineId = parseInt(match[2], 10);
-    var uri = path.normalize(match[3]);
+    let projectId = match[1];
+    let machineId = parseInt(match[2], 10);
+    let uri = path.normalize(match[3]);
 
     log('vnc', projectId, machineId, uri);
 
-    var machine = machines.getMatchingMachine(projectId, machineId, user);
+    let machine = machines.getMatchingMachine(projectId, machineId, user);
 
     if (machine) {
       // Remember this machine for the websocket proxy (see below).
@@ -245,211 +245,218 @@ boot.executeInParallel([
   // Secure WebSocket proxy for VNC connections.
   app.on('upgrade', (request, socket, head) => {
     if (request.url !== '/websockify') {
-      return socket.end();
+      socket.end();
+      return;
     }
 
     // Authenticate the user (our middleware only works for 'request' events).
     users.get(request, (error, user) => {
       if (!user || !user.lastvnc) {
-        return socket.end();
+        socket.end();
+        return;
       }
 
       // Get the last machine that the user VNC'd into (a hack, but it works).
       // Note: Parsing the URL in `request.headers.referer` would be better, but
       // that header never seems to be set on WebSocket requests.
-      var projectId = user.lastvnc.project;
-      var machineId = user.lastvnc.machine;
-      var machine = machines.getMatchingMachine(projectId, machineId, user);
+      let projectId = user.lastvnc.project;
+      let machineId = user.lastvnc.machine;
+      let machine = machines.getMatchingMachine(projectId, machineId, user);
 
       log('vnc-websocket', projectId, machineId);
 
       if (machine) {
-        return routes.vncSocketProxy(machine, request, socket, head);
+        routes.vncSocketProxy(machine, request, socket, head);
+        return;
       }
 
-      return socket.end();
+      socket.end();
     });
   });
 
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
-    var user = query.req.user;
+    let user = query.req.user;
 
     log('404', match[0]);
 
-    return routes.notFoundPage(user, end, query);
+    routes.notFoundPage(user, end, query);
   });
 
   // Alpha version sign-up.
   app.ajax.on('signup', (data, end) => {
-    var email = data.email;
-    var users = db.get('users');
-    var waitlist = db.get('waitlist');
+    let email = data.email;
+    let users = db.get('users');
+    let waitlist = db.get('waitlist');
 
     log('signup', email);
 
     if (waitlist[email]) {
-      return end({ status: 'already-added' });
+      end({ status: 'already-added' });
+      return;
     }
 
     if (users[email]) {
-      return end({ status: 'already-invited' });
+      end({ status: 'already-invited' });
+      return;
     }
 
     waitlist[email] = Date.now();
     db.save();
 
-    return end({ status: 'added' });
+    end({ status: 'added' });
   });
 
   // Alpha version invite.
   app.ajax.on('invite', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!users.isAdmin(user)) {
-      return end();
+      end();
+      return;
     }
 
-    var email = data.email;
-
+    let email = data.email;
     if (email in db.get('users')) {
-      return end({ status: 'already-invited' });
+      end({ status: 'already-invited' });
+      return;
     }
 
     users.sendInviteEmail(email, (error) => {
       if (error) {
-        var message = String(error);
+        let message = String(error);
         log(message, '(while inviting ' + email + ')');
-        return end({ status: 'error', message: message });
+        end({ status: 'error', message: message });
+        return;
       }
-      return end({ status: 'invited' });
+      end({ status: 'invited' });
     });
   });
 
   // Request a log-in key via email.
   app.ajax.on('login', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (user) {
       end({ status: 'logged-in' });
       return;
     }
 
-    var email = data.email;
-
+    let email = data.email;
     users.sendLoginEmail(email, query.req, (error) => {
       if (error) {
-        var message = String(error);
+        let message = String(error);
         log(message, '(while emailing ' + email + ')');
-        return end({ status: 'error', message: message });
+        end({ status: 'error', message: message });
+        return;
       }
-      return end({ status: 'email-sent' });
+      end({ status: 'email-sent' });
     });
   });
 
   // Change the parameters of a project.
   app.ajax.on('projectdb', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!users.isAdmin(user)) {
-      return end();
+      end();
+      return;
     }
 
     if (!data.id) {
-      return end({ status: 'error', message: 'Invalid Project ID' });
+      end({ status: 'error', message: 'Invalid project ID' });
+      return;
     }
 
     machines.setProject(data);
-
-    return end({ status: 'success' });
+    end({ status: 'success' });
   });
 
   // Rebuild the base image of a project.
   app.ajax.on('rebuild', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!users.isAdmin(user)) {
-      return end();
+      end();
+      return;
     }
 
     machines.rebuild(data.project, (error) => {
       if (error) {
-        return end({ status: 'error', message: String(error) });
+        end({ status: 'error', message: String(error) });
+        return;
       }
-      return end({ status: 'success' });
+      end({ status: 'success' });
     });
 
     // For longer requests, make sure we reply before the browser retries.
     setTimeout(() => {
-      return end({ status: 'started' });
+      end({ status: 'started' });
     }, 42000);
   });
 
   // Update the base image of a project.
   app.ajax.on('update', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!users.isAdmin(user)) {
-      return end();
+      end();
+      return;
     }
 
     machines.update(data.project, (error) => {
       if (error) {
-        return end({ status: 'error', message: String(error) });
+        end({ status: 'error', message: String(error) });
+        return;
       }
-      return end({ status: 'success' });
+      end({ status: 'success' });
     });
 
     // For longer requests, make sure we reply before the browser retries.
     setTimeout(() => {
-      return end({ status: 'started' });
+      end({ status: 'started' });
     }, 42000);
   });
 
   // Spawn a new machine for a project. (Fast!)
   app.ajax.on('spawn', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!user) {
-      return end({ status: 'error', message: 'Not signed in' });
+      end({ status: 'error', message: 'Not signed in' });
+      return;
     }
 
     machines.spawn(data.project, user, (error) => {
       if (error) {
-        return end({ status: 'error', message: String(error) });
+        end({ status: 'error', message: String(error) });
+        return;
       }
-      return end({ status: 'success' });
+      end({ status: 'success' });
     });
   });
 
   // Destroy a machine.
   app.ajax.on('destroy', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!user) {
-      return end({ status: 'error', message: 'Not signed in' });
+      end({ status: 'error', message: 'Not signed in' });
+      return;
     }
 
     machines.destroy(data.machine, data.project, user, (error) => {
       if (error) {
-        return end({ status: 'error', message: String(error) });
+        end({ status: 'error', message: String(error) });
+        return;
       }
-      return end({ status: 'success' });
+      end({ status: 'success' });
     });
   });
 
   // Save a new user key, or update an existing one.
   app.ajax.on('key', (data, end, query) => {
-    var user = query.req.user;
-
+    let user = query.req.user;
     if (!user || !data.name || !data.key) {
-      return end();
+      end();
+      return;
     }
 
-    var key = '';
-
+    let key = '';
     switch (data.name) {
-
       case 'cloud9':
         // Extract a valid SSH public key from the user's input.
         // Regex adapted from https://gist.github.com/paranoiq/1932126.
@@ -472,14 +479,13 @@ boot.executeInParallel([
         break;
 
       default:
-        return end({ status: 'error', message: 'Unknown key name' });
-
+        end({ status: 'error', message: 'Unknown key name' });
     }
 
     user.keys[data.name] = key;
     db.save();
 
-    return end({ status: 'key-saved' });
+    end({ status: 'key-saved' });
   });
 });
 
