@@ -7,6 +7,7 @@ let db = require('../lib/db');
 let docker = require('../lib/docker');
 let hosts = require('../lib/hosts');
 let log = require('../lib/log');
+let machines = require('../lib/machines');
 let users = require('../lib/users');
 
 
@@ -353,6 +354,66 @@ hostAPI.get('/version', {
     response: {
       status: 404,
       body: JSON.stringify({ error: 'Host not found' }, null, 2)
+    }
+  }]
+
+});
+
+
+hostAPI.get('/:container/:port', {
+
+  title: 'Get a single container port',
+
+  description: 'Get information about a given Docker container port.',
+
+  handler: (request, response) => {
+    let user = request.user;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' });
+      return;
+    }
+
+    let container = request.query.container;
+    if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Invalid container ID' });
+      return;
+    }
+
+    let hostname = request.query.hostname;
+    let machine = machines.getMachineByContainer(user, hostname, container);
+    if (!machine) {
+      response.statusCode = 404;
+      response.json({ error: 'Container not found' });
+      return;
+    }
+
+    let port = String(request.query.port);
+    for (let projectPort in machine.docker.ports) {
+      if (projectPort === port) {
+        response.json(machine.docker.ports[projectPort]);
+        return;
+      }
+    }
+
+    response.statusCode = 404;
+    response.json({ error: 'Port not found' });
+  },
+
+  examples: [{
+    request: {
+      urlParameters: {
+        hotname: 'host.name',
+        container: 'abcdef0123456789',
+        port: '8080'
+      }
+    },
+    response: {
+      body: JSON.stringify({
+        port: 42000,
+        proxy: 'https'
+      }, null, 2)
     }
   }]
 
