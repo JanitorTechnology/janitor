@@ -228,18 +228,19 @@ boot.executeInParallel([
 
     log('vnc', projectId, machineId, uri);
 
-    let machine = machines.getMatchingMachine(projectId, machineId, user);
+    let machine = machines.getMachineById(user, projectId, machineId);
 
-    if (machine) {
-      // Remember this machine for the websocket proxy (see below).
-      user.lastvnc = {
-        project: projectId,
-        machine: machineId
-      };
-      return routes.vncProxy(user, machine, end, query, uri);
+    if (!machine) {
+      routes.notFoundPage(user, end, query);
+      return;
     }
 
-    return routes.notFoundPage(user, end, query);
+    // Remember this machine for the websocket proxy (see below).
+    user.lastvnc = {
+      project: projectId,
+      machine: machineId
+    };
+    routes.vncProxy(user, machine, end, query, uri);
   });
 
   // Secure WebSocket proxy for VNC connections.
@@ -261,7 +262,7 @@ boot.executeInParallel([
       // that header never seems to be set on WebSocket requests.
       let projectId = user.lastvnc.project;
       let machineId = user.lastvnc.machine;
-      let machine = machines.getMatchingMachine(projectId, machineId, user);
+      let machine = machines.getMachineById(user, projectId, machineId);
 
       log('vnc-websocket', projectId, machineId);
 
@@ -421,7 +422,7 @@ boot.executeInParallel([
       return;
     }
 
-    machines.spawn(data.project, user, (error) => {
+    machines.spawn(user, data.project, (error) => {
       if (error) {
         end({ status: 'error', message: String(error) });
         return;
@@ -438,7 +439,7 @@ boot.executeInParallel([
       return;
     }
 
-    machines.destroy(data.machine, data.project, user, (error) => {
+    machines.destroy(user, data.project, data.machine, (error) => {
       if (error) {
         end({ status: 'error', message: String(error) });
         return;
