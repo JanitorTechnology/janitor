@@ -64,11 +64,7 @@ boot.executeInParallel([
 
   // Authenticate all user requests with a server middleware.
   app.use((request, response, next) => {
-    users.get(request, (error, user) => {
-      if (error) {
-        log('authentication error', String(error));
-      }
-
+    users.get(request, user => {
       request.user = user;
       next();
     });
@@ -141,12 +137,11 @@ boot.executeInParallel([
 
   // User logout.
   app.route(/^\/logout\/?$/, (data, match, end, query) => {
-    users.logout(query.req, (error) => {
+    users.logout(query.req, error => {
       if (error) {
-        log('logout', String(error));
+        log('logout', error);
       }
-
-      return routes.redirect(query.res, '/');
+      routes.redirect(query.res, '/');
     });
   });
 
@@ -158,7 +153,7 @@ boot.executeInParallel([
       return;
     }
 
-    return routes.loginPage(end);
+    routes.loginPage(end);
   });
 
   // User contributions list.
@@ -237,7 +232,6 @@ boot.executeInParallel([
     log('vnc', projectId, machineId, uri);
 
     let machine = machines.getMachineById(user, projectId, machineId);
-
     if (!machine) {
       routes.notFoundPage(user, end, query);
       return;
@@ -259,7 +253,7 @@ boot.executeInParallel([
     }
 
     // Authenticate the user (our middleware only works for 'request' events).
-    users.get(request, (error, user) => {
+    users.get(request, user => {
       if (!user || !user.lastvnc) {
         socket.end();
         return;
@@ -330,7 +324,7 @@ boot.executeInParallel([
       return;
     }
 
-    users.sendInviteEmail(email, (error) => {
+    users.sendInviteEmail(email, error => {
       if (error) {
         let message = String(error);
         log(message, '(while inviting ' + email + ')');
@@ -350,7 +344,7 @@ boot.executeInParallel([
     }
 
     let email = data.email;
-    users.sendLoginEmail(email, query.req, (error) => {
+    users.sendLoginEmail(email, query.req, error => {
       if (error) {
         let message = String(error);
         log(message, '(while emailing ' + email + ')');
@@ -386,7 +380,7 @@ boot.executeInParallel([
       return;
     }
 
-    machines.rebuild(data.project, (error) => {
+    machines.rebuild(data.project, error => {
       if (error) {
         end({ status: 'error', message: String(error) });
         return;
@@ -408,7 +402,7 @@ boot.executeInParallel([
       return;
     }
 
-    machines.update(data.project, (error) => {
+    machines.update(data.project, error => {
       if (error) {
         end({ status: 'error', message: String(error) });
         return;
@@ -430,7 +424,7 @@ boot.executeInParallel([
       return;
     }
 
-    machines.spawn(user, data.project, (error) => {
+    machines.spawn(user, data.project, error => {
       if (error) {
         end({ status: 'error', message: String(error) });
         return;
@@ -447,7 +441,7 @@ boot.executeInParallel([
       return;
     }
 
-    machines.destroy(user, data.project, data.machine, (error) => {
+    machines.destroy(user, data.project, data.machine, error => {
       if (error) {
         end({ status: 'error', message: String(error) });
         return;
@@ -499,6 +493,6 @@ boot.executeInParallel([
 });
 
 // Teach the template system how to generate IDs (matching /[a-z0-9_-]*/).
-camp.templateReader.parsers.id = (text) => {
+camp.templateReader.parsers.id = text => {
   return text.replace(/[^\w-]/g, '').toLowerCase();
 };
