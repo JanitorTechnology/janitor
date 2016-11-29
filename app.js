@@ -242,7 +242,12 @@ boot.executeInParallel([
       project: projectId,
       machine: machineId
     };
-    routes.vncProxy(user, machine, end, query, uri);
+
+    let parameters = {
+      port: machine.docker.ports['8088'].port,
+      path: uri
+    };
+    routes.webProxy(parameters, query.req, query.res);
   });
 
   // Secure WebSocket proxy for VNC connections.
@@ -268,12 +273,16 @@ boot.executeInParallel([
 
       log('vnc-websocket', projectId, machineId);
 
-      if (machine) {
-        routes.vncSocketProxy(machine, request, socket, head);
+      if (!machine) {
+        socket.end();
         return;
       }
 
-      socket.end();
+      let parameters = {
+        port: machine.docker.ports['8088'].port,
+        path: request.url
+      };
+      routes.webProxy(parameters, request, socket);
     });
   });
 
