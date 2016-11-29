@@ -197,6 +197,14 @@ boot.executeInParallel([
     routes.redirect(query.res, '/img/janitor.svg', true);
   });
 
+  app.route(/^\/apple-touch-icon[\w-]*\.png$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/img/janitor.svg', true);
+  });
+
+  app.route(/^\/[.,;)]$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/', true);
+  });
+
   // Admin sections.
   app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
     let user = query.req.user;
