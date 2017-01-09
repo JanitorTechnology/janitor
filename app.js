@@ -138,6 +138,51 @@ boot.executeInParallel([
     routes.loginPage(end);
   });
 
+  // User OAuth2 authorization.
+  app.route(/^\/login\/oauth\/authorize\/?$/, (data, match, end, query) => {
+    let { user } = query.req;
+    if (!user) {
+      routes.notFoundPage(user, end, query);
+      return;
+    }
+
+    hosts.issueOAuth2AuthorizationCode(query.req, (error, data) => {
+      if (error) {
+        log('[fail] oauth2 authorize', error);
+        // Note: Such OAuth2 sanity problems should rarely happen, but if they
+        // do become more frequent, we should inform the user about what's
+        // happening here instead of showing a generic 404 page.
+        routes.notFoundPage(user, end, query);
+        return;
+      }
+      routes.redirect(query.res, data.redirect_url);
+    });
+  });
+
+  // OAuth2 access token request.
+  app.route(/^\/login\/oauth\/access_token\/?$/, (data, match, end, query) => {
+    let { req: request, res: response } = query;
+    if (request.method !== 'POST') {
+      routes.notFoundPage(request.user, end, query);
+      return;
+    }
+
+    let authenticatedHostname = hosts.authenticate(request);
+    if (!authenticatedHostname) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' });
+      return;
+    }
+
+    hosts.issueOAuth2AccessToken(request, (error, data) => {
+      if (error) {
+        log('[fail] oauth2 token', error);
+        response.statusCode = 400; // Bad Request
+      }
+      response.json(data);
+    });
+  });
+
   // User contributions list.
   app.route(/^\/contributions\/?$/, (data, match, end, query) => {
     let user = query.req.user;
