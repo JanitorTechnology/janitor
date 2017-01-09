@@ -31,7 +31,7 @@
     "fast-json-patch": "~1.1.4",
     "le-acme-core": "~2.0.7",
     "node-forge": "~0.6.45",
-    "oauth": "~0.9.14",
+    "oauth": "~0.9.15",
     "oauth2provider": "~0.0.2",
     "selfapi": "~0.0.12",
     "tar-stream": "~1.5.2"
