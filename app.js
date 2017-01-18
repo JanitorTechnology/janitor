@@ -70,24 +70,6 @@ boot.executeInParallel([
     });
   });
 
-  // Authenticate OAuth2 requests by enabling authorized access scopes.
-  app.use((request, response, next) => {
-    // Example scopes:
-    // - `'hostname': 'host.name'` allows managing the cluster host 'host.name'.
-    request.scope = {};
-
-    let clientId = request.query.client_id || null;
-    let clientSecret = request.query.client_secret || null;
-    if (clientId && clientSecret) {
-      let hostname = hosts.authenticate(clientId, clientSecret);
-      if (hostname) {
-        request.scope.hostname = hostname;
-      }
-    }
-
-    next();
-  });
-
   // Mount the Janitor API.
   selfapi(app, '/api', api);
 
