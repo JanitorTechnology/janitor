@@ -10,11 +10,8 @@ let log = require('../lib/log');
 let machines = require('../lib/machines');
 let users = require('../lib/users');
 
-
 // API resource to manage Janitor cluster hosts.
-
-let hostsAPI = selfapi({
-
+let hostsAPI = module.exports = selfapi({
   title: 'Hosts',
 
   beforeTests: (callback) => {
@@ -34,20 +31,14 @@ let hostsAPI = selfapi({
       callback(error);
     });
   }
-
 });
 
-module.exports = hostsAPI;
-
-
 hostsAPI.get({
-
   title: 'List hosts',
-
   description: 'List all cluster hosts owned by the authenticated user.',
 
   handler: (request, response) => {
-    let user = request.user;
+    let { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' });
@@ -67,32 +58,35 @@ hostsAPI.get({
       body: JSON.stringify([ 'host.name' ], null, 2)
     }
   }]
-
 });
 
-
 // API sub-resource to manage a single cluster host.
-
 let hostAPI = hostsAPI.api('/:hostname');
 
-
 hostAPI.get({
-
   title: 'Get a single host',
 
   handler: (request, response) => {
-    let user = request.user;
-    let scope = request.scope;
-    let hostname = request.query.hostname;
-
+    let { hostname } = request.query;
     if (!hostname) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid hostname' });
       return;
     }
 
-    // User or host OAuth2 authentication.
-    if (users.isAdmin(user) || scope.hostname === hostname) {
+    // Host OAuth2 authentication.
+    let authenticatedHostname = hosts.authenticate(request);
+    if (authenticatedHostname && authenticatedHostname === hostname) {
+      let host = hosts.get(hostname);
+      if (host) {
+        response.json(host.properties);
+        return;
+      }
+    }
+
+    // User authentication.
+    let { user } = request;
+    if (user && users.isAdmin(user)) {
       let host = hosts.get(hostname);
       if (host) {
         response.json(host.properties);
@@ -120,21 +114,14 @@ hostAPI.get({
       body: JSON.stringify({ error: 'Host not found' }, null, 2)
     }
   }]
-
 });
 
-
 hostAPI.post({
-
   title: 'Create a host',
-
   description: 'Create a new host and add it to the cluster.',
 
   handler: (request, response) => {
-    let user = request.user;
-    let scope = request.scope;
-    let hostname = request.query.hostname;
-
+    let { hostname } = request.query;
     if (!hostname) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid hostname' });
@@ -142,12 +129,14 @@ hostAPI.post({
     }
 
     // Host OAuth2 authentication.
-    if (scope.hostname && scope.hostname === hostname) {
+    let authenticatedHostname = hosts.authenticate(request);
+    if (authenticatedHostname && authenticatedHostname === hostname) {
       updateHost();
       return;
     }
 
     // User authentication.
+    let { user } = request;
     if (user && users.isAdmin(user)) {
       if (hosts.get(hostname)) {
         updateHost();
@@ -233,18 +222,14 @@ hostAPI.post({
       body: JSON.stringify({ error: 'Unauthorized' }, null, 2)
     }
   }]
-
 });
 
-
 hostAPI.get('/credentials', {
-
   title: 'Show host credentials',
-
   description: 'Show a host\'s OAuth2 client credentials.',
 
   handler: (request, response) => {
-    let user = request.user;
+    let { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
@@ -269,18 +254,14 @@ hostAPI.get('/credentials', {
       body: JSON.stringify({ id: '1234', secret: '123456' }, null, 2)
     }
   }]
-
 });
 
-
 hostAPI.delete('/credentials', {
-
   title: 'Reset host credentials',
-
   description: 'Reset a host\'s OAuth2 client secret.',
 
   handler: (request, response) => {
-    let user = request.user;
+    let { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
@@ -309,23 +290,20 @@ hostAPI.delete('/credentials', {
       urlParameters: { hostname: 'host.name' }
     }
   }]
-
 });
 
-
 hostAPI.get('/version', {
-
   title: 'Show host version',
 
   handler: (request, response) => {
-    let user = request.user;
+    let { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
       return;
     }
 
-    let hostname = request.query.hostname;
+    let { hostname } = request.query;
     if (!hosts.get(hostname)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
@@ -356,32 +334,28 @@ hostAPI.get('/version', {
       body: JSON.stringify({ error: 'Host not found' }, null, 2)
     }
   }]
-
 });
 
-
 hostAPI.get('/:container/:port', {
-
   title: 'Get a single container port',
-
   description: 'Get information about a given Docker container port.',
 
   handler: (request, response) => {
-    let user = request.user;
+    let { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' });
       return;
     }
 
-    let container = request.query.container;
+    let { container } = request.query;
     if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid container ID' });
       return;
     }
 
-    let hostname = request.query.hostname;
+    let { hostname } = request.query;
     let machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
       response.statusCode = 404;
@@ -416,5 +390,4 @@ hostAPI.get('/:container/:port', {
       }, null, 2)
     }
   }]
-
 });
