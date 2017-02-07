@@ -62,12 +62,24 @@ boot.executeInParallel([
     next();
   });
 
-  // Authenticate all user requests with a server middleware.
+  // Authenticate signed-in user requests with a server middleware.
   app.use((request, response, next) => {
     users.get(request, user => {
       request.user = user;
       next();
     });
+  });
+
+  // Authenticate OAuth2 requests with a server middleware.
+  app.use((request, response, next) => {
+    let access = users.getOAuth2Access(request);
+    if (access) {
+      let { hostname, scope, user } = access;
+      let scopes = scope.split(',');
+      request.oauth2access = { hostname, scopes, user };
+    }
+
+    next();
   });
 
   // Mount the Janitor API.
@@ -82,18 +94,15 @@ boot.executeInParallel([
 
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
-    let user = query.req.user;
-
+    let { user } = query.req;
     log('blog');
-
-    return routes.blogPage(user, end);
+    routes.blogPage(user, end);
   });
 
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
-    let user = query.req.user;
-
-    return routes.dataPage(user, end);
+    let { user } = query.req;
+    routes.dataPage(user, end);
   });
 
   // Public project pages.
@@ -103,7 +112,8 @@ boot.executeInParallel([
 
     if (!projectUri) {
       // No particular project was requested, show them all.
-      return routes.projectsPage(user, end);
+      routes.projectsPage(user, end);
+      return;
     }
 
     var projectId = projectUri.slice(1);
@@ -121,7 +131,7 @@ boot.executeInParallel([
   app.route(/^\/logout\/?$/, (data, match, end, query) => {
     users.logout(query.req, error => {
       if (error) {
-        log('logout', error);
+        log('[fail] logout', error);
       }
       routes.redirect(query.res, '/');
     });
@@ -129,12 +139,11 @@ boot.executeInParallel([
 
   // User login.
   app.route(/^\/login\/?$/, (data, match, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (user) {
       routes.redirect(query.res, '/');
       return;
     }
-
     routes.loginPage(end);
   });
 
@@ -185,7 +194,7 @@ boot.executeInParallel([
 
   // User contributions list.
   app.route(/^\/contributions\/?$/, (data, match, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!user) {
       routes.loginPage(end);
       return;
@@ -196,7 +205,7 @@ boot.executeInParallel([
 
   // User settings.
   app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!user) {
       routes.loginPage(end);
       return;
@@ -229,7 +238,7 @@ boot.executeInParallel([
 
   // Admin sections.
   app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!users.isAdmin(user)) {
       routes.notFoundPage(user, end, query);
       return;
@@ -246,7 +255,7 @@ boot.executeInParallel([
 
   // Secure VNC connection proxy.
   app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!user) {
       routes.notFoundPage(user, end, query);
       return;
@@ -315,7 +324,7 @@ boot.executeInParallel([
 
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
 
     log('404', match[0]);
 
@@ -348,7 +357,7 @@ boot.executeInParallel([
 
   // Alpha version invite.
   app.ajax.on('invite', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -373,7 +382,7 @@ boot.executeInParallel([
 
   // Request a log-in key via email.
   app.ajax.on('login', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (user) {
       end({ status: 'logged-in' });
       return;
@@ -393,7 +402,7 @@ boot.executeInParallel([
 
   // Change the parameters of a project.
   app.ajax.on('projectdb', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -410,7 +419,7 @@ boot.executeInParallel([
 
   // Rebuild the base image of a project.
   app.ajax.on('rebuild', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -432,7 +441,7 @@ boot.executeInParallel([
 
   // Update the base image of a project.
   app.ajax.on('update', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -454,7 +463,7 @@ boot.executeInParallel([
 
   // Spawn a new machine for a project. (Fast!)
   app.ajax.on('spawn', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!user) {
       end({ status: 'error', message: 'Not signed in' });
       return;
@@ -471,7 +480,7 @@ boot.executeInParallel([
 
   // Destroy a machine.
   app.ajax.on('destroy', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!user) {
       end({ status: 'error', message: 'Not signed in' });
       return;
@@ -488,7 +497,7 @@ boot.executeInParallel([
 
   // Save a new user key, or update an existing one.
   app.ajax.on('key', (data, end, query) => {
-    let user = query.req.user;
+    let { user } = query.req;
     if (!user || !data.name || !data.key) {
       end();
       return;
