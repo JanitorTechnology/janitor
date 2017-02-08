@@ -341,7 +341,15 @@ hostAPI.get('/:container/:port', {
   description: 'Get information about a given Docker container port.',
 
   handler: (request, response) => {
-    let { user } = request;
+    let { user, oauth2access } = request;
+    let { hostname } = request.query;
+    if (!user && oauth2access && oauth2access.hostname === hostname) {
+      let { scopes } = oauth2access;
+      if (scopes.includes('user') || scopes.includes('user:ports')) {
+        user = oauth2access.user;
+      }
+    }
+
     if (!user) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' });
@@ -355,7 +363,6 @@ hostAPI.get('/:container/:port', {
       return;
     }
 
-    let { hostname } = request.query;
     let machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
       response.statusCode = 404;
