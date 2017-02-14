@@ -23,28 +23,7 @@ boot.executeInParallel([
   boot.ensureDockerTlsCertificates,
   boot.verifyJanitorOAuth2Access
 ], () => {
-
-  let { ca, client } = db.get('tls');
-
-  let parameters = {
-    provider: 'janitor',
-    path: '/api/hosts/' + hostname,
-    data: {
-      port: 2376,
-      ca: ca.crt,
-      crt: client.crt,
-      key: client.key
-    },
-    method: 'POST',
-    serviceRequest: true
-  };
-
-  oauth2.request(parameters, (error, body, response) => {
-    if (error) {
-      log('[fail] unabled to join cluster:', error);
-      return;
-    }
+  boot.registerDockerClient(() => {
     log('[ok] joined cluster as [hostname = ' + hostname + ']');
   });
-
 });
