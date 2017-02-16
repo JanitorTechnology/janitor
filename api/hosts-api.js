@@ -341,30 +341,37 @@ hostAPI.get('/:container/:port', {
   description: 'Get information about a given Docker container port.',
 
   handler: (request, response) => {
-    let { user } = request;
+    let { user, oauth2scope } = request;
+    const { hostname } = request.query;
+    if (!user && oauth2scope && oauth2scope.hostname === hostname) {
+      const { scopes } = oauth2scope;
+      if (scopes.has('user') || scopes.has('user:ports')) {
+        user = oauth2scope.user;
+      }
+    }
+
     if (!user) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' });
       return;
     }
 
-    let { container } = request.query;
+    const { container } = request.query;
     if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid container ID' });
       return;
     }
 
-    let { hostname } = request.query;
-    let machine = machines.getMachineByContainer(user, hostname, container);
+    const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
       response.statusCode = 404;
       response.json({ error: 'Container not found' });
       return;
     }
 
-    let port = String(request.query.port);
-    for (let projectPort in machine.docker.ports) {
+    const port = String(request.query.port);
+    for (const projectPort in machine.docker.ports) {
       if (projectPort === port) {
         response.json(machine.docker.ports[projectPort]);
         return;
