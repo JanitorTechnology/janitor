@@ -72,13 +72,7 @@ boot.executeInParallel([
 
   // Authenticate OAuth2 requests with a server middleware.
   app.use((request, response, next) => {
-    let access = users.getOAuth2Access(request);
-    if (access) {
-      let { hostname, scope, user } = access;
-      let scopes = scope.split(',');
-      request.oauth2access = { hostname, scopes, user };
-    }
-
+    request.oauth2scope = users.getOAuth2ScopeWithUser(request);
     next();
   });
 
