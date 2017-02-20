@@ -2,7 +2,7 @@
 // The following code is covered by the AGPL-3.0 license.
 
 let camp = require('@jankeromnes/camp');
-let path = require('path');
+let nodepath = require('path');
 let selfapi = require('selfapi');
 
 let api = require('./api/');
@@ -247,72 +247,59 @@ boot.executeInParallel([
     routes.adminPage(section, user, end, query);
   });
 
-  // Secure VNC connection proxy.
-  app.route(/^\/vnc\/(\w+)\/(\d+)(\/.*)$/, (data, match, end, query) => {
-    let { user } = query.req;
+  // FIXME: The main Janitor server should only operate a cluster of dedicated
+  // Docker servers, but not host containers itself directly. We should remove
+  // the containers from the main server, and delete the proxy handlers below.
+
+  // FIXME: Remove this deprecated handler (see comments above).
+  // Proxy requests to local containers using URLs like '/:container/:port/*'.
+  // Example:
+  //   'https://<hostname>/abc123/8080/index.html' should proxy to
+  //   'http://localhost:8080/index.html' in Docker container 'abc123'.
+  app.route(/^\/([0-9a-f]{16,})\/(\d+)(\/.*)$/, (data, match, end, query) => {
+    // Note: In this regex, we expect a 16+ hex-digit container ID, a numeric
+    // port, and a path that starts with a '/'. These anonymous patterns are
+    // captured in the `match` array.
+    const { user } = query.req;
     if (!user) {
       routes.notFoundPage(user, end, query);
       return;
     }
 
-    let projectId = match[1];
-    let machineId = parseInt(match[2], 10);
-    let uri = path.normalize(match[3]);
+    const container = match[1];
+    const port = String(match[2]);
+    const path = nodepath.normalize(match[3]);
 
-    log('vnc', projectId, machineId, uri);
-
-    let machine = machines.getMachineById(user, projectId, machineId);
+    const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
       routes.notFoundPage(user, end, query);
       return;
     }
 
-    // Remember this machine for the websocket proxy (see below).
-    user.lastvnc = {
-      project: projectId,
-      machine: machineId
-    };
-
-    let parameters = {
-      port: machine.docker.ports['8088'].port,
-      path: uri
-    };
-    routes.webProxy(parameters, query.req, query.res);
-  });
-
-  // Secure WebSocket proxy for VNC connections.
-  app.on('upgrade', (request, socket, head) => {
-    if (request.url !== '/websockify') {
-      socket.end();
+    const mappedPort = machine.docker.ports[port];
+    if (!mappedPort || mappedPort.proxy !== 'https') {
+      routes.notFoundPage(user, end, query);
       return;
     }
 
+    // Remember this port for the WebSocket proxy (see below).
+    user.lastProxyPort = mappedPort.port;
+    routes.webProxy({ port: mappedPort.port, path }, query.req, query.res);
+  });
+
+  // FIXME: Remove this deprecated handler (see comments above).
+  // Proxy WebSocket connections to local containers.
+  app.on('upgrade', (request, socket, head) => {
     // Authenticate the user (our middleware only works for 'request' events).
     users.get(request, user => {
-      if (!user || !user.lastvnc) {
+      if (!user || !user.lastProxyPort) {
         socket.end();
         return;
       }
 
-      // Get the last machine that the user VNC'd into (a hack, but it works).
-      // Note: Parsing the URL in `request.headers.referer` would be better, but
-      // that header never seems to be set on WebSocket requests.
-      let projectId = user.lastvnc.project;
-      let machineId = user.lastvnc.machine;
-      let machine = machines.getMachineById(user, projectId, machineId);
-
-      log('vnc-websocket', projectId, machineId);
-
-      if (!machine) {
-        socket.end();
-        return;
-      }
-
-      let parameters = {
-        port: machine.docker.ports['8088'].port,
-        path: request.url
-      };
-      routes.webProxy(parameters, request, socket);
+      const port = user.lastProxyPort;
+      const path = nodepath.normalize(request.url);
+      routes.webProxy({ port, path }, request, socket);
     });
   });
 
