@@ -4,7 +4,7 @@
   "description": "The fastest development system in the world.",
   "homepage": "https://janitor.technology",
   "bugs": {
-    "url": "https://github.com/jankeromnes/janitor/issues"
+    "url": "https://github.com/janitortechnology/janitor/issues"
   },
   "license": "AGPL-3.0",
   "author": {
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jankeromnes/janitor"
+    "url": "https://github.com/janitortechnology/janitor"
   },
   "scripts": {
     "app": "SCRIPT=app npm start",
