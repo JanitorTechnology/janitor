@@ -41,11 +41,10 @@ boot.executeInParallel([
 
   // Protect the server and its users with a security policies middleware.
   const enforceSecurityPolicies = (request, response, next) => {
-    // Only accept requests addressed to our hostname, no CDN here.
-    if (request.headers.host !== hostname) {
-      log('dropping request for', request.headers.host);
-      response.statusCode = 400;
-      response.end();
+    // Only accept requests addressed to our actual hostname.
+    const requestedHostname = request.headers.host;
+    if (requestedHostname !== hostname) {
+      routes.drop(response, 'invalid hostname: ' + requestedHostname);
       return;
     }
 
