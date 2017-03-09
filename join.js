@@ -2,6 +2,7 @@
 // The following code is covered by the AGPL-3.0 license.
 
 const camp = require('@jankeromnes/camp');
+const http = require('http');
 const nodepath = require('path');
 
 const boot = require('./lib/boot');
@@ -161,6 +162,15 @@ function ensureOAuth2Access (request, response, next) {
     // This session has an OAuth2 access token, so it's authenticated.
     // TODO: Also verify that the token is still valid, or renew it if not.
     next();
+    return;
+  }
+
+  // We can only use `http.ServerResponse`s to initiate OAuth2 authentication,
+  // not raw `net.Socket`s (as in WebSocket connections).
+  if (!(response instanceof http.ServerResponse)) {
+    const error = new Error('Unsupported response type (e.g. WebSocket)');
+    log('[fail] oauth2 redirect', error);
+    response.end();
     return;
   }
 
