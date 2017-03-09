@@ -21,24 +21,26 @@ boot.executeInParallel([
 ], () => {
 
   // You can customize these values in './db.json'.
-  let hostname = db.get('hostname', 'localhost');
-  let https = db.get('https');
-  let ports = db.get('ports');
+  const hostname = db.get('hostname', 'localhost');
+  const https = db.get('https');
+  const ports = db.get('ports');
+  const security = db.get('security');
 
   // The main Janitor server.
-  let app = camp.start({
+  const app = camp.start({
     documentRoot: process.cwd() + '/static',
     port: ports.https,
-    secure: true,
+    secure: !security.forceHttp,
     key: https.key,
     cert: https.crt,
     ca: https.ca
   });
 
-  log('Janitor → https://' + hostname + ':' + ports.https);
+  log('[ok] Janitor → http' + (security.forceHttp ? '' : 's') + '://' +
+    hostname + ':' + ports.https);
 
   // Protect the server and its users with a security policies middleware.
-  app.handle((request, response, next) => {
+  const enforceSecurityPolicies = (request, response, next) => {
     // Only accept requests addressed to our hostname, no CDN here.
     if (request.headers.host !== hostname) {
       log('dropping request for', request.headers.host);
@@ -50,14 +52,20 @@ boot.executeInParallel([
     // Tell browsers to only use secure HTTPS connections for this web app.
     response.setHeader('Strict-Transport-Security', 'max-age=31536000');
 
-    // Prevent browsers from accidentally detecting scripts where they shouldn't.
+    // Prevent browsers from accidentally seeing scripts where they shouldn't.
     response.setHeader('X-Content-Type-Options', 'nosniff');
 
     // Tell browsers this web app should never be embedded into an iframe.
     response.setHeader('X-Frame-Options', 'DENY');
 
     next();
-  });
+  };
+
+  if (!security.forceInsecure) {
+    app.handle(enforceSecurityPolicies);
+  } else {
+    log('[warning] disabled all https security policies');
+  }
 
   // Authenticate signed-in user requests with a server middleware.
   app.handle((request, response, next) => {

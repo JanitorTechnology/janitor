@@ -34,18 +34,20 @@ boot.executeInParallel([
 
     const https = db.get('https');
     const ports = db.get('ports');
+    const security = db.get('security');
 
     // Start an authenticated Janitor proxy for Docker containers on this host.
     const proxy = camp.start({
       documentRoot: process.cwd() + '/static',
       port: ports.https,
-      secure: true,
+      secure: !security.forceHttp,
       key: https.key,
       cert: https.crt,
       ca: https.ca
     });
 
-    log('[ok] proxy → https://' + hostname + ':' + ports.https);
+    log('[ok] proxy → http' + (security.forceHttp ? '' : 's') + '://' +
+      hostname + ':' + ports.https);
 
     // Authenticate all requests with a series of server middlewares.
     proxy.handle(ensureSession);
