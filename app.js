@@ -1,18 +1,18 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-let camp = require('@jankeromnes/camp');
-let nodepath = require('path');
-let selfapi = require('selfapi');
+const camp = require('@jankeromnes/camp');
+const nodepath = require('path');
+const selfapi = require('selfapi');
 
-let api = require('./api/');
-let boot = require('./lib/boot');
-let db = require('./lib/db');
-let hosts = require('./lib/hosts');
-let log = require('./lib/log');
-let machines = require('./lib/machines');
-let routes = require('./lib/routes');
-let users = require('./lib/users');
+const api = require('./api/');
+const boot = require('./lib/boot');
+const db = require('./lib/db');
+const hosts = require('./lib/hosts');
+const log = require('./lib/log');
+const machines = require('./lib/machines');
+const routes = require('./lib/routes');
+const users = require('./lib/users');
 
 boot.executeInParallel([
   boot.forwardHttp,
@@ -37,11 +37,8 @@ boot.executeInParallel([
 
   log('Janitor → https://' + hostname + ':' + ports.https);
 
-  // Convenient express-like alias.
-  app.use = app.handle;
-
   // Protect the server and its users with a security policies middleware.
-  app.use((request, response, next) => {
+  app.handle((request, response, next) => {
     // Only accept requests addressed to our hostname, no CDN here.
     if (request.headers.host !== hostname) {
       log('dropping request for', request.headers.host);
@@ -63,7 +60,7 @@ boot.executeInParallel([
   });
 
   // Authenticate signed-in user requests with a server middleware.
-  app.use((request, response, next) => {
+  app.handle((request, response, next) => {
     users.get(request, user => {
       request.user = user;
       next();
@@ -71,7 +68,7 @@ boot.executeInParallel([
   });
 
   // Authenticate OAuth2 requests with a server middleware.
-  app.use((request, response, next) => {
+  app.handle((request, response, next) => {
     request.oauth2scope = users.getOAuth2ScopeWithUser(request);
     next();
   });
@@ -81,44 +78,42 @@ boot.executeInParallel([
 
   // Public landing page.
   app.route(/^\/$/, (data, match, end, query) => {
-    let user = query.req.user;
-
-    return routes.landingPage(user, end);
+    const { user } = query.req;
+    routes.landingPage(query.res, user);
   });
 
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     log('blog');
-    routes.blogPage(user, end);
+    routes.blogPage(query.res, user);
   });
 
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
-    routes.dataPage(user, end);
+    const { user } = query.req;
+    routes.dataPage(query.res, user);
   });
 
   // Public project pages.
   app.route(/^\/projects(\/\w+)?\/?$/, (data, match, end, query) => {
-    var user = query.req.user;
-    var projectUri = match[1];
-
+    const { user } = query.req;
+    const projectUri = match[1];
     if (!projectUri) {
       // No particular project was requested, show them all.
-      routes.projectsPage(user, end);
+      routes.projectsPage(query.res, user);
       return;
     }
 
-    var projectId = projectUri.slice(1);
-    var project = db.get('projects')[projectId];
-
-    if (project) {
-      // Show the requested project-specific page.
-      return routes.projectPage(project, user, end);
+    const projectId = projectUri.slice(1);
+    const project = db.get('projects')[projectId];
+    if (!project) {
+      // The requested project doesn't exist.
+      routes.notFoundPage(query.res, user);
+      return;
     }
 
-    return routes.notFoundPage(user, end, query);
+    routes.projectPage(query.res, project, user);
   });
 
   // User logout.
@@ -127,25 +122,27 @@ boot.executeInParallel([
       if (error) {
         log('[fail] logout', error);
       }
+
       routes.redirect(query.res, '/');
     });
   });
 
-  // User login.
+  // User login page.
   app.route(/^\/login\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
-    if (user) {
-      routes.redirect(query.res, '/');
+    const { user } = query.req;
+    if (!user) {
+      routes.loginPage(query.res);
       return;
     }
-    routes.loginPage(end);
+
+    routes.redirect(query.res, '/');
   });
 
   // User OAuth2 authorization.
   app.route(/^\/login\/oauth\/authorize\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!user) {
-      routes.notFoundPage(user, end, query);
+      routes.notFoundPage(query.res, user);
       return;
     }
 
@@ -155,7 +152,7 @@ boot.executeInParallel([
         // Note: Such OAuth2 sanity problems should rarely happen, but if they
         // do become more frequent, we should inform the user about what's
         // happening here instead of showing a generic 404 page.
-        routes.notFoundPage(user, end, query);
+        routes.notFoundPage(query.res, user);
         return;
       }
       routes.redirect(query.res, data.redirect_url);
@@ -164,13 +161,13 @@ boot.executeInParallel([
 
   // OAuth2 access token request.
   app.route(/^\/login\/oauth\/access_token\/?$/, (data, match, end, query) => {
-    let { req: request, res: response } = query;
+    const { req: request, res: response } = query;
     if (request.method !== 'POST') {
-      routes.notFoundPage(request.user, end, query);
+      routes.notFoundPage(response, request.user);
       return;
     }
 
-    let authenticatedHostname = hosts.authenticate(request);
+    const authenticatedHostname = hosts.authenticate(request);
     if (!authenticatedHostname) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' });
@@ -188,28 +185,28 @@ boot.executeInParallel([
 
   // User contributions list.
   app.route(/^\/contributions\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!user) {
-      routes.loginPage(end);
+      routes.loginPage(query.res);
       return;
     }
 
-    routes.contributionsPage(user, end);
+    routes.contributionsPage(query.res, user);
   });
 
   // User settings.
   app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!user) {
-      routes.loginPage(end);
+      routes.loginPage(query.res);
       return;
     }
 
     // Select the requested section, or serve the default one.
-    let sectionUri = match[1];
-    let section = sectionUri ? sectionUri.slice(1) : 'account';
+    const sectionUri = match[1];
+    const section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    routes.settingsPage(section, user, end, query);
+    routes.settingsPage(query.res, section, user);
   });
 
   // User account (now part of settings).
@@ -232,19 +229,19 @@ boot.executeInParallel([
 
   // Admin sections.
   app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!users.isAdmin(user)) {
-      routes.notFoundPage(user, end, query);
+      routes.notFoundPage(query.res, user);
       return;
     }
 
     // Select the requested section, or serve the default one.
-    let sectionUri = match[1];
-    let section = sectionUri ? sectionUri.slice(1) : 'hosts';
+    const sectionUri = match[1];
+    const section = sectionUri ? sectionUri.slice(1) : 'hosts';
 
     log('admin', section, '(' + user.email + ')');
 
-    routes.adminPage(section, user, end, query);
+    routes.adminPage(query.res, section, user);
   });
 
   // FIXME: The main Janitor server should only operate a cluster of dedicated
@@ -262,7 +259,7 @@ boot.executeInParallel([
     // captured in the `match` array.
     const { user } = query.req;
     if (!user) {
-      routes.notFoundPage(user, end, query);
+      routes.notFoundPage(query.res, user);
       return;
     }
 
@@ -272,19 +269,19 @@ boot.executeInParallel([
 
     const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
-      routes.notFoundPage(user, end, query);
+      routes.notFoundPage(query.res, user);
       return;
     }
 
     const mappedPort = machine.docker.ports[port];
     if (!mappedPort || mappedPort.proxy !== 'https') {
-      routes.notFoundPage(user, end, query);
+      routes.notFoundPage(query.res, user);
       return;
     }
 
     // Remember this port for the WebSocket proxy (see below).
     user.lastProxyPort = mappedPort.port;
-    routes.webProxy({ port: mappedPort.port, path }, query.req, query.res);
+    routes.webProxy(query.req, query.res, { port: mappedPort.port, path });
   });
 
   // FIXME: Remove this deprecated handler (see comments above).
@@ -299,17 +296,15 @@ boot.executeInParallel([
 
       const port = user.lastProxyPort;
       const path = nodepath.normalize(request.url);
-      routes.webProxy({ port, path }, request, socket);
+      routes.webProxy(request, socket, { port, path });
     });
   });
 
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
-    let { user } = query.req;
-
+    const { user } = query.req;
     log('404', match[0]);
-
-    routes.notFoundPage(user, end, query);
+    routes.notFoundPage(query.res, user);
   });
 
   // Alpha version sign-up.
@@ -517,8 +512,3 @@ boot.executeInParallel([
     end({ status: 'key-saved' });
   });
 });
-
-// Teach the template system how to generate IDs (matching /[a-z0-9_-]*/).
-camp.templateReader.parsers.id = text => {
-  return text.replace(/[^\w-]/g, '').toLowerCase();
-};
