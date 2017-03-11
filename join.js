@@ -242,7 +242,7 @@ function routeRequest (proxyParameters, request, response) {
   const { port, proxy } = proxyParameters;
   switch (proxy) {
     case 'https':
-      routes.webProxy({ port, path }, request, response);
+      routes.webProxy(request, response, { port, path });
       return;
 
     case 'none':
