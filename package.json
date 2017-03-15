@@ -28,7 +28,7 @@
     "@jankeromnes/camp": "~16.2.13",
     "dockerode": "~2.4.1",
     "email-login": "~1.0.1",
-    "fast-json-patch": "~1.1.6",
+    "fast-json-patch": "~1.1.8",
     "le-acme-core": "~2.0.9",
     "node-forge": "~0.7.0",
     "oauth": "~0.9.15",
