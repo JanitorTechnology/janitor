@@ -3,15 +3,15 @@
         <h2 class="header">{{= project.name in html}}</h2>
         <p>Updated <time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}"></time>.</p>
         <div class="row">
-          <div class="project-graph col-md-6">
+          <div class="graph col-md-6">
             <div data-data="{{= project.data['build-time'] in json}}" data-title="Image build"></div>
           </div>
-          <div class="project-graph col-md-6">
+          <div class="graph col-md-6">
             <div data-data="{{= project.data['update-time'] in json}}" data-title="Image update"></div>
           </div>
         </div>
         <div class="row">
-          <div class="project-graph col-md-6">
+          <div class="graph col-md-6">
             <div data-data="{{= project.data['spawn-time'] in json}}" data-title="Container spawn"></div>
           </div>
         </div>

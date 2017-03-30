@@ -1,7 +1,6 @@
 /* Copyright © 2015 Jan Keromnes. All rights reserved.
  * The following code is covered by the AGPL-3.0 license. */
 
-
 html {
   height: 100%;
 }
@@ -45,6 +44,17 @@ h4 {
   color: #777;
 }
 
+.logo-small {
+  width: 30px;
+}
+
+.logo-medium {
+  width: 35px;
+}
+
+.logo-large {
+  width: 50px;
+}
 
 /* Responsive navigation bar */
 
@@ -107,13 +117,12 @@ h4 {
   background-color: #D9534F;
 }
 
-
 /* Landing page */
 
 .jumbotron {
   color: white;
   background-color: #1265AA;
-  padding-top: 130px;
+  padding-top: 100px;
   padding-bottom: 100px;
   margin-top: 0;
   margin-bottom: 0;
@@ -162,7 +171,6 @@ h4 {
 .janitor-story > h2 > .glyphicon-cloud {
   top: 7px;
 }
-
 
 /* Forms */
 
@@ -232,6 +240,26 @@ h4 {
   margin-right: 10px;
 }
 
+/* Lists */
+
+.list-group-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.list-group-item > :not(:last-child) {
+  margin-right: 15px;
+}
+
+.list-group-item-details {
+  line-height: 1.5em;
+  color: #555;
+}
+
+.list-group-item-controls {
+  margin-left: auto;
+}
 
 /* Panels */
 
@@ -300,17 +328,6 @@ h4 {
   max-height: 200px;
 }
 
-.project-graph {
-  padding-top: 40px;
-  padding-right: 25px;
-}
-
-.project-graph > div[data-data] {
-  height: 300px;
-  width: 500px;
-  max-width: 100%;
-}
-
 /* Blog */
 
 .blog {
@@ -358,11 +375,59 @@ h4 {
   font-size: 11px;
 }
 
+.graph {
+  padding-top: 40px;
+  padding-right: 25px;
+}
+
+.graph > div[data-data] {
+  height: 300px;
+  width: 500px;
+  max-width: 100%;
+}
 
 /* Sections */
 
+section.alert {
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+}
+
+section.contributions > .container,
+section.data > .container,
+section.login > .container,
+section.projects > .container,
+section.settings > .container,
+section.video > .container{
+  max-width: 850px;
+}
+
+section.video {
+  margin-top: 30px;
+}
+
 .tabs {
+  margin-top: 30px;
   margin-bottom: 0;
+}
+
+.nav-tabs > li > a {
+  padding-top: 11px;
+  padding-bottom: 9px;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  border-top: 3px solid #e36200;
+  font-weight: bold;
+  padding-top: 9px;
+}
+
+.row-header {
+  padding-top: 5px;
+  padding-bottom: 10px;
 }
 
 .protip {
