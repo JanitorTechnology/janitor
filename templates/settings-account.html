@@ -1,6 +1,5 @@
     <section class="settings">
       <div class="container">
-        <h2 class="header">Settings</h2>
         <div class="row">
           <div class="account-form col-sm-6">
             <label>Email</label>
@@ -19,6 +18,16 @@
             <textarea class="form-control" data-submit-on="blur" name="key" placeholder="SSH key" rows="7">{{= user.keys.cloud9 in html}}</textarea>
             <p>Please add your <a target="_blank" href="https://c9.io/account/ssh" title="Your public SSH key on c9.io">Cloud9 SSH key</a> to enable Cloud9 IDE access.</p>
           </form>
+        </div>
+      </div>
+    </section>
+    <section class="protip">
+      <div class="container">
+        <div class="row">
+          <small>
+            <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+            <strong>ProTip!</strong> After setting up your account, you can start hacking on <a href="/projects/">Projects</a>.
+          </small>
         </div>
       </div>
     </section>

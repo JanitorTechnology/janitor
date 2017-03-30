@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128px" height="128px" viewBox="0 0 128 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.2 (12043) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard 1 Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <ellipse id="path-1" cx="35" cy="40" rx="35" ry="40"></ellipse>
+        <linearGradient x1="0%" y1="50%" x2="100%" y2="50%" id="linearGradient-3">
+            <stop stop-color="#000000" stop-opacity="0.2" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.35 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Artboard-1-Copy" sketch:type="MSArtboardGroup">
+            <g id="bugzilla" sketch:type="MSLayerGroup" transform="translate(12.000000, 22.000000)">
+                <g id="Group" sketch:type="MSShapeGroup">
+                    <g fill="#000000">
+                        <path d="M35.5,11.5 L26,0" id="Shape" stroke="#6D4C41" stroke-width="5" stroke-linecap="round"></path>
+                        <path d="M77.5,11.5 L68,0" id="Shape-Copy-2" stroke="#6D4C41" stroke-width="5" stroke-linecap="round" transform="translate(73.000000, 6.000000) scale(-1, 1) translate(-73.000000, -6.000000) "></path>
+                        <path d="M7,32.5 L22,32.5 C23.3807119,32.5 24.5,31.3807119 24.5,30 C24.5,28.6192881 23.3807119,27.5 22,27.5 L7,27.5 C5.61928813,27.5 4.5,28.6192881 4.5,30 C4.5,31.3807119 5.61928813,32.5 7,32.5 Z M3,52.5 L18,52.5 C19.3807119,52.5 20.5,51.3807119 20.5,50 C20.5,48.6192881 19.3807119,47.5 18,47.5 L3,47.5 C1.61928813,47.5 0.5,48.6192881 0.5,50 C0.5,51.3807119 1.61928813,52.5 3,52.5 Z M10,72.5 L27.5,72.5 C28.8807119,72.5 30,71.3807119 30,70 C30,68.6192881 28.8807119,67.5 27.5,67.5 L10,67.5 C8.61928813,67.5 7.5,68.6192881 7.5,70 C7.5,71.3807119 8.61928813,72.5 10,72.5 Z" id="Shape"></path>
+                        <path d="M81,32.5 L96,32.5 C97.3807119,32.5 98.5,31.3807119 98.5,30 C98.5,28.6192881 97.3807119,27.5 96,27.5 L81,27.5 C79.6192881,27.5 78.5,28.6192881 78.5,30 C78.5,31.3807119 79.6192881,32.5 81,32.5 Z M77,52.5 L92,52.5 C93.3807119,52.5 94.5,51.3807119 94.5,50 C94.5,48.6192881 93.3807119,47.5 92,47.5 L77,47.5 C75.6192881,47.5 74.5,48.6192881 74.5,50 C74.5,51.3807119 75.6192881,52.5 77,52.5 Z M84,72.5 L101.5,72.5 C102.880712,72.5 104,71.3807119 104,70 C104,68.6192881 102.880712,67.5 101.5,67.5 L84,67.5 C82.6192881,67.5 81.5,68.6192881 81.5,70 C81.5,71.3807119 82.6192881,72.5 84,72.5 Z" id="Shape-Copy" transform="translate(89.250000, 50.000000) scale(-1, 1) translate(-89.250000, -50.000000) "></path>
+                    </g>
+                    <ellipse id="Oval" fill="#4CAF50" cx="52" cy="44" rx="35" ry="40"></ellipse>
+                </g>
+                <g id="Clipped" transform="translate(17.000000, 4.000000)">
+                    <mask id="mask-2" sketch:name="Oval" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Oval" stroke="#000000" stroke-width="3" sketch:type="MSShapeGroup" xlink:href="#path-1"></use>
+                    <g id="Group" mask="url(#mask-2)" sketch:type="MSShapeGroup">
+                        <g transform="translate(-15.000000, -74.000000)">
+                            <rect id="Rectangle-path" fill="url(#linearGradient-3)" x="50" y="74" width="35" height="80"></rect>
+                            <circle id="Oval" fill="#6D4C41" filter="url(#filter-4)" cx="50" cy="50" r="50"></circle>
+                            <circle id="Oval" fill-opacity="0.2" fill="#000000" cx="50" cy="153" r="10"></circle>
+                        </g>
+                    </g>
+                </g>
+                <g id="Group" transform="translate(37.000000, 14.000000)" fill="#4E342E" sketch:type="MSShapeGroup">
+                    <circle id="Oval" cx="4" cy="4" r="3.5"></circle>
+                    <circle id="Oval" cx="26" cy="4" r="3.5"></circle>
+                </g>
+            </g>
+            <path d="M81.1188475,78.334934 L84,78.334934 L84,83.0408163 L74.972389,83.0408163 L74.972389,70.8919568 C74.972389,67.1464586 73.7238896,65.7058824 71.27491,65.7058824 C68.2977191,65.7058824 67.0972389,67.8187275 67.0972389,70.8439376 L67.0972389,78.3829532 L69.9783914,78.3829532 L69.9783914,83.0888355 L60.9027611,83.0888355 L60.9027611,70.8919568 C60.9027611,67.1464586 59.6542617,65.7058824 57.2052821,65.7058824 C54.2280912,65.7058824 53.027611,67.8187275 53.027611,70.8439376 L53.027611,78.3829532 L57.1572629,78.3829532 L57.1572629,83.0888355 L44,83.0888355 L44,78.3829532 L46.8811525,78.3829532 L46.8811525,66.1380552 L44,66.1380552 L44,61.4321729 L53.0756303,61.4321729 L53.0756303,64.697479 C54.3721489,62.392557 56.6290516,61 59.6542617,61 C62.7755102,61 65.6566627,62.4885954 66.7130852,65.6578631 C67.9135654,62.7767107 70.362545,61 73.7719088,61 C77.6614646,61 81.214886,63.3529412 81.214886,68.4909964 L81.214886,78.334934 L81.1188475,78.334934 Z" id="Shape-Copy-3" fill="#000000" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
