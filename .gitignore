@@ -1,3 +1,4 @@
+.c9/*
 .DS_Store
 Thumbs.db
 npm-debug.log
@@ -11,4 +12,3 @@ janitor.log
 janitor.pid
 backups
 tokens
-.c9/*
