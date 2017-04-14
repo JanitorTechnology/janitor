@@ -37,7 +37,7 @@ boot.executeInParallel([
   });
 
   log('[ok] Janitor → http' + (security.forceHttp ? '' : 's') + '://' +
-    hostname + ':' + ports.https);
+    hostname + ':' + (security.forceHttp ? ports.http : ports.https));
 
   // Protect the server and its users with a security policies middleware.
   const enforceSecurityPolicies = (request, response, next) => {
