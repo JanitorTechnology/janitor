@@ -11,3 +11,4 @@ janitor.log
 janitor.pid
 backups
 tokens
+.c9/*
