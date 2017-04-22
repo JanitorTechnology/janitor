@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@jankeromnes/camp": "~16.2.16",
-    "dockerode": "~2.4.1",
+    "dockerode": "~2.4.3",
     "email-login": "~1.0.1",
     "fast-json-patch": "~1.1.8",
     "le-acme-core": "~2.0.9",
