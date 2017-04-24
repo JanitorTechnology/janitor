@@ -29,6 +29,7 @@ boot.executeInParallel([
   // The main Janitor server.
   const app = camp.start({
     documentRoot: process.cwd() + '/static',
+    saveRequestChunks: true,
     port: ports.https,
     secure: !security.forceHttp,
     key: https.key,

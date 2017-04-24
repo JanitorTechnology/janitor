@@ -25,7 +25,7 @@
     "stop": "if [ -e janitor.pid -a -n \"$(ps h $(cat janitor.pid))\" ] ; then kill $(cat janitor.pid) && printf \"[$(date -uIs)] Background process stopped (PID $(cat janitor.pid)).\\n\" ; fi ; rm -f janitor.pid"
   },
   "dependencies": {
-    "@jankeromnes/camp": "~16.2.16",
+    "@jankeromnes/camp": "~16.2.17",
     "dockerode": "~2.4.3",
     "email-login": "~1.0.1",
     "fast-json-patch": "~1.1.9",
