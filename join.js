@@ -39,6 +39,7 @@ boot.executeInParallel([
     // Start an authenticated Janitor proxy for Docker containers on this host.
     const proxy = camp.start({
       documentRoot: process.cwd() + '/static',
+      saveRequestChunks: true,
       port: ports.https,
       secure: !security.forceHttp,
       key: https.key,
