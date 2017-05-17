@@ -1,18 +1,14 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-let selfapi = require('selfapi');
-
+const selfapi = require('selfapi');
 
 // Janitor API root resource.
-
-let api = selfapi({
-  title: 'Janitor API'
+const api = module.exports = selfapi({
+  title: 'Janitor API',
+  description:
+    'A simple JSON API to interact with Janitor containers, hosts and projects.'
 });
 
-module.exports = api;
-
-
 // Janitor API sub-resources.
-
 api.api('/hosts', require('./hosts-api'));
