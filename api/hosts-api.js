@@ -1,17 +1,17 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-let selfapi = require('selfapi');
+const selfapi = require('selfapi');
 
-let db = require('../lib/db');
-let docker = require('../lib/docker');
-let hosts = require('../lib/hosts');
-let log = require('../lib/log');
-let machines = require('../lib/machines');
-let users = require('../lib/users');
+const db = require('../lib/db');
+const docker = require('../lib/docker');
+const hosts = require('../lib/hosts');
+const log = require('../lib/log');
+const machines = require('../lib/machines');
+const users = require('../lib/users');
 
 // API resource to manage Janitor cluster hosts.
-let hostsAPI = module.exports = selfapi({
+const hostsAPI = module.exports = selfapi({
   title: 'Hosts',
 
   beforeTests: (callback) => {
@@ -38,15 +38,15 @@ hostsAPI.get({
   description: 'List all cluster hosts owned by the authenticated user.',
 
   handler: (request, response) => {
-    let { user } = request;
+    const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' });
       return;
     }
 
-    let list = [];
-    for (let hostname in db.get('hosts')) {
+    const list = [];
+    for (const hostname in db.get('hosts')) {
       list.push(hostname);
     }
 
@@ -61,13 +61,13 @@ hostsAPI.get({
 });
 
 // API sub-resource to manage a single cluster host.
-let hostAPI = hostsAPI.api('/:hostname');
+const hostAPI = hostsAPI.api('/:hostname');
 
 hostAPI.get({
   title: 'Get a single host',
 
   handler: (request, response) => {
-    let { hostname } = request.query;
+    const { hostname } = request.query;
     if (!hostname) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid hostname' });
@@ -75,9 +75,9 @@ hostAPI.get({
     }
 
     // Host OAuth2 authentication.
-    let authenticatedHostname = hosts.authenticate(request);
+    const authenticatedHostname = hosts.authenticate(request);
     if (authenticatedHostname && authenticatedHostname === hostname) {
-      let host = hosts.get(hostname);
+      const host = hosts.get(hostname);
       if (host) {
         response.json(host.properties);
         return;
@@ -85,9 +85,9 @@ hostAPI.get({
     }
 
     // User authentication.
-    let { user } = request;
+    const { user } = request;
     if (user && users.isAdmin(user)) {
-      let host = hosts.get(hostname);
+      const host = hosts.get(hostname);
       if (host) {
         response.json(host.properties);
         return;
@@ -121,7 +121,7 @@ hostAPI.post({
   description: 'Create a new host and add it to the cluster.',
 
   handler: (request, response) => {
-    let { hostname } = request.query;
+    const { hostname } = request.query;
     if (!hostname) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid hostname' });
@@ -129,14 +129,14 @@ hostAPI.post({
     }
 
     // Host OAuth2 authentication.
-    let authenticatedHostname = hosts.authenticate(request);
+    const authenticatedHostname = hosts.authenticate(request);
     if (authenticatedHostname && authenticatedHostname === hostname) {
       updateHost();
       return;
     }
 
     // User authentication.
-    let { user } = request;
+    const { user } = request;
     if (user && users.isAdmin(user)) {
       if (hosts.get(hostname)) {
         updateHost();
@@ -192,7 +192,7 @@ hostAPI.post({
       request.on('end', () => {
         let parameters = null;
         try {
-          parameters = JSON.parse(String(json));
+          parameters = JSON.parse(json);
         } catch (error) {
           response.statusCode = 400; // Bad Request
           response.json({ error: 'Problems parsing JSON' });
@@ -229,14 +229,14 @@ hostAPI.get('/credentials', {
   description: 'Show a host\'s OAuth2 client credentials.',
 
   handler: (request, response) => {
-    let { user } = request;
+    const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
       return;
     }
 
-    let host = hosts.get(request.query.hostname);
+    const host = hosts.get(request.query.hostname);
     if (!host) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
@@ -261,14 +261,14 @@ hostAPI.delete('/credentials', {
   description: 'Reset a host\'s OAuth2 client secret.',
 
   handler: (request, response) => {
-    let { user } = request;
+    const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
       return;
     }
 
-    let host = hosts.get(request.query.hostname);
+    const host = hosts.get(request.query.hostname);
     if (!host) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
@@ -296,14 +296,14 @@ hostAPI.get('/version', {
   title: 'Show host version',
 
   handler: (request, response) => {
-    let { user } = request;
+    const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
       return;
     }
 
-    let { hostname } = request.query;
+    const { hostname } = request.query;
     if (!hosts.get(hostname)) {
       response.statusCode = 404;
       response.json({ error: 'Host not found' });
