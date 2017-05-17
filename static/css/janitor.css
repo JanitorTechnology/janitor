@@ -353,6 +353,26 @@ h4 {
   margin-right: -2px;
 }
 
+/* API reference */
+
+.reference h1:not(:first-of-type) {
+  margin-top: 55px;
+  margin-bottom: 10px;
+}
+
+.reference h2 {
+  border-bottom: 0;
+  font-size: 28px;
+  margin-top: 45px;
+  margin-bottom: 10px;
+}
+
+.reference h3 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 /* Data */
 
 .data-topic {
@@ -398,6 +418,7 @@ section.contributions > .container,
 section.data > .container,
 section.login > .container,
 section.projects > .container,
+section.reference > .container,
 section.settings > .container,
 section.video > .container{
   max-width: 850px;

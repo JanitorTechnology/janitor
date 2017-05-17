@@ -90,6 +90,13 @@ boot.executeInParallel([
     routes.landingPage(query.res, user);
   });
 
+  // Public API reference.
+  app.route(/^\/reference\/api\/?$/, (data, match, end, query) => {
+    let { user } = query.req;
+    log('api reference');
+    routes.apiPage(query.res, api, user);
+  });
+
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
     const { user } = query.req;
