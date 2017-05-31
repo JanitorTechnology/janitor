@@ -8,6 +8,21 @@
   };
 });
 
+// Automatically set up delete button forms (when their 'method' is 'delete').
+Array.forEach(document.querySelectorAll('form[method=delete]'), function (form) {
+  setupAsyncForm(form);
+  form.addEventListener('submit', function (event) {
+    var data = getFormData(form);
+    fetchAPI('DELETE', form.action, data, function (error, data) {
+      if (error) {
+        updateFormStatus(form, 'error', String(error));
+        return;
+      }
+
+      updateFormStatus(form, 'success', null);
+    });
+  });
+});
 
 // Automatically set up JSON Patch forms (when their 'method' is 'patch').
 // See also: RFC 6902 - JSON Patch.
