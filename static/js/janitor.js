@@ -223,6 +223,18 @@ function getFormData (form) {
   }, {});
 }
 
+// Setup editable labels.
+Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
+  const toggle = label.querySelector('.editable-toggle');
+  if (!toggle) {
+    console.error('Editable label', label, 'has no ".editable-toggle" element!');
+    return;
+  }
+  toggle.addEventListener('click', function () {
+    label.classList.add('editing');
+  });
+});
+
 // Remove the query string (e.g. '?key=123') from the URL.
 function removeQueryString () {
   var search = window.location.search;

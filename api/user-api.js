@@ -58,18 +58,17 @@ userAPI.patch({
       json += String(chunk);
     });
     request.on('end', () => {
-      let operations = null;
       try {
-        operations = JSON.parse(json);
+        const operations = JSON.parse(json);
+        jsonpatch.applyPatch(user.profile, operations, true);
       } catch (error) {
+        log('[fail] patching user.profile', error);
         response.statusCode = 400; // Bad Request
-        response.json({ error: 'Problems parsing JSON' }, null, 2);
+        response.json({ error: 'Invalid JSON Patch' }, null, 2);
         return;
       }
 
-      jsonpatch.applyPatch(user.profile, operations);
       db.save();
-
       response.json(user.profile, null, 2);
     });
   },
@@ -132,29 +131,27 @@ configurationsAPI.patch({
       json += String(chunk);
     });
     request.on('end', () => {
-      let operations;
       try {
-        operations = JSON.parse(json);
+        const operations = JSON.parse(json);
         const changedFiles = operations
           .map(operation => operation.path.replace(/^\//, ''));
 
         for (const file of changedFiles) {
           if (!configurations.allowed.includes(file)) {
             response.statusCode = 400; // Bad Request
-            response.json({
-              error: 'Updating ' + file + ' is forbidden'
-            }, null, 2);
+            response.json({ error: `Updating ${file} is forbidden` }, null, 2);
             return;
           }
         }
+
+        jsonpatch.applyPatch(user.configurations, operations, true);
       } catch (error) {
         log('[fail] patching user.configurations', error);
         response.statusCode = 400; // Bad Request
-        response.json({ error: 'Problems parsing JSON' }, null, 2);
+        response.json({ error: 'Invalid JSON Patch' }, null, 2);
         return;
       }
 
-      jsonpatch.applyPatch(user.configurations, operations);
       db.save();
       response.json(user.configurations, null, 2);
     });

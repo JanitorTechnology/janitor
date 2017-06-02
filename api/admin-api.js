@@ -92,18 +92,16 @@ oauth2providerAPI.patch({
       json += String(chunk);
     });
     request.on('end', () => {
-      let operations = null;
       try {
-        operations = JSON.parse(json);
+        const operations = JSON.parse(json);
+        jsonpatch.applyPatch(provider, operations, true);
       } catch (error) {
-        log('[fail] json patch', error);
+        log('[fail] patching oauth2 provider', error);
         response.statusCode = 400; // Bad Request
-        response.json({ error: 'Problems parsing JSON' }, null, 2);
+        response.json({ error: 'Invalid JSON Patch' }, null, 2);
         return;
       }
 
-      // Apply the requested changes to the provider.
-      jsonpatch.applyPatch(provider, operations);
       db.save();
       response.json(provider, null, 2);
     });

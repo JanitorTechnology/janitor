@@ -11,10 +11,20 @@
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
             <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
-            <h4 class="project-title">
-              {{= project.name in html}} #{{= id in id}}
-              <small class="project-status" data-status="{{= machine.status in xmlattr}}"></small>
-            </h4>
+            <div class="editable-label project-title">
+              <form action="/api/hosts/{{= machine.docker.host in xmlattr}}/{{= machine.docker.container in xmlattr}}" class="ajax-form editable-editor has-feedback" data-refresh-after-success="true" method="patch">
+                <input class="form-control" data-submit-on="blur" name="/name" placeholder="{{= project.name in xmlattr }} #{{= id in id}}" type="text" value="{{= machine.properties.name in xmlattr }}">
+              </form>
+              <div class="editable-value">
+                <h4>
+                {{if (machine.properties.name)
+                    then {{{{= machine.properties.name in html}}}}
+                    else {{{{= project.name in html}} #{{= id in id}}}}
+                }}
+                </h4>
+                <span class="glyphicon glyphicon-pencil editable-toggle"></span>
+              </div>
+            </div>
             <div class="project-actions dropdown">
               <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -27,6 +37,9 @@
             </div>
           </div>
           <div class="panel-body">
+            <label>Status</label>
+            <span class="project-status" data-status="{{= machine.status in xmlattr}}"></span>
+            <br>
             <label>Logs</label>
             <pre class="well well-sm project-logs">{{= machine.docker.logs in html}}</pre>
             <p class="project-updated">Updated <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}"></time>.</p>
