@@ -1,6 +1,7 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
+const jsonpatch = require('fast-json-patch');
 const selfapi = require('selfapi');
 
 const db = require('../lib/db');
@@ -336,13 +337,108 @@ hostAPI.get('/version', {
 });
 
 // API sub-resource to manage a single container on a cluster host.
-const containerAPI = hostAPI.api('/:container', {
-  title: 'Containers'
+const containerAPI = hostAPI.api('/:container', 'Containers');
+
+containerAPI.patch({
+  title: 'Update a container',
+  description: 'Update the properties of a given Docker container.',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    const { container } = request.query;
+    if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Invalid container ID' }, null, 2);
+      return;
+    }
+
+    const { hostname } = request.query;
+    const machine = machines.getMachineByContainer(user, hostname, container);
+    if (!machine) {
+      response.statusCode = 404;
+      response.json({ error: 'Container not found' }, null, 2);
+      return;
+    }
+
+    let json = '';
+    request.on('data', chunk => {
+      json += String(chunk);
+    });
+    request.on('end', () => {
+      try {
+        const operations = JSON.parse(json);
+        jsonpatch.applyPatch(machine.properties, operations, true);
+      } catch (error) {
+        log('[fail] patching machine.properties', error);
+        response.statusCode = 400; // Bad Request
+        response.json({ error: 'Invalid JSON Patch' }, null, 2);
+        return;
+      }
+
+      db.save();
+      response.json(machine.properties, null, 2);
+    });
+  },
+
+  examples: [{
+    request: {
+      urlParameters: {
+        hostname: 'example.com',
+        container: 'abcdef0123456789',
+      },
+      body: JSON.stringify([
+        { op: 'replace', path: '/name', value: 'Much container. Such wow.' }
+      ], null, 2)
+    },
+    response: {
+      body: JSON.stringify({ name: 'Much container. Such wow.' }, null, 2)
+    }
+  }, {
+    request: {
+      urlParameters: {
+        hostname: 'example.com',
+        container: 'abcdef0123456789',
+      },
+      body: 'This is not JSON Patch',
+    },
+    response: {
+      status: 400,
+      body: JSON.stringify({ error: 'Invalid JSON Patch' }, null, 2)
+    }
+  }, {
+    request: {
+      urlParameters: {
+        hostname: 'example.com',
+        container: 'invalid-container-id',
+      },
+    },
+    response: {
+      status: 400,
+      body: JSON.stringify({ error: 'Invalid container ID' }, null, 2)
+    }
+  }, {
+    request: {
+      urlParameters: {
+        hostname: 'example.com',
+        container: '0000000000000000',
+      },
+    },
+    response: {
+      status: 404,
+      body: JSON.stringify({ error: 'Container not found' }, null, 2)
+    }
+  }]
 });
 
 containerAPI.get('/:port', {
   title: 'Get a single container port',
-  description: 'Get information about a given Docker container port.',
+  description: 'Get the properties of a given Docker container port.',
 
   handler: (request, response) => {
     let { user, oauth2scope } = request;

@@ -280,6 +280,20 @@ h4 {
   color: #c9302c;
 }
 
+.editable-label:not(.editing) .editable-editor,
+.editable-label.editing .editable-value {
+  display: none;
+}
+
+.editable-editor {
+  width: 100%;
+}
+
+.editable-toggle {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
 /* Lists */
 
 .list-group-item {
@@ -332,11 +346,41 @@ h4 {
 
 .project-title {
   flex-grow: 1;
-  padding: 0 10px;
-  margin: 0;
+  margin: 0 10px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.project-title .editable-label {
+  width: 100%;
+}
+
+.project-title .editable-value {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+}
+
+.project-title .editable-toggle {
+  color: #777;
+}
+
+.panel-project:not(:hover) .editable-toggle:not(:focus) {
+  visibility: hidden;
+}
+
+.project-title .editable-editor .form-control {
+  margin-bottom: 0;
+}
+
+.project-title h4 {
+  margin: 0;
+  hyphens: auto;
+}
+
+.project-title .form-control-feedback {
+  top: 0;
 }
 
 .project-status {
@@ -370,6 +414,21 @@ h4 {
 
 .project-logs {
   max-height: 200px;
+}
+
+@media (max-width: 768px) {
+  .contributions .panel-heading {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .contributions .project-icon {
+    margin-right: 5px;
+  }
+  .contributions .project-title {
+    order: 5;
+    margin: 10px 0 0;
+    width: 100%;
+  }
 }
 
 /* Blog */
