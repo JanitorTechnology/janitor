@@ -138,7 +138,7 @@ function setupAsyncForm (form) {
     var submitOn = element.dataset.submitOn;
     if (submitOn) {
       element.addEventListener(submitOn, function () {
-        form.dispatchEvent(new Event('submit'));
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
       });
     }
   });
