@@ -4,11 +4,14 @@
 const jsonpatch = require('fast-json-patch');
 const selfapi = require('selfapi');
 
+const configurations = require('../lib/configurations');
 const db = require('../lib/db');
+const machines = require('../lib/machines');
+const users = require('../lib/users');
 
 // API resource to manage a Janitor user.
 const userAPI = module.exports = selfapi({
-  title: 'User'
+  title: 'User',
 });
 
 userAPI.get({
@@ -76,3 +79,107 @@ userAPI.patch({
     }
   }]
 });
+
+var configAPI = userAPI.api("/configurations");
+configAPI.get({
+  handler({ user }, response) {
+    if (!user.hasOwnProperty("configurations")) {
+       response.statusCode = 404;
+       response.json({ error: "Configurations do not exist" });
+       return;
+    }
+
+    response.json(user.configurations);
+  },
+  examples: [{
+    response: {
+      body: JSON.stringify({
+        '.gitconfig': ''
+      }, null, 2)
+    }
+  }]
+});
+
+configAPI.patch({
+  handler(request, response) {
+    let { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' });
+      return;
+    }
+
+    if (!user.configurations) {
+      user.configurations = {};
+    }
+
+    let str = '';
+    request.on('data', chunk => {
+      str += String(chunk);
+    });
+
+    request.on('end', () => {
+      let json;
+      try {
+        json = JSON.parse(str);
+      } catch (e) {
+        response.statusCode = 400;
+        response.json({error: "JSON incorrect"});
+        return;
+      }
+      jsonpatch.apply(user.configurations, json);
+      db.save();
+      response.json({status: "OK"});
+    });
+  },
+  examples: [{
+    request: {
+      urlParameters: {
+        config: '.gitconfig',
+      },
+
+      body: '[user]\nname = Janitor'
+    },
+    response: '[user]\nname = Janitor',
+  }]
+});
+
+configAPI.delete("/:configuration", {
+  handler(request, response) {
+    console.log("ok");
+    let { user, query } = request;
+    if (!user) {
+      response.statusCode = 403;
+      response.json('User not found');
+      return;
+    }
+
+    configurations.resetConfiguration(user, query.configuration);
+    response.json({status: 'OK'});
+  },
+});
+
+configAPI.put("/:configuration", {
+  handler(request, response) {
+    let { user, query } = request;
+    if (!user) {
+      response.statusCode = 403;
+      response.json('User not found');
+      return;
+    }
+
+    let userMachines = Object.values(user.machines)
+      .reduce((acc, val) => acc.concat(val), []);
+
+    let promises = Promise.all(userMachines.map((machine) =>
+      new Promise((resolve) =>
+        machines.resetConfigurationFile(user, query.configuration, machine, resolve))
+    ));
+
+    promises.then(() => {
+      response.json({ status: "done" });
+    }).catch((e) => {
+      response.json({ error: e });
+    });
+  }
+})
