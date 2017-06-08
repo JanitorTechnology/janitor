@@ -8,12 +8,13 @@
   };
 });
 
-// Automatically set up delete button forms (when their 'method' is 'delete').
-Array.forEach(document.querySelectorAll('form[method=delete]'), function (form) {
+// Automatically set up button forms (when their 'method' is 'delete' or 'put').
+Array.forEach(document.querySelectorAll('form[method=delete], form[method=put]'), function (form) {
   setupAsyncForm(form);
   form.addEventListener('submit', function (event) {
     var data = getFormData(form);
-    fetchAPI('DELETE', form.action, data, function (error, data) {
+    var method = form.getAttribute('method').toUpperCase();
+    fetchAPI(method, form.action, data, function (error, data) {
       if (error) {
         updateFormStatus(form, 'error', String(error));
         return;
@@ -86,21 +87,22 @@ function ajaxForm (selector, action, callback) {
 // Use `window.fetch()` to make an asynchronous Janitor API request.
 function fetchAPI (method, url, data, callback) {
   var responseStatus = null;
+
   window.fetch(url, {
     method: method.toUpperCase(),
-    headers: {
+    headers: new Headers({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
-    },
+    }),
     credentials: 'same-origin',
     body: JSON.stringify(data, null, 2)
   }).then(function (response) {
     // The server is responding!
     responseStatus = response.status;
-    return response.json();
+    return responseStatus == 204 ? null : response.json();
   }).then(function (data) {
     // The response body was successfully parsed as JSON!
-    if (data.error) {
+    if (data && data.error) {
       // The parsed JSON contains an error message.
       throw new Error(data.error);
     }
@@ -130,17 +132,17 @@ function setupAsyncForm (form) {
   }
 
   // Process all <form> input elements (like <input>, <textarea>, …).
-  Array.map(form.elements, function (element) {
+  Array.forEach(form.elements, function (element) {
     element.addEventListener('change', resetFormStatus);
     element.addEventListener('keydown', resetFormStatus);
+  });
 
-    // Elements can specify an event to submit the <form>.
-    var submitOn = element.dataset.submitOn;
-    if (submitOn) {
-      element.addEventListener(submitOn, function () {
-        form.dispatchEvent(new Event('submit', { cancelable: true }));
-      });
-    }
+
+  // Elements can specify an event to submit the <form>.
+  Array.forEach(form.querySelectorAll('[data-submit-on]'), function (element) {
+    element.addEventListener(element.dataset.submitOn, function (event) {
+      form.dispatchEvent(new Event('submit', { cancelable: true }));
+    });
   });
 
   // Set-up the <form>'s visual feedback if needed.
@@ -175,6 +177,12 @@ function updateFormStatus (form, status, message) {
   if (message && feedback) {
     feedback.dataset.message = message;
     feedback.focus();
+  }
+
+  if (form.dataset.refreshAfterSuccess && status == 'success') {
+    setTimeout(function () {
+      location.reload();
+    }, 1000);
   }
 }
 

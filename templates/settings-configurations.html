@@ -1,0 +1,20 @@
+    <section class="settings">
+      <div class="container">
+        <div class="row">
+          <form action="/api/user/configurations" class="account-form ajax-form has-feedback col-sm-12" method="patch">
+            <label>.gitconfig</label>
+            <textarea class="form-control" data-submit-on="blur" name="/.gitconfig" placeholder=".gitconfig file" rows="7">{{= user.configurations['.gitconfig'] in html}}</textarea>
+          </form>
+          <form action="/api/user/configurations/.gitconfig" class="account-form ajax-form has-feedback col-sm-6" data-refresh-after-success="true" method="delete">
+            <button class="btn btn-danger" type="submit">Reset to Default</button>
+          </form>
+          <form action="/api/user/configurations/.gitconfig" class="alert alert-warning account-form ajax-form has-feedback col-sm-12" method="put">
+            <p class="pull-left">
+            Any changes will only apply to new containers.<br/>
+            To overwrite .gitconfig in existing containers (be careful, you might lose data!), please click
+            <a href="javascript:void(0)" data-submit-on="click">here</button>.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>

@@ -1,0 +1,16 @@
+[user]
+	name = {{= user.profile.name}}
+	email = {{= user.email}}
+[core]
+	editor = vim
+	autocrlf = false
+	whitespace = off
+	excludesfile = ~/.gitignore
+[color]
+	ui = auto
+[diff]
+	indentHeuristic = true
+[hub]
+	protocol = https
+[push]
+	default = current
