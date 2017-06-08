@@ -8,12 +8,12 @@
   };
 });
 
-// Automatically set up delete button forms (when their 'method' is 'delete').
-Array.forEach(document.querySelectorAll('form[method=delete]'), function (form) {
+// Automatically set up delete and apply button forms (when their 'method' is 'delete' or 'put').
+Array.forEach(document.querySelectorAll('form[method=delete], form[method=put]'), function (form) {
   setupAsyncForm(form);
   form.addEventListener('submit', function (event) {
     var data = getFormData(form);
-    fetchAPI('DELETE', form.action, data, function (error, data) {
+    fetchAPI(form.getAttribute('method').toUpperCase(), form.action, data, function (error, data) {
       if (error) {
         updateFormStatus(form, 'error', String(error));
         return;
@@ -21,6 +21,8 @@ Array.forEach(document.querySelectorAll('form[method=delete]'), function (form) 
 
       updateFormStatus(form, 'success', null);
     });
+    event.stopPropagation();
+    return false;
   });
 });
 
@@ -86,12 +88,13 @@ function ajaxForm (selector, action, callback) {
 // Use `window.fetch()` to make an asynchronous Janitor API request.
 function fetchAPI (method, url, data, callback) {
   var responseStatus = null;
+
   window.fetch(url, {
     method: method.toUpperCase(),
-    headers: {
+    headers: new Headers({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
-    },
+    }),
     credentials: 'same-origin',
     body: JSON.stringify(data, null, 2)
   }).then(function (response) {
@@ -175,6 +178,12 @@ function updateFormStatus (form, status, message) {
   if (message && feedback) {
     feedback.dataset.message = message;
     feedback.focus();
+  }
+
+  if (form.dataset.refreshAfterSuccess && status == 'success') {
+    setTimeout(() => {
+      location.reload()
+    }, 1000);
   }
 }
 
