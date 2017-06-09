@@ -1,0 +1,24 @@
+    <section>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="project-title">GitHub</h4>
+              </div>
+              <div class="panel-body">
+                <form action="/api/admin/oauth2providers/github" class="ajax-form has-feedback has-submit" method="patch">
+                  <label class="control-label">Client ID</label>
+                  <input class="form-control" name="/id" type="text" value={{= oauth2providers.github.id in json}}>
+                  <br>
+                  <label class="control-label">Client Secret</label>
+                  <input class="form-control" name="/secret" type="text" value={{= oauth2providers.github.secret in json}}>
+                  <br>
+                  <input type="submit" class="btn btn-default" value="Update">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>

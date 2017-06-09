@@ -15,7 +15,7 @@
                   <small>Use the stunning Cloud9 IDE to hack on your projects</small>
                 </div>
                 <div class="list-group-item-controls">
-                  <a class="btn btn-default" href="/settings/account/"><span class="hidden-xs">Go to </span>Account</a>
+                  <a class="btn btn-default" href="/settings/account/">Manage<span class="hidden-xs"> Account</span></a>
                 </div>
               </li>
               <li class="list-group-item">
@@ -24,8 +24,11 @@
                   <strong><a href="https://github.com">GitHub</a></strong><br>
                   <small>Import basic information from your GitHub profile</small>
                 </div>
-                <div class="list-group-item-controls">
-                  <a class="btn btn-default disabled" disabled="true" href="#"><span class="hidden-xs">Coming </span>Soon&trade;</a>
+                <div class="list-group-item-controls">{{if {{github.username}} then {{
+                  <form action="/api/user/credentials/github" class="ajax-form has-feedback is-submit" data-refresh-after-success="true" method="delete">
+                    <button class="btn btn-default" type="submit">Disconnect</button>
+                  </form>}} else {{
+                  <a class="btn btn-default" href={{= github.authorizeUrl in json}}>Connect</a>}}}}
                 </div>
               </li>
               <li class="list-group-item">
