@@ -8,6 +8,7 @@ const selfapi = require('selfapi');
 const api = require('./api/');
 const boot = require('./lib/boot');
 const db = require('./lib/db');
+const github = require('./lib/github');
 const hosts = require('./lib/hosts');
 const log = require('./lib/log');
 const machines = require('./lib/machines');
@@ -159,24 +160,47 @@ boot.executeInParallel([
     routes.redirect(query.res, '/');
   });
 
-  // User OAuth2 authorization.
-  app.route(/^\/login\/oauth\/authorize\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+  // User login via GitHub.
+  app.route(/^\/login\/github\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.notFoundPage(query.res, user);
+      // Don't allow signing in only with GitHub just yet.
+      routes.notFoundPage(response, user);
       return;
     }
 
-    hosts.issueOAuth2AuthorizationCode(query.req, (error, data) => {
+    github.authenticate(request, (error, accessToken, refreshToken) => {
+      if (error) {
+        log('[fail] github authenticate', error);
+        routes.notFoundPage(response, user);
+        return;
+      }
+
+      users.refreshGitHubAccount(user, accessToken, refreshToken);
+      routes.redirect(response, '/settings/integrations/');
+    });
+  });
+
+  // User OAuth2 authorization.
+  app.route(/^\/login\/oauth\/authorize\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user } = request;
+    if (!user) {
+      routes.notFoundPage(response, user);
+      return;
+    }
+
+    hosts.issueOAuth2AuthorizationCode(request, (error, data) => {
       if (error) {
         log('[fail] oauth2 authorize', error);
         // Note: Such OAuth2 sanity problems should rarely happen, but if they
         // do become more frequent, we should inform the user about what's
         // happening here instead of showing a generic 404 page.
-        routes.notFoundPage(query.res, user);
+        routes.notFoundPage(response, user);
         return;
       }
-      routes.redirect(query.res, data.redirect_url);
+      routes.redirect(response, data.redirect_url);
     });
   });
 
@@ -206,13 +230,14 @@ boot.executeInParallel([
 
   // User contributions list.
   app.route(/^\/contributions\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.loginPage(query.res);
+      routes.loginPage(response);
       return;
     }
 
-    routes.contributionsPage(query.res, user);
+    routes.contributionsPage(response, user);
   });
 
   // User notifications.
@@ -228,9 +253,10 @@ boot.executeInParallel([
 
   // User settings.
   app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.loginPage(query.res);
+      routes.loginPage(response);
       return;
     }
 
@@ -238,7 +264,7 @@ boot.executeInParallel([
     const sectionUri = match[1];
     const section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    routes.settingsPage(query.res, section, user);
+    routes.settingsPage(request, response, section, user);
   });
 
   // User account (now part of settings).

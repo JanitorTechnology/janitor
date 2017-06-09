@@ -8,6 +8,7 @@ const configurations = require('../lib/configurations');
 const db = require('../lib/db');
 const log = require('../lib/log');
 const machines = require('../lib/machines');
+const users = require('../lib/users');
 
 // API resource to manage a Janitor user.
 const userAPI = module.exports = selfapi({
@@ -239,6 +240,49 @@ configurationAPI.put({
       body: JSON.stringify({
         message: 'Successfully deployed to 1 container'
       }, null, 2)
+    }
+  }]
+});
+
+// API sub-resource to manage specific types of user credentials.
+const credentialsAPI = userAPI.api('/credentials/:type');
+
+credentialsAPI.delete({
+  title: 'Delete user credentials',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+    switch (request.query.type) {
+      case 'cloud9':
+        users.destroyCloud9Account(user);
+        break;
+
+      case 'github':
+        users.destroyGitHubAccount(user);
+        break;
+
+      default:
+        response.statusCode = 400; // Bad Request
+        response.json({ error: 'Invalid credentials type' }, null, 2);
+        return;
+    }
+
+    db.save();
+    response.statusCode = 204; // No Content
+    response.end();
+  },
+
+  examples: [{
+    request: {
+      urlParameters: { type: 'github' }
+    },
+    response: {
+      status: 204
     }
   }]
 });
