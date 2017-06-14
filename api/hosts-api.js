@@ -41,7 +41,7 @@ hostsAPI.get({
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
@@ -70,7 +70,7 @@ hostAPI.get({
     const { hostname } = request.query;
     if (!hostname) {
       response.statusCode = 400; // Bad Request
-      response.json({ error: 'Invalid hostname' });
+      response.json({ error: 'Invalid hostname' }, null, 2);
       return;
     }
 
@@ -95,7 +95,7 @@ hostAPI.get({
     }
 
     response.statusCode = 404;
-    response.json({ error: 'Host not found' });
+    response.json({ error: 'Host not found' }, null, 2);
   },
 
   examples: [{
@@ -124,7 +124,7 @@ hostAPI.post({
     const { hostname } = request.query;
     if (!hostname) {
       response.statusCode = 400; // Bad Request
-      response.json({ error: 'Invalid hostname' });
+      response.json({ error: 'Invalid hostname' }, null, 2);
       return;
     }
 
@@ -148,7 +148,7 @@ hostAPI.post({
 
     // No authentication.
     response.statusCode = 403; // Forbidden
-    response.json({ error: 'Unauthorized' });
+    response.json({ error: 'Unauthorized' }, null, 2);
     return;
 
     function createHost () {
@@ -156,7 +156,7 @@ hostAPI.post({
         hosts.create(hostname, properties, (error, host) => {
           if (error) {
             response.statusCode = 500; // Internal Server Error
-            response.json({ error: 'Could not create host' });
+            response.json({ error: 'Could not create host' }, null, 2);
             return;
           }
           response.statusCode = 201; // Created
@@ -170,7 +170,7 @@ hostAPI.post({
         hosts.update(hostname, properties, (error, host) => {
           if (error) {
             response.statusCode = 500; // Internal Server Error
-            response.json({ error: 'Could not update host' });
+            response.json({ error: 'Could not update host' }, null, 2);
             return;
           }
           response.json(host.properties);
@@ -195,7 +195,7 @@ hostAPI.post({
           parameters = JSON.parse(json);
         } catch (error) {
           response.statusCode = 400; // Bad Request
-          response.json({ error: 'Problems parsing JSON' });
+          response.json({ error: 'Problems parsing JSON' }, null, 2);
           return;
         }
         callback(parameters);
@@ -232,14 +232,14 @@ hostAPI.get('/credentials', {
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+      response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     const host = hosts.get(request.query.hostname);
     if (!host) {
       response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+      response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
@@ -264,21 +264,21 @@ hostAPI.delete('/credentials', {
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+      response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     const host = hosts.get(request.query.hostname);
     if (!host) {
       response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+      response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     hosts.resetOAuth2ClientSecret(host, (error) => {
       if (error) {
         response.statusCode = 500; // Internal Server Error
-        response.json({ error: 'Could not reset host credentials' });
+        response.json({ error: 'Could not reset host credentials' }, null, 2);
         return;
       }
       response.json(host.oauth2client);
@@ -299,14 +299,14 @@ hostAPI.get('/version', {
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+      response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     const { hostname } = request.query;
     if (!hosts.get(hostname)) {
       response.statusCode = 404;
-      response.json({ error: 'Host not found' });
+      response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
@@ -314,7 +314,7 @@ hostAPI.get('/version', {
       if (error) {
         log('host version', error);
         response.statusCode = 404;
-        response.json({ error: 'Host unreachable' });
+        response.json({ error: 'Host unreachable' }, null, 2);
         return;
       }
       response.json({ docker: version });
@@ -352,21 +352,21 @@ hostAPI.get('/:container/:port', {
 
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
     const { container } = request.query;
     if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
       response.statusCode = 400; // Bad Request
-      response.json({ error: 'Invalid container ID' });
+      response.json({ error: 'Invalid container ID' }, null, 2);
       return;
     }
 
     const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
       response.statusCode = 404;
-      response.json({ error: 'Container not found' });
+      response.json({ error: 'Container not found' }, null, 2);
       return;
     }
 
@@ -379,7 +379,7 @@ hostAPI.get('/:container/:port', {
     }
 
     response.statusCode = 404;
-    response.json({ error: 'Port not found' });
+    response.json({ error: 'Port not found' }, null, 2);
   },
 
   examples: [{
