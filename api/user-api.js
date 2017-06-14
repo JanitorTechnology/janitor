@@ -22,7 +22,7 @@ userAPI.get({
     const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
@@ -44,7 +44,7 @@ userAPI.patch({
     const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
@@ -86,15 +86,17 @@ const configurationsAPI = userAPI.api('/configurations');
 
 configurationsAPI.get({
   title: 'Get all configuration files',
+
   handler ({ user }, response) {
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
     response.json(user.configurations, null, 2);
   },
+
   examples: [{
     response: {
       body: JSON.stringify({ '.gitconfig': '' }, null, 2)
@@ -104,12 +106,14 @@ configurationsAPI.get({
 
 configurationsAPI.patch({
   title: 'Update configuration files',
-  description: 'Update any of the user\'s configuration file(s) (using JSON Patch).',
+  description:
+    'Update any of the user\'s configuration file(s) (using JSON Patch).',
+
   handler (request, response) {
     const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
@@ -117,22 +121,23 @@ configurationsAPI.patch({
     request.on('data', chunk => {
       json += String(chunk);
     });
-
     request.on('end', () => {
       let operations;
       try {
         operations = JSON.parse(json);
       } catch (error) {
         response.statusCode = 400; // Bad Request
-        response.json({ error: 'Problems parsing JSON' });
+        response.json({ error: 'Problems parsing JSON' }, null, 2);
         return;
       }
 
       jsonpatch.apply(user.configurations, operations);
       db.save();
+
       response.json(user.configurations, null, 2);
     });
   },
+
   examples: [{
     request: {
       body: JSON.stringify([
@@ -151,17 +156,18 @@ const configurationAPI = configurationsAPI.api('/:configuration');
 configurationAPI.delete({
   title: 'Reset a configuration file',
   description: 'Reset a configuration file to its default template value.',
+
   handler ({ user, query }, response) {
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
     configurations.resetToDefault(user, query.configuration, (error) => {
       if (error) {
         response.statusCode = 500; // Internal Server Error
-        response.json({ error: 'Could not reset configuration to default' });
+        response.json({ error: 'Could not reset configuration' }, null, 2);
         return;
       }
 
@@ -169,38 +175,46 @@ configurationAPI.delete({
       response.end();
     });
   },
+
   examples: [{
     request: {
-      urlParameters: {
-        configuration: '.gitconfig'
-      },
+      urlParameters: { configuration: '.gitconfig' },
     }
   }]
 });
 
 configurationAPI.put({
   title: 'Deploy a configuration file',
-  description: 'Overwrite a configuration file in all the user\'s containers (any local changes will be lost!)',
+  description:
+    'Overwrite a configuration file in all the user\'s containers ' +
+    '(any local changes will be lost!)',
+
   handler ({ user, query }, response) {
     if (!user) {
       response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' });
+      response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
     const { configuration } = query;
-    machines.deployConfigurationFileInAllContainers(user, configuration).then(() => {
-      response.statusCode = 204; // No Content
-      response.end();
-    }).catch(error => {
-      response.statusCode = 500; // Internal Server Error
-      response.json({ error: 'Could not deploy configuration' });
-      log('[fail] could not deploy configuration:', configuration, error);
-    });
+    machines.deployConfigurationFileInAllContainers(user, configuration)
+      .then(() => {
+        response.statusCode = 204; // No Content
+        response.end();
+      })
+      .catch(error => {
+        log('[fail] could not deploy configuration:', configuration, error);
+        response.statusCode = 500; // Internal Server Error
+        response.json({ error: 'Could not deploy configuration' }, null, 2);
+      });
   },
-  request: {
-    urlParameters: {
-      configuration: '.gitconfig'
+
+  examples: [{
+    request: {
+      urlParameters: { configuration: '.gitconfig' },
     },
-  }
+    response: {
+      status: 204
+    }
+  }]
 });

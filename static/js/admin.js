@@ -1,11 +1,8 @@
 // Copyright © 2015 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-
 // Alpha version invite form.
-
 ajaxForm('#invite-form', 'invite', function (form, data) {
-
   var status = 'error';
   var message = data.message;
 
@@ -23,14 +20,10 @@ ajaxForm('#invite-form', 'invite', function (form, data) {
   }
 
   updateFormStatus(form, status, message);
-
 });
 
-
 // New project form.
-
 ajaxForm('#newproject-form', 'projectdb', function (form, data) {
-
   var status = 'error';
   var message = data.message;
 
@@ -43,14 +36,10 @@ ajaxForm('#newproject-form', 'projectdb', function (form, data) {
   }
 
   updateFormStatus(form, status, message);
-
 });
 
-
 // Project rebuild/update buttons.
-
 Array.map(document.querySelectorAll('button[data-action]'), function (button) {
-
   button.addEventListener('click', Scout.send(function (query) {
     query.action = button.dataset.action;
     query.data = {
@@ -60,5 +49,4 @@ Array.map(document.querySelectorAll('button[data-action]'), function (button) {
       document.location.reload();
     };
   }));
-
 });
