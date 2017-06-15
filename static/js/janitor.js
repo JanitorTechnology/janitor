@@ -20,7 +20,7 @@ Array.forEach(document.querySelectorAll('form[method=delete], form[method=put]')
         return;
       }
 
-      updateFormStatus(form, 'success', null);
+      updateFormStatus(form, 'success', data ? data.message : null);
     });
   });
 });
@@ -44,7 +44,7 @@ Array.forEach(document.querySelectorAll('form[method=patch]'), function (form) {
         return;
       }
 
-      updateFormStatus(form, 'success', null);
+      updateFormStatus(form, 'success', data ? data.message : null);
     });
   });
 });
@@ -182,7 +182,7 @@ function updateFormStatus (form, status, message) {
   if (form.dataset.refreshAfterSuccess && status == 'success') {
     setTimeout(function () {
       location.reload();
-    }, 1000);
+    }, 400);
   }
 }
 

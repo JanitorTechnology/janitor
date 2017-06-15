@@ -85,7 +85,7 @@ userAPI.patch({
 const configurationsAPI = userAPI.api('/configurations');
 
 configurationsAPI.get({
-  title: 'Get all configuration files',
+  title: 'Get all user configurations',
 
   handler ({ user }, response) {
     if (!user) {
@@ -105,9 +105,8 @@ configurationsAPI.get({
 });
 
 configurationsAPI.patch({
-  title: 'Update configuration files',
-  description:
-    'Update any of the user\'s configuration file(s) (using JSON Patch).',
+  title: 'Update user configurations',
+  description: 'Update any user configuration file(s) (using JSON Patch).',
 
   handler (request, response) {
     const { user } = request;
@@ -151,11 +150,11 @@ configurationsAPI.patch({
 });
 
 // API sub-resource to manage a single configuration file.
-const configurationAPI = configurationsAPI.api('/:configuration');
+const configurationAPI = configurationsAPI.api('/:file');
 
 configurationAPI.delete({
-  title: 'Reset a configuration file',
-  description: 'Reset a configuration file to its default template value.',
+  title: 'Reset a user configuration',
+  description: 'Reset a user configuration file to its default template value.',
 
   handler ({ user, query }, response) {
     if (!user) {
@@ -164,7 +163,7 @@ configurationAPI.delete({
       return;
     }
 
-    configurations.resetToDefault(user, query.configuration, (error) => {
+    configurations.resetToDefault(user, query.file, error => {
       if (error) {
         response.statusCode = 500; // Internal Server Error
         response.json({ error: 'Could not reset configuration' }, null, 2);
@@ -178,15 +177,15 @@ configurationAPI.delete({
 
   examples: [{
     request: {
-      urlParameters: { configuration: '.gitconfig' },
+      urlParameters: { file: '.gitconfig' },
     }
   }]
 });
 
 configurationAPI.put({
-  title: 'Deploy a configuration file',
+  title: 'Deploy a user configuration',
   description:
-    'Overwrite a configuration file in all the user\'s containers ' +
+    'Install or overwrite a configuration file in all the user\'s containers ' +
     '(any local changes will be lost!)',
 
   handler ({ user, query }, response) {
@@ -196,25 +195,25 @@ configurationAPI.put({
       return;
     }
 
-    const { configuration } = query;
-    machines.deployConfigurationFileInAllContainers(user, configuration)
-      .then(() => {
-        response.statusCode = 204; // No Content
-        response.end();
-      })
-      .catch(error => {
-        log('[fail] could not deploy configuration:', configuration, error);
-        response.statusCode = 500; // Internal Server Error
-        response.json({ error: 'Could not deploy configuration' }, null, 2);
-      });
+    const { file } = query;
+    machines.deployConfigurationInAllContainers(user, file).then(count => {
+      response.json({
+        message: 'Successfully deployed to ' + count + ' container' +
+          (count === 1 ? '' : 's')
+      }, null, 2);
+    }).catch(error => {
+      log('[fail] could not deploy configuration file:', file, error);
+      response.statusCode = 500; // Internal Server Error
+      response.json({ error: 'Could not deploy configuration' }, null, 2);
+    });
   },
 
   examples: [{
     request: {
-      urlParameters: { configuration: '.gitconfig' },
+      urlParameters: { file: '.gitconfig' },
     },
     response: {
-      status: 204
+      body: JSON.stringify({ message: 'Successfully deployed to 0 containers' }, null, 2)
     }
   }]
 });
