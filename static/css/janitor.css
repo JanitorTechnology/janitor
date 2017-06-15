@@ -210,6 +210,23 @@ h4 {
   right: 80px;
 }
 
+.ajax-form.has-submit > .form-control-feedback {
+  position: relative;
+  display: inline;
+  top: 0;
+  left: 5px;
+}
+
+.ajax-form.is-submit > .form-control-feedback {
+  top: 0;
+  left: -30px;
+}
+
+.ajax-form.is-submit-xs > .form-control-feedback {
+  top: -5px;
+  left: -30px;
+}
+
 .row > .ajax-form > .form-control-feedback {
   right: 15px;
 }
@@ -238,6 +255,22 @@ h4 {
 
 .login-with > a:not(:last-child) {
   margin-right: 10px;
+}
+
+.top-right-controls {
+  height: 0;
+}
+
+.top-right-controls > * {
+  float: right;
+  margin: -5px 0 0 10px;
+  z-index: 10;
+}
+
+.alert-warning a,
+.alert-warning a:focus,
+.alert-warning a:hover {
+  color: #c9302c;
 }
 
 /* Lists */

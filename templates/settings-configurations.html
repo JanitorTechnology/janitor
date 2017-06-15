@@ -1,18 +1,25 @@
     <section class="settings">
       <div class="container">
+        <div class="row row-header">
+          <div class="col-sm-12">
+            <p>Configure your containers from a single location, by editing and deploying these configuration files.</p>
+          </div>
+        </div>
         <div class="row">
+          <div class="col-sm-12 top-right-controls">
+            <form action="/api/user/configurations/.gitconfig" class="account-form ajax-form has-feedback is-submit-xs" data-refresh-after-success="true" method="delete">
+              <button class="btn btn-danger btn-xs" type="submit">Reset to Default</button>
+            </form>
+          </div>
           <form action="/api/user/configurations" class="account-form ajax-form has-feedback col-sm-12" method="patch">
-            <label>.gitconfig</label>
-            <textarea class="form-control" data-submit-on="blur" name="/.gitconfig" placeholder=".gitconfig file" rows="7">{{= user.configurations['.gitconfig'] in html}}</textarea>
+            <label class="control-label">.gitconfig</label>
+            <textarea class="form-control" data-submit-on="blur" name="/.gitconfig" placeholder=".gitconfig file" rows="7">{{=
+              user.configurations['.gitconfig'] in html
+            }}</textarea>
           </form>
-          <form action="/api/user/configurations/.gitconfig" class="account-form ajax-form has-feedback col-sm-6" data-refresh-after-success="true" method="delete">
-            <button class="btn btn-danger" type="submit">Reset to Default</button>
-          </form>
-          <form action="/api/user/configurations/.gitconfig" class="alert alert-warning account-form ajax-form has-feedback col-sm-12" method="put">
-            <p class="pull-left">
-            Any changes will only apply to new containers.<br/>
-            To overwrite .gitconfig in existing containers (be careful, you might lose data!), please click
-            <a href="javascript:void(0)" data-submit-on="click">here</button>.
+          <form action="/api/user/configurations/.gitconfig" class="account-form ajax-form has-feedback col-sm-12" method="put">
+            <p class="alert alert-warning">
+              <strong>Note:</strong> This configuration will only apply to new containers. Overwrite <code>.gitconfig</code> in all existing containers by clicking <a data-submit-on="click" href="javascript:void(0)">here</a>.
             </p>
           </form>
         </div>
