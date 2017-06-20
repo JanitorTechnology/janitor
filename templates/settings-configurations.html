@@ -4,24 +4,24 @@
           <div class="col-sm-12">
             <p>Configure your containers from a single location, by editing and deploying these configuration files.</p>
           </div>
-        </div>
-        <div class="row">
+        </div>{{ for (let file of Object.keys(user.configurations).sort()) { }}
+        <div class="row">{{ if (defaultConfigurations.includes(file)) { }}
           <div class="col-sm-12 top-right-controls">
-            <form action="/api/user/configurations/.gitconfig" class="account-form ajax-form has-feedback is-submit-xs" data-refresh-after-success="true" method="delete">
+            <form action="/api/user/configurations/{{= file in uri}}" class="account-form ajax-form has-feedback is-submit-xs" data-refresh-after-success="true" method="delete">
               <button class="btn btn-danger btn-xs" type="submit">Reset to Default</button>
             </form>
-          </div>
+          </div>{{ } }}
           <form action="/api/user/configurations" class="account-form ajax-form has-feedback col-sm-12" method="patch">
-            <label class="control-label">.gitconfig</label>
-            <textarea class="form-control" data-submit-on="blur" name="/.gitconfig" placeholder=".gitconfig file" rows="7">{{=
-              user.configurations['.gitconfig'] in html
+            <label class="control-label">~/{{= file in html}}</label>
+            <textarea class="form-control" data-submit-on="blur" name="/{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
+              user.configurations[file] in html
             }}</textarea>
           </form>
-          <form action="/api/user/configurations/.gitconfig" class="account-form ajax-form has-feedback col-sm-12" method="put">
+          <form action="/api/user/configurations/{{= file in uri}}" class="account-form ajax-form has-feedback col-sm-12" method="put">
             <p class="alert alert-warning">
-              <strong>Note:</strong> This configuration will only apply to new containers. Overwrite <code>.gitconfig</code> in all existing containers by clicking <a data-submit-on="click" href="javascript:void(0)">here</a>.
+              <strong>Note:</strong> This configuration will only apply to new containers. Overwrite <strong>~/{{= file in html}}</strong> in all existing containers by clicking <a data-submit-on="click" href="javascript:void(0)">here</a>.
             </p>
           </form>
-        </div>
+        </div>{{ } }}
       </div>
     </section>
