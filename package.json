@@ -34,7 +34,7 @@
     "oauth": "~0.9.15",
     "oauth2provider": "~0.0.2",
     "selfapi": "~0.0.16",
-    "tar-stream": "~1.5.2"
+    "tar-stream": "~1.5.4"
   },
   "engines" : {
     "node" : ">=6.0.0"
