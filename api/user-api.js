@@ -62,7 +62,7 @@ userAPI.patch({
         return;
       }
 
-      jsonpatch.apply(user.profile, operations);
+      jsonpatch.applyPatch(user.profile, operations);
       db.save();
 
       response.json(user.profile, null, 2);
@@ -130,7 +130,7 @@ configurationsAPI.patch({
         return;
       }
 
-      jsonpatch.apply(user.configurations, operations);
+      jsonpatch.applyPatch(user.configurations, operations);
       db.save();
 
       response.json(user.configurations, null, 2);
