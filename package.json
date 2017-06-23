@@ -33,7 +33,7 @@
     "node-forge": "~0.7.1",
     "oauth": "~0.9.15",
     "oauth2provider": "~0.0.2",
-    "selfapi": "~0.0.15",
+    "selfapi": "~0.0.16",
     "tar-stream": "~1.5.2"
   },
   "engines" : {
