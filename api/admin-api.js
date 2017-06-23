@@ -83,7 +83,7 @@ oauth2providerAPI.patch({
       }
 
       // Apply the requested changes to the provider.
-      jsonpatch.apply(provider, operations);
+      jsonpatch.applyPatch(provider, operations);
       db.save();
       response.json(provider, null, 2);
     });
