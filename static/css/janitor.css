@@ -301,6 +301,10 @@ h4 {
   margin-left: auto;
 }
 
+.list-group-item-stressed {
+  border-left: solid #E36200;
+}
+
 /* Panels */
 
 .panel-project {

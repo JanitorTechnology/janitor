@@ -1,0 +1,19 @@
+    <section class="notifications">
+      <div class="container">
+        <h2 class="header">My Notifications</h2>
+        <div class="row">
+          <div class="col-sm-12">
+            <ul class="list-group">{{ for (const {notification, read} of user.notifications.feed.slice().reverse()) { }}
+              <a href={{= notification.action in json}}>
+                <li class="list-group-item notification {{if !read then {{list-group-item-stressed}}}}">
+                  <img class="logo-small" src={{= notification.icon in json}}>
+                  <div class="list-group-item-details">
+                    <strong>{{= notification.title in html}}</strong><br>
+                    <small>{{= notification.body in html}}</small>
+                  </div>
+                </li>
+              </a>{{ } }}
+            </ul>
+        </div>
+      </div>
+    </section>

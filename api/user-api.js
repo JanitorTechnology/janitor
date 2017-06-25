@@ -245,3 +245,122 @@ configurationAPI.put({
     }
   }]
 });
+
+// API sub-resource to manage user notifications.
+const notificationsAPI = userAPI.api('/notifications', {
+  beforeEachTest: next => {
+    const user = db.get('users')['admin@example.com'];
+    user.notifications.enabled = false;
+    next();
+  }
+});
+
+notificationsAPI.get({
+  title: 'Get all user notifications',
+
+  handler (request, response) {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    response.json(user.notifications.feed.map(({ notification }) => notification), null, 2);
+  },
+
+  examples: [{
+    response: {
+      body: JSON.stringify(
+        [], null, 2)
+    }
+  }]
+});
+
+// API sub-resource to enable or disable user notifications.
+const notificationsEnabledAPI = notificationsAPI.api('/enabled', {
+  beforeEachTest: notificationsAPI.beforeEachTest
+});
+
+notificationsEnabledAPI.get({
+  title: 'Get the notification settings of the user',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    response.json({ enabled: user.notifications.enabled }, null, 2);
+  },
+
+  examples: [{
+    response: {
+      body: JSON.stringify({ enabled: false }, null, 2)
+    }
+  }]
+});
+
+notificationsEnabledAPI.put({
+  title: 'Enable or disable user notifications',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    if ('enabled' in request.query) {
+      const { enabled } = request.query;
+      if (typeof (enabled) !== 'boolean') {
+        response.statusCode = 400; // Bad Request
+        response.json({ error: 'Parameter \'enabled\' should be "true" or "false"' }, null, 2);
+        return;
+      }
+      user.notifications.enabled = enabled;
+      db.save();
+      response.json({ enabled }, null, 2);
+      return;
+    }
+
+    let json = '';
+    request.on('data', chunk => {
+      json += String(chunk);
+    });
+    request.on('end', () => {
+      try {
+        const { enabled } = JSON.parse(json);
+        if (typeof (enabled) !== 'boolean') {
+          throw new Error('Invalid type for \'enabled\': ' + typeof (enabled));
+        }
+
+        user.notifications.enabled = enabled;
+        db.save();
+        response.json({ enabled: user.notifications.enabled }, null, 2);
+      } catch (error) {
+        response.statusCode = 400; // Bad Request
+        response.json({ error: 'Problems parsing JSON' }, null, 2);
+      }
+    });
+  },
+
+  examples: [{
+    request: {
+      body: '{ "enabled": true }',
+    },
+    response: {
+      body: JSON.stringify({ enabled: true }, null, 2)
+    },
+  }, {
+    request: {
+      queryParameters: { enabled: true }
+    },
+    response: {
+      body: JSON.stringify({ enabled: true }, null, 2)
+    },
+  }]
+});

@@ -1,0 +1,17 @@
+    <section class="settings">
+      <div class="container">
+        <div class="row row-header">
+          <div class="col-sm-12">
+            <p>Configure your preferences for receiving notifications.</p>
+          </div>
+          <form action="/api/user/notifications/enabled?enabled={{= !user.notifications.enabled in boolean}}" class="account-form ajax-form has-feedback col-sm-6" data-refresh-after-success="true" id="notifications-form" method="put">
+            <div class="checkbox">
+              <label>
+                <input autocomplete="off" {{if user.notifications.enabled then {{ checked="checked" }}}} data-submit-on="change" name="enabled" type="checkbox">
+                Enable notifications
+              </label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>

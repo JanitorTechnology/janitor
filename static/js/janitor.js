@@ -217,7 +217,7 @@ function getFormData (form) {
   return Array.reduce(form.elements, function (data, element) {
     var name = element.name;
     if (name && !(name in data)) {
-      data[name] = element.value;
+      data[name] = element.type === 'checkbox' ? element.checked : element.value;
     }
     return data;
   }, {});
