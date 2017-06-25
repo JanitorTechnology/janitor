@@ -208,6 +208,17 @@ boot.executeInParallel([
     routes.contributionsPage(query.res, user);
   });
 
+  // User notifications.
+  app.route(/^\/notifications\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    if (!user) {
+      routes.loginPage(query.res);
+      return;
+    }
+
+    routes.notificationsPage(query.res, user);
+  });
+
   // User settings.
   app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
     const { user } = query.req;
