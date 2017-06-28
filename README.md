@@ -38,3 +38,4 @@ Then hit [https://localhost:1443](https://localhost:1443/)!
 - [IRILL](http://www.irill.org/) for the server and hosting.
 - [Cloud9](https://c9.io/) for sponsoring alpha accounts.
 - [Mozilla](https://www.mozilla.org/).
+- [hub](https://hub.github.com/) for allowing a great [CLI-based workflow](https://gist.github.com/notriddle/6c232ed0691dc77cc8a3adc10b4e2aaf)
