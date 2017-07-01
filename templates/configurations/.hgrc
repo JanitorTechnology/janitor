@@ -1,6 +1,8 @@
 [ui]
 username = {{= user.profile.name}} <{{= user.email}}>
 interface = curses
+[bugzilla]
+username = {{= user.email}}
 [diff]
 git = true
 showfunc = true
@@ -15,6 +17,9 @@ firefoxtree = /home/user/.mozbuild/version-control-tools/hgext/firefoxtree
 reviewboard = /home/user/.mozbuild/version-control-tools/hgext/reviewboard/client.py
 bzexport = /home/user/.mozbuild/version-control-tools/hgext/bzexport
 push-to-try = /home/user/.mozbuild/version-control-tools/hgext/push-to-try
+[defaults]
+qnew = -D -U
+qrefresh = -D
 [pager]
 pager = LESS=FRSXQ less
 attend-help = true
@@ -39,7 +44,5 @@ wip.tags = yellow
 wip.user = magenta
 [experimental]
 graphshorten = true
-[bugzilla]
-username = {{= user.email}}
 [paths]
 review = https://reviewboard-hg.mozilla.org/autoreview
