@@ -127,10 +127,10 @@ configurationsAPI.patch({
         const changedFiles = operations
           .map(operation => operation.path.replace(/^\//, ''));
 
-        for (const changed of changedFiles) {
-          if (!configurations.allowed.includes(changed)) {
+        for (const file of changedFiles) {
+          if (!configurations.allowed.includes(file)) {
             response.statusCode = 400; // Bad Request
-            response.json({ error: 'Updating ' + changed + ' is forbidden' }, null, 2);
+            response.json({ error: 'Updating ' + file + ' is forbidden' }, null, 2);
             return;
           }
         }
