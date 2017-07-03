@@ -124,6 +124,16 @@ configurationsAPI.patch({
       let operations;
       try {
         operations = JSON.parse(json);
+        const changedFiles = operations
+          .map(operation => operation.path.replace(/^\//, ''));
+
+        for (const file of changedFiles) {
+          if (!configurations.allowed.includes(file)) {
+            response.statusCode = 400; // Bad Request
+            response.json({ error: 'Updating ' + file + ' is forbidden' }, null, 2);
+            return;
+          }
+        }
       } catch (error) {
         response.statusCode = 400; // Bad Request
         response.json({ error: 'Problems parsing JSON' }, null, 2);
