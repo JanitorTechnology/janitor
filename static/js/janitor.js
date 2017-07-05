@@ -175,8 +175,10 @@ function updateFormStatus (form, status, message) {
 
   var feedback = form.querySelector('.form-control-feedback');
   if (message && feedback) {
-    feedback.dataset.message = message;
-    feedback.focus();
+    // Set a custom validation message on the first input element of the form.
+    form.elements[0].setCustomValidity(message);
+    // Fire a submit event so the custom validation messages display.
+    form.querySelectorAll("input[type=submit]")[0].click();
   }
 
   if (form.dataset.refreshAfterSuccess && status == 'success') {
@@ -190,7 +192,6 @@ function updateFormStatus (form, status, message) {
 function addFormFeedback (form) {
   var feedback = document.createElement('div');
   feedback.classList.add('form-control-feedback');
-  feedback.dataset.message = '';
   feedback.setAttribute('tabindex', '99');
 
   // Append icons for 'success' and 'error' states.
@@ -199,16 +200,6 @@ function addFormFeedback (form) {
     icon.classList.add('glyphicon', 'glyphicon-' + name);
     icon.setAttribute('aria-hidden', 'true');
     feedback.appendChild(icon);
-  });
-
-  // Set-up the feedback message box (a bootstrap popover).
-  $(feedback).popover({
-    content: function () {
-      return this.dataset.message;
-    },
-    container: 'body',
-    placement: 'bottom',
-    trigger: 'focus'
   });
 
   form.appendChild(feedback);
