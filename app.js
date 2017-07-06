@@ -111,7 +111,7 @@ boot.executeInParallel([
   });
 
   // Public project pages.
-  app.route(/^\/projects(\/\w+)?\/?$/, (data, match, end, query) => {
+  app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
     const { user } = query.req;
     const projectUri = match[1];
     if (!projectUri) {
