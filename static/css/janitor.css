@@ -243,6 +243,12 @@ h4 {
   display: none;
 }
 
+.ajax-form .btn-link {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
 .login-with {
   margin-bottom: 10px;
   display: flex;
