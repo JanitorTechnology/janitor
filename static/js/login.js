@@ -1,11 +1,9 @@
 // Copyright © 2015 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-
 // Email-login form.
 
 ajaxForm('#login-form', 'login', function (form, data) {
-
   var status = 'error';
   var message = data.message;
 
@@ -22,5 +20,4 @@ ajaxForm('#login-form', 'login', function (form, data) {
   }
 
   updateFormStatus(form, status, message);
-
 });

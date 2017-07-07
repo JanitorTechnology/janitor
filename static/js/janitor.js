@@ -3,7 +3,7 @@
 
 // Polyfill a few basic things.
 ['filter', 'forEach', 'map', 'reduce'].forEach(function (name) {
-  Array[name] = function(array, callback, init) {
+  Array[name] = function (array, callback, init) {
     return [][name].call(array, callback, init);
   };
 });
@@ -136,7 +136,6 @@ function setupAsyncForm (form) {
     element.addEventListener('change', resetFormStatus);
     element.addEventListener('keydown', resetFormStatus);
   });
-
 
   // Elements can specify an event to submit the <form>.
   Array.forEach(form.querySelectorAll('[data-submit-on]'), function (element) {
