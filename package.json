@@ -28,7 +28,9 @@
     "lint-node": "eslint -c .eslintrc-node.js *.js api/ lib/",
     "lint-node-fix": "npm run lint-node -- --fix",
     "lint-browser": "eslint -c .eslintrc-browser.js static/",
-    "lint-browser-fix": "npm run lint-browser -- --fix"
+    "lint-browser-fix": "npm run lint-browser -- --fix",
+    "precommit": "lint-staged",
+    "prepush": "lint-staged"
   },
   "dependencies": {
     "camp": "~17.2.0",
@@ -50,9 +52,21 @@
     "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.1",
     "watch-run": "^1.2.5"
   },
   "engines": {
     "node": ">=8.0.0"
+  },
+  "lint-staged": {
+    "static/**/*.js": [
+      "lint-browser-fix",
+      "git add"
+    ],
+    "{*.js,api/**/*.js,lib/**/*.js}": [
+      "lint-node-fix",
+      "git add"
+    ]
   }
 }
