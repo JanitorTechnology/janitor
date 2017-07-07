@@ -175,10 +175,11 @@ function updateFormStatus (form, status, message) {
 
   var feedback = form.querySelector('.form-control-feedback');
   if (message && feedback) {
-    // Set a custom validation message on the first input element of the form.
-    form.elements[0].setCustomValidity(message);
-    // Fire a submit event so the custom validation messages display.
-    form.querySelectorAll("input[type=submit]")[0].click();
+    // Set a custom validation message on the target form element.
+    const targetElement = form.querySelector('.form-feedback-target');
+    targetElement.setCustomValidity(message);
+    // Force the display of thecustom validity message.
+    form.reportValidity();
   }
 
   if (form.dataset.refreshAfterSuccess && status == 'success') {
