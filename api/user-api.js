@@ -168,7 +168,7 @@ configurationsAPI.patch({
       ], null, 2)
     },
     response: {
-      body: JSON.stringify({ '.gitconfig': '[user]\nname = Sally' }, null, 2)
+      body: JSON.stringify({ '.gitconfig': '[user]\nname = Janitor' }, null, 2)
     }
   }]
 });
