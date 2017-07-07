@@ -158,7 +158,14 @@ function setupAsyncForm (form) {
 
 // Update the visual feedback of a <form>'s status.
 function updateFormStatus (form, status, message) {
+  // Get the targetted form element which should receive the form feedback.
+  const targetElement = form.querySelector('.form-feedback-target');
+
   form.classList.remove('has-success', 'has-error');
+  // Reset the custom validity message so the element isn't invalid anymore,
+  // and the form can be submitted.
+  targetElement.setCustomValidity('');
+
   switch (status) {
     case 'success':
       form.classList.add('has-success');
@@ -176,7 +183,6 @@ function updateFormStatus (form, status, message) {
   var feedback = form.querySelector('.form-control-feedback');
   if (message && feedback) {
     // Set a custom validation message on the target form element.
-    const targetElement = form.querySelector('.form-feedback-target');
     targetElement.setCustomValidity(message);
     // Force the display of thecustom validity message.
     form.reportValidity();
