@@ -498,7 +498,7 @@ boot.executeInParallel([
       case 'cloud9':
         // Extract a valid SSH public key from the user's input.
         // Regex adapted from https://gist.github.com/paranoiq/1932126.
-        var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
+        var match = data.key.match(/ssh-rsa [\w+/]+[=]{0,3}/);
         if (!match) {
           return end({ status: 'error', message: 'Invalid SSH key' });
         }
