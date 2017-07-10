@@ -12,7 +12,13 @@ const users = require('../lib/users');
 
 // API resource to manage a Janitor user.
 const userAPI = module.exports = selfapi({
-  title: 'User'
+  title: 'User',
+
+  beforeEachTest: next => {
+    const user = db.get('users')['admin@example.com'];
+    user.profile.name = 'User';
+    next();
+  }
 });
 
 userAPI.get({
@@ -31,7 +37,7 @@ userAPI.get({
 
   examples: [{
     response: {
-      body: JSON.stringify({ name: 'User Name' }, null, 2)
+      body: JSON.stringify({ name: 'User' }, null, 2)
     }
   }]
 });
@@ -82,7 +88,13 @@ userAPI.patch({
 });
 
 // API sub-resource to manage personal configuration files.
-const configurationsAPI = userAPI.api('/configurations');
+const configurationsAPI = userAPI.api('/configurations', {
+  beforeEachTest: next => {
+    const user = db.get('users')['admin@example.com'];
+    user.configurations = { '.gitconfig': '[user]\nname = User' };
+    next();
+  }
+});
 
 configurationsAPI.get({
   title: 'Get all user configurations',
@@ -99,7 +111,7 @@ configurationsAPI.get({
 
   examples: [{
     response: {
-      body: JSON.stringify({ '.gitconfig': '' }, null, 2)
+      body: JSON.stringify({ '.gitconfig': '[user]\nname = User' }, null, 2)
     }
   }]
 });
@@ -130,11 +142,14 @@ configurationsAPI.patch({
         for (const file of changedFiles) {
           if (!configurations.allowed.includes(file)) {
             response.statusCode = 400; // Bad Request
-            response.json({ error: 'Updating ' + file + ' is forbidden' }, null, 2);
+            response.json({
+              error: 'Updating ' + file + ' is forbidden'
+            }, null, 2);
             return;
           }
         }
       } catch (error) {
+        log('[fail] patching user.configurations', error);
         response.statusCode = 400; // Bad Request
         response.json({ error: 'Problems parsing JSON' }, null, 2);
         return;
@@ -142,7 +157,6 @@ configurationsAPI.patch({
 
       jsonpatch.applyPatch(user.configurations, operations);
       db.save();
-
       response.json(user.configurations, null, 2);
     });
   },
@@ -150,11 +164,11 @@ configurationsAPI.patch({
   examples: [{
     request: {
       body: JSON.stringify([
-        { op: 'add', path: '/.gitconfig', value: '[user]\nname = Janitor' }
+        { op: 'add', path: '/.gitconfig', value: '[user]\nname = Sally' }
       ], null, 2)
     },
     response: {
-      body: JSON.stringify({ '.gitconfig': '[user]\nname = Janitor'  }, null, 2)
+      body: JSON.stringify({ '.gitconfig': '[user]\nname = Sally' }, null, 2)
     }
   }]
 });
@@ -188,6 +202,9 @@ configurationAPI.delete({
   examples: [{
     request: {
       urlParameters: { file: '.gitconfig' },
+    },
+    response: {
+      status: 204
     }
   }]
 });
@@ -223,7 +240,9 @@ configurationAPI.put({
       urlParameters: { file: '.gitconfig' },
     },
     response: {
-      body: JSON.stringify({ message: 'Successfully deployed to 0 containers' }, null, 2)
+      body: JSON.stringify({
+        message: 'Successfully deployed to 1 container'
+      }, null, 2)
     }
   }]
 });
