@@ -101,7 +101,7 @@ function fetchAPI (method, url, data, callback) {
   }).then(function (response) {
     // The server is responding!
     responseStatus = response.status;
-    return responseStatus == 204 ? null : response.json();
+    return responseStatus === 204 ? null : response.json();
   }).then(function (data) {
     // The response body was successfully parsed as JSON!
     if (data && data.error) {
@@ -180,7 +180,7 @@ function updateFormStatus (form, status, message) {
     feedback.focus();
   }
 
-  if (form.dataset.refreshAfterSuccess && status == 'success') {
+  if (form.dataset.refreshAfterSuccess && status === 'success') {
     setTimeout(function () {
       location.reload();
     }, 400);
