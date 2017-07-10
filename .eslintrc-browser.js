@@ -14,5 +14,8 @@ module.exports = {
     
     // Override some eslint base rules because we're using ES5.
     "no-new": "off",
+    
+    // Custom rules.
+    "no-console": ["error", {"allow": ["warn", "error"]}],
   }
 };
