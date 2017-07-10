@@ -7,6 +7,13 @@ module.exports = {
     "eslint:recommended",
     "standard"
   ],
+  "globals": {
+    "$": true,
+    "Dygraph": true,
+    "Scout": true,
+    "ajaxForm": true,
+    "updateFormStatus": true,
+  },
   "rules": {
     // Override some of standard js rules.
     "semi": ["error", "always"],
