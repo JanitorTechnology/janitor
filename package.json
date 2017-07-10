@@ -29,6 +29,8 @@
     "lint-node-fix": "npm run lint-node -- --fix",
     "lint-browser": "eslint -c .eslintrc-browser.js static/",
     "lint-browser-fix": "npm run lint-browser -- --fix",
+    "lint": "npm run lint-node && npm run lint-browser",
+    "lint-fix": "npm run lint-node-fix && npm run lint-browser-fix",
     "precommit": "lint-staged",
     "prepush": "lint-staged"
   },
