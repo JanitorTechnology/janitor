@@ -1,6 +1,8 @@
 // Copyright © 2015 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
+/* global ajaxForm, updateFormStatus */
+
 // Email-login form.
 
 ajaxForm('#login-form', 'login', function (form, data) {

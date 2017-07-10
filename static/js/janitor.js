@@ -1,6 +1,8 @@
 // Copyright © 2015 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
+/* global Scout, $ */
+
 // Polyfill a few basic things.
 ['filter', 'forEach', 'map', 'reduce'].forEach(function (name) {
   Array[name] = function (array, callback, init) {
