@@ -269,7 +269,6 @@ function routeRequest (proxyParameters, request, response) {
       log('[fail] unsupported proxy type:', proxy);
       response.statusCode = 500; // Internal Server Error
       response.end();
-      return;
   }
 }
 
