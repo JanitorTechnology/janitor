@@ -48,18 +48,3 @@ function formatTime (milliseconds) {
 
   return (Math.round(value * 10) / 10) + ' ' + unit.code;
 }
-
-// Format bytes into human readable text.
-
-function formatMemory (bytes) {
-  var prefix = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-  var p = 0;
-  var value = Number(bytes);
-
-  while (value > 1024 && p < prefix.length) {
-    value /= 1024;
-    p++;
-  }
-
-  return (Math.round(value * 100) / 100) + ' ' + prefix[p] + 'B';
-}
