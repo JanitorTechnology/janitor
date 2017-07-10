@@ -14,7 +14,24 @@ const adminAPI = module.exports = selfapi({
 });
 
 // API sub-resource to manage OAuth2 providers.
-const oauth2providersAPI = adminAPI.api('/oauth2providers');
+const oauth2providersAPI = adminAPI.api('/oauth2providers', {
+  beforeEachTest: next => {
+    const providers = db.get('oauth2providers');
+    if (!providers.github) {
+      // FIXME Remove this if block when the GitHub pull request is merged:
+      // https://github.com/JanitorTechnology/janitor/pull/80
+      providers.github = {
+        id: '',
+        secret: '',
+        hostname: 'github.com',
+        api: 'api.github.com'
+      };
+    }
+    providers.github.id = '1234';
+    providers.github.secret = '123456';
+    next();
+  }
+});
 
 oauth2providersAPI.get({
   title: 'List OAuth2 providers',
@@ -34,10 +51,11 @@ oauth2providersAPI.get({
   examples: [{
     response: {
       body: JSON.stringify({
-        provider: {
+        github: {
           id: '1234',
           secret: '123456',
-          hostname: 'host.name'
+          hostname: 'github.com',
+          api: 'api.github.com'
         }
       }, null, 2)
     }
@@ -45,7 +63,9 @@ oauth2providersAPI.get({
 });
 
 // API sub-resource to manage a single OAuth2 provider.
-const oauth2providerAPI = oauth2providersAPI.api('/:provider');
+const oauth2providerAPI = oauth2providersAPI.api('/:provider', {
+  beforeEachTest: oauth2providersAPI.beforeEachTest
+});
 
 oauth2providerAPI.patch({
   title: 'Update an OAuth2 provider',
@@ -91,17 +111,18 @@ oauth2providerAPI.patch({
 
   examples: [{
     request: {
-      urlParameters: { provider: 'provider' },
+      urlParameters: { provider: 'github' },
       body: JSON.stringify([
-        { op: 'add', path: '/secret', value: '654321' }
-      ], null, 2)
+        { op: 'add', path: '/secret', value: '654321' },
+      ], null, 2),
     },
     response: {
       body: JSON.stringify({
         id: '1234',
         secret: '654321',
-        hostname: 'host.name'
-      }, null, 2)
+        hostname: 'github.com',
+        api: 'api.github.com',
+      }, null, 2),
     }
   }]
 });

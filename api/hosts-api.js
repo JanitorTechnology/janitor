@@ -12,25 +12,7 @@ const users = require('../lib/users');
 
 // API resource to manage Janitor cluster hosts.
 const hostsAPI = module.exports = selfapi({
-  title: 'Hosts',
-
-  beforeTests: (callback) => {
-    hosts.create('host.name', { port: '2376' }, (error, host) => {
-      if (error) {
-        callback(error);
-        return;
-      }
-      host.oauth2client.id = '1234';
-      host.oauth2client.secret = '123456';
-      callback();
-    });
-  },
-
-  afterTests: (callback) => {
-    hosts.destroy('host.name', (error) => {
-      callback(error);
-    });
-  }
+  title: 'Hosts'
 });
 
 hostsAPI.get({
@@ -50,18 +32,28 @@ hostsAPI.get({
       list.push(hostname);
     }
 
-    response.json(list);
+    response.json(list, null, 2);
   },
 
   examples: [{
     response: {
-      body: JSON.stringify([ 'host.name' ], null, 2)
+      body: JSON.stringify([ 'example.com' ], null, 2)
     }
   }]
 });
 
 // API sub-resource to manage a single cluster host.
-const hostAPI = hostsAPI.api('/:hostname');
+const hostAPI = hostsAPI.api('/:hostname', {
+  beforeEachTest: next => {
+    const host = db.get('hosts')['example.com'];
+    if (!host.oauth2client) {
+      host.oauth2client = {};
+    }
+    host.oauth2client.id = '1234';
+    host.oauth2client.secret = '123456';
+    next();
+  }
+});
 
 hostAPI.get({
   title: 'Get a single host',
@@ -79,7 +71,7 @@ hostAPI.get({
     if (authenticatedHostname && authenticatedHostname === hostname) {
       const host = hosts.get(hostname);
       if (host) {
-        response.json(host.properties);
+        response.json(host.properties, null, 2);
         return;
       }
     }
@@ -89,7 +81,7 @@ hostAPI.get({
     if (user && users.isAdmin(user)) {
       const host = hosts.get(hostname);
       if (host) {
-        response.json(host.properties);
+        response.json(host.properties, null, 2);
         return;
       }
     }
@@ -100,14 +92,14 @@ hostAPI.get({
 
   examples: [{
     request: {
-      urlParameters: { hostname: 'host.name' }
+      urlParameters: { hostname: 'example.com' }
     },
     response: {
-      body: JSON.stringify({ port: '2376' }, null, 2)
+      body: JSON.stringify({ port: '2376', ca: '', crt: '', key: '' }, null, 2)
     }
   }, {
     request: {
-      urlParameters: { hostname: 'unexistant.host.name' }
+      urlParameters: { hostname: 'non-existent.example.com' }
     },
     response: {
       status: 404,
@@ -160,7 +152,7 @@ hostAPI.post({
             return;
           }
           response.statusCode = 201; // Created
-          response.json(host.properties);
+          response.json(host.properties, null, 2);
         });
       });
     }
@@ -173,7 +165,7 @@ hostAPI.post({
             response.json({ error: 'Could not update host' }, null, 2);
             return;
           }
-          response.json(host.properties);
+          response.json(host.properties, null, 2);
         });
       });
     }
@@ -205,14 +197,14 @@ hostAPI.post({
 
   examples: [{
     request: {
-      urlParameters: { hostname: 'host.name' },
+      urlParameters: { hostname: 'example.com' },
       queryParameters: { client_id: '1234', client_secret: '123456' },
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ port: '2376' }, null, 2)
     }
   }, {
     request: {
-      urlParameters: { hostname: 'unauthorized.host.name' },
+      urlParameters: { hostname: 'unauthorized.example.com' },
       queryParameters: { client_id: '1234', client_secret: '123456' },
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ port: '2345' }, null, 2)
@@ -224,7 +216,12 @@ hostAPI.post({
   }]
 });
 
-hostAPI.get('/credentials', {
+// API sub-resource to manage a host's OAuth2 credentials.
+const credentialsAPI = hostAPI.api('/credentials', {
+  beforeEachTest: hostAPI.beforeEachTest
+});
+
+credentialsAPI.get({
   title: 'Show host credentials',
   description: 'Show a host\'s OAuth2 client credentials.',
 
@@ -243,12 +240,12 @@ hostAPI.get('/credentials', {
       return;
     }
 
-    response.json(host.oauth2client);
+    response.json(host.oauth2client, null, 2);
   },
 
   examples: [{
     request: {
-      urlParameters: { hostname: 'host.name' }
+      urlParameters: { hostname: 'example.com' }
     },
     response: {
       body: JSON.stringify({ id: '1234', secret: '123456' }, null, 2)
@@ -256,7 +253,7 @@ hostAPI.get('/credentials', {
   }]
 });
 
-hostAPI.delete('/credentials', {
+credentialsAPI.delete({
   title: 'Reset host credentials',
   description: 'Reset a host\'s OAuth2 client secret.',
 
@@ -281,13 +278,13 @@ hostAPI.delete('/credentials', {
         response.json({ error: 'Could not reset host credentials' }, null, 2);
         return;
       }
-      response.json(host.oauth2client);
+      response.json(host.oauth2client, null, 2);
     });
   },
 
   examples: [{
     request: {
-      urlParameters: { hostname: 'host.name' }
+      urlParameters: { hostname: 'example.com' }
     }
   }]
 });
@@ -312,22 +309,25 @@ hostAPI.get('/version', {
 
     docker.version({ host: hostname }, (error, version) => {
       if (error) {
-        log('host version', error);
+        log('[fail] host version', error);
         response.statusCode = 404;
         response.json({ error: 'Host unreachable' }, null, 2);
         return;
       }
-      response.json({ docker: version });
+      response.json({ docker: version }, null, 2);
     });
   },
 
   examples: [{
     request: {
-      urlParameters: { hostname: 'host.name' }
+      urlParameters: { hostname: 'example.com' }
+    },
+    response: {
+      body: JSON.stringify({ docker: { Version: '17.06.0-ce' } }, null, 2)
     }
   }, {
     request: {
-      urlParameters: { hostname: 'unexistant.host.name' }
+      urlParameters: { hostname: 'non-existent.example.com' }
     },
     response: {
       status: 404,
@@ -336,7 +336,12 @@ hostAPI.get('/version', {
   }]
 });
 
-hostAPI.get('/:container/:port', {
+// API sub-resource to manage a single container on a cluster host.
+const containerAPI = hostAPI.api('/:container', {
+  title: 'Containers'
+});
+
+containerAPI.get('/:port', {
   title: 'Get a single container port',
   description: 'Get information about a given Docker container port.',
 
@@ -373,7 +378,7 @@ hostAPI.get('/:container/:port', {
     const port = String(request.query.port);
     for (const projectPort in machine.docker.ports) {
       if (projectPort === port) {
-        response.json(machine.docker.ports[projectPort]);
+        response.json(machine.docker.ports[projectPort], null, 2);
         return;
       }
     }
@@ -385,14 +390,14 @@ hostAPI.get('/:container/:port', {
   examples: [{
     request: {
       urlParameters: {
-        hotname: 'host.name',
+        hostname: 'example.com',
         container: 'abcdef0123456789',
-        port: '8080'
+        port: '8088'
       }
     },
     response: {
       body: JSON.stringify({
-        port: 42000,
+        port: 42001,
         proxy: 'https'
       }, null, 2)
     }
