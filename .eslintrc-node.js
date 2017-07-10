@@ -24,5 +24,8 @@ module.exports = {
         "functions": "never",
       }
     ],
+    
+    // Override some eslint base rules because we're using node.
+    "no-console": "off",
   }
 };
