@@ -259,10 +259,11 @@ function routeRequest (proxyParameters, request, response) {
       routes.webProxy(request, response, { port, path });
       return;
 
-    case 'none':
+    case 'none': {
       const url = 'https://' + hostname + ':' + port + path;
       routes.redirect(response, url);
       return;
+    }
 
     default:
       log('[fail] unsupported proxy type:', proxy);
