@@ -17,7 +17,15 @@ module.exports = {
   "rules": {
     // Override some of standard js rules.
     "semi": ["error", "always"],
-    "comma-dangle": "off",
+    "comma-dangle": [
+      "error", {
+        "arrays": "only-multiline",
+        "objects": "only-multiline",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never",
+      }
+    ],
     
     // Override some eslint base rules because we're using ES5.
     "no-new": "off",
