@@ -10,7 +10,7 @@ module.exports = {
   "rules": {
     // Override some of standard js rules.
     "semi": ["error", "always"],
-    "comma-dangle": ["error", "never"],
+    "comma-dangle": "off",
     
     // Override some eslint base rules because we're using ES5.
     "no-new": "off",
