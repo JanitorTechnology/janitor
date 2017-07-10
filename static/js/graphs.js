@@ -1,8 +1,6 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-/* global Dygraph */
-
 // Set-up all time series graphs.
 
 Array.map(document.querySelectorAll('*[data-data]'), function (div) {

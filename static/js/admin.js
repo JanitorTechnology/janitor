@@ -1,8 +1,6 @@
 // Copyright © 2015 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-/* global ajaxForm, updateFormStatus, Scout */
-
 // Alpha version invite form.
 ajaxForm('#invite-form', 'invite', function (form, data) {
   var status = 'error';

@@ -1,8 +1,6 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-/* global Scout, $ */
-
 // Spawn a project-specific machine when one of its links is clicked.
 
 Array.map(document.querySelectorAll('a[data-action="spawn"]'), function (link) {
