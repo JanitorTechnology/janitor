@@ -28,7 +28,7 @@
     "@jankeromnes/camp": "~16.2.17",
     "dockerode": "~2.5.0",
     "email-login": "~1.0.1",
-    "fast-json-patch": "~2.0.2",
+    "fast-json-patch": "~2.0.3",
     "fleau": "~16.2.0",
     "le-acme-core": "~2.1.0",
     "node-forge": "~0.7.1",
