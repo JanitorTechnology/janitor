@@ -1,7 +1,7 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-const camp = require('@jankeromnes/camp');
+const camp = require('camp');
 const nodepath = require('path');
 const selfapi = require('selfapi');
 
