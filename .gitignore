@@ -12,3 +12,5 @@ janitor.log
 janitor.pid
 backups
 tokens
+tests/db.json
+tests/templates
