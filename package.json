@@ -25,12 +25,8 @@
     "stop": "if [ -e janitor.pid -a -n \"$(ps h $(cat janitor.pid))\" ] ; then kill $(cat janitor.pid) && printf \"[$(date -uIs)] Background process stopped (PID $(cat janitor.pid)).\\n\" ; fi ; rm -f janitor.pid",
     "test": "cd tests && node tests.js",
     "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0",
-    "lint-node": "eslint -c .eslintrc-node.js *.js api/ lib/",
-    "lint-node-fix": "npm run lint-node -- --fix",
-    "lint-browser": "eslint -c .eslintrc-browser.js static/",
-    "lint-browser-fix": "npm run lint-browser -- --fix",
-    "lint": "npm run lint-node && npm run lint-browser",
-    "lint-fix": "npm run lint-node-fix && npm run lint-browser-fix"
+    "lint": "eslint -c .eslintrc-node.js *.js api/ lib/ && eslint -c .eslintrc-browser.js static/",
+    "lint-fix": "eslint -c .eslintrc-node.js *.js api/ lib/ --fix && eslint -c .eslintrc-browser.js static/ --fix"
   },
   "dependencies": {
     "camp": "~17.2.0",
