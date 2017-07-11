@@ -16,6 +16,7 @@ module.exports = {
     // Override some of standard js rules
     "semi": ["error", "always"],
     "comma-dangle": ["error", "only-multiline"],
+    "camelcase": "off",
     
     // Override some eslint base rules because we're using node.
     "no-console": "off",
