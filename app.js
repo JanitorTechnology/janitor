@@ -494,7 +494,7 @@ boot.executeInParallel([
     }
 
     let key = '';
-    var match;
+    let match;
     switch (data.name) {
       case 'cloud9':
         // Extract a valid SSH public key from the user's input.
