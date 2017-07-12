@@ -175,27 +175,9 @@ h4 {
 /* Forms */
 
 .form-control-feedback {
-  background-color: transparent;
-  background-image: none;
-  border-color: transparent;
-  border-radius: 0;
-  box-shadow: none;
-  color: #337ab7;
-  cursor: pointer;
-  display: inline-block;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.42857143;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  vertical-align: baseline;
-  white-space: nowrap;
+  background: none;
+  border: none;
+  pointer-events: none;
 }
 
 #signup-form {
@@ -203,7 +185,6 @@ h4 {
 }
 
 #invite-form > .form-control-feedback {
-  pointer-events: none;
   top: 0;
   right: 60px;
 }
@@ -223,7 +204,6 @@ h4 {
 .ajax-form > .form-control-feedback {
   outline: none;
   padding: 1px;
-  pointer-events: none;
   top: 5px;
 }
 
@@ -267,12 +247,6 @@ h4 {
 
 .ajax-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
   display: none;
-}
-
-.ajax-form .btn-link {
-  margin: 0;
-  padding: 0;
-  vertical-align: baseline;
 }
 
 .ajax-form :invalid {
