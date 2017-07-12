@@ -198,7 +198,7 @@ function updateFormStatus (form, status, message) {
 // Add visual feedback elements to a given <form>.
 function addFormFeedback (form) {
   var feedback = document.createElement('button');
-  feedback.classList.add('form-control-feedback', 'btn','btn-link');
+  feedback.classList.add('form-control-feedback');
   feedback.setAttribute('tabindex', '99');
 
   // Append icons for 'success' and 'error' states.

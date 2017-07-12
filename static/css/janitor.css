@@ -174,14 +174,28 @@ h4 {
 
 /* Forms */
 
-#signup-form {
+.form-control-feedback {
+  background-color: transparent;
+  background-image: none;
+  border-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  color: #337ab7;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  margin: 0;
   padding: 0;
-}
-
-#invite-form > .form-control-feedback {
-  pointer-events: none;
-  top: 0;
-  right: 60px;
+  text-align: center;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: baseline;
+  white-space: nowrap;
 }
 
 .form-control-feedback .glyphicon-ok {
@@ -190,6 +204,16 @@ h4 {
 
 .form-control-feedback .glyphicon-remove {
   color: #d9534f !important;
+}
+
+#signup-form {
+  padding: 0;
+}
+
+#invite-form > .form-control-feedback {
+  pointer-events: none;
+  top: 0;
+  right: 60px;
 }
 
 #invite-form input[type='email'] {
