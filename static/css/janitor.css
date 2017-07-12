@@ -198,14 +198,6 @@ h4 {
   white-space: nowrap;
 }
 
-.form-control-feedback .glyphicon-ok {
-  color: #3c763d !important;
-}
-
-.form-control-feedback .glyphicon-remove {
-  color: #d9534f !important;
-}
-
 #signup-form {
   padding: 0;
 }
