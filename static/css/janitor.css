@@ -198,6 +198,7 @@ h4 {
 .ajax-form > .form-control-feedback {
   outline: none;
   padding: 1px;
+  pointer-events: none;
   top: 5px;
 }
 
