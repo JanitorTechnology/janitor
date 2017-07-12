@@ -7,19 +7,19 @@
           </div>
           <form action="/api/user" class="account-form ajax-form has-feedback col-sm-4" method="patch">
             <label class="control-label">Name</label>
-            <input class="form-control form-feedback-target" data-submit-on="blur" name="/name" placeholder="Real name" type="text" value={{= user.profile.name in json}}>
+            <input class="form-control" data-submit-on="blur" name="/name" placeholder="Real name" type="text" value={{= user.profile.name in json}}>
           </form>
           <form id="cloud9user-form" class="account-form ajax-form has-feedback col-sm-4">
             <input type="hidden" name="name" value="cloud9user">
             <label class="control-label">Cloud9 Username</label>
-            <input class="form-control form-feedback-target" data-submit-on="blur" name="key" placeholder="Username" type="text" value={{= user.keys.cloud9user in json}}>
+            <input class="form-control" data-submit-on="blur" name="key" placeholder="Username" type="text" value={{= user.keys.cloud9user in json}}>
           </form>
         </div>
         <div class="row">
           <form id="cloud9-form" class="account-form ajax-form has-feedback col-sm-12">
             <input type="hidden" name="name" value="cloud9">
             <label class="control-label">Cloud9 SSH Key</label>
-            <textarea class="form-control form-feedback-target" data-submit-on="blur" name="key" placeholder="SSH key" rows="7">{{= user.keys.cloud9 in html}}</textarea>
+            <textarea class="form-control" data-submit-on="blur" name="key" placeholder="SSH key" rows="7">{{= user.keys.cloud9 in html}}</textarea>
             <p>Please add your <a target="_blank" href="https://c9.io/account/ssh" title="Your public SSH key on c9.io">Cloud9 SSH key</a> to enable Cloud9 IDE access.</p>
           </form>
         </div>

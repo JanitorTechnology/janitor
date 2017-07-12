@@ -158,14 +158,7 @@ function setupAsyncForm (form) {
 
 // Update the visual feedback of a <form>'s status.
 function updateFormStatus (form, status, message) {
-  // Get the targetted form element which should receive the form feedback.
-  const targetElement = form.querySelector('.form-feedback-target');
-
   form.classList.remove('has-success', 'has-error');
-  // Reset the custom validity message so the element isn't invalid anymore,
-  // and the form can be submitted.
-  targetElement.setCustomValidity('');
-
   switch (status) {
     case 'success':
       form.classList.add('has-success');
@@ -181,9 +174,13 @@ function updateFormStatus (form, status, message) {
   }
 
   var feedback = form.querySelector('.form-control-feedback');
+
+  // Reset the custom validity message so the element isn't invalid anymore,
+  // and the form can be submitted.
+  feedback.setCustomValidity('');
   if (message && feedback) {
     // Set a custom validation message on the target form element.
-    targetElement.setCustomValidity(message);
+    feedback.setCustomValidity(message);
     // Force the display of thecustom validity message.
     form.reportValidity();
   }
@@ -197,8 +194,8 @@ function updateFormStatus (form, status, message) {
 
 // Add visual feedback elements to a given <form>.
 function addFormFeedback (form) {
-  var feedback = document.createElement('div');
-  feedback.classList.add('form-control-feedback');
+  var feedback = document.createElement('button');
+  feedback.classList.add('form-control-feedback', 'btn','btn-link');
   feedback.setAttribute('tabindex', '99');
 
   // Append icons for 'success' and 'error' states.
@@ -207,6 +204,11 @@ function addFormFeedback (form) {
     icon.classList.add('glyphicon', 'glyphicon-' + name);
     icon.setAttribute('aria-hidden', 'true');
     feedback.appendChild(icon);
+  });
+
+  // Clicking on the form feedback "button" shouldn't submit the form.
+  feedback.addEventListener('click', function (event) {
+    event.preventDefault();
   });
 
   form.appendChild(feedback);
