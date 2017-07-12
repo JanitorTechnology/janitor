@@ -249,9 +249,7 @@ h4 {
   vertical-align: baseline;
 }
 
-.ajax-form :invalid,
-.ajax-form :-moz-submit-invalid,
-.ajax-form :-moz-ui-invalid {
+.ajax-form :invalid {
   box-shadow: none;
 }
 
