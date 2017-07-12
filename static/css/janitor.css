@@ -179,8 +179,17 @@ h4 {
 }
 
 #invite-form > .form-control-feedback {
+  pointer-events: none;
   top: 0;
   right: 60px;
+}
+
+.form-control-feedback .glyphicon-ok {
+  color: #3c763d !important;
+}
+
+.form-control-feedback .glyphicon-remove {
+  color: #d9534f !important;
 }
 
 #invite-form input[type='email'] {
