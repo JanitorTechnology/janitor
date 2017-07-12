@@ -19,7 +19,7 @@
           </form>
           <form action="/api/user/configurations/{{= file in uri}}" class="account-form ajax-form has-feedback col-sm-12" method="put">
             <p class="alert alert-warning">
-              <strong>Note:</strong> This configuration will only apply to new containers. Overwrite <strong>~/{{= file in html}}</strong> in all existing containers by clicking <button class="btn btn-link" data-submit-on="click" type="submit">here</button>.
+              <strong>Note:</strong> This configuration will only apply to new containers. Overwrite <strong>~/{{= file in html}}</strong> in all existing containers by clicking <a data-submit-on="click" href="javascript:void(0)">here</a>.
             </p>
           </form>
         </div>{{ } }}
