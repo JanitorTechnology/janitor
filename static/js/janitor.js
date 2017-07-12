@@ -177,11 +177,14 @@ function updateFormStatus (form, status, message) {
 
   // Reset the custom validity message so the element isn't invalid anymore,
   // and the form can be submitted.
-  feedback.setCustomValidity('');
+  if (feedback) {
+    feedback.setCustomValidity('');
+  }
+  
   if (message && feedback) {
-    // Set a custom validation message on the target form element.
+    // Set a custom validation message on the form feedback button.
     feedback.setCustomValidity(message);
-    // Force the display of thecustom validity message.
+    // Force the display of the custom validity message.
     form.reportValidity();
   }
 
@@ -204,11 +207,6 @@ function addFormFeedback (form) {
     icon.classList.add('glyphicon', 'glyphicon-' + name);
     icon.setAttribute('aria-hidden', 'true');
     feedback.appendChild(icon);
-  });
-
-  // Clicking on the form feedback "button" shouldn't submit the form.
-  feedback.addEventListener('click', function (event) {
-    event.preventDefault();
   });
 
   form.appendChild(feedback);
