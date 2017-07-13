@@ -252,14 +252,13 @@ function routeRequest (proxyParameters, request, response) {
   }
 
   const { port, proxy } = proxyParameters;
-  const url = 'https://' + hostname + ':' + port + path;
   switch (proxy) {
     case 'https':
       routes.webProxy(request, response, { port, path });
       break;
 
     case 'none':
-      routes.redirect(response, url);
+      routes.redirect(response, 'https://' + hostname + ':' + port + path);
       break;
 
     default:

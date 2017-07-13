@@ -18,15 +18,15 @@
   "scripts": {
     "app": "SCRIPT=app npm start",
     "join": "SCRIPT=join npm start",
+    "lint": "eslint -c .eslintrc-node.js *.js api/ lib/ && eslint -c .eslintrc-browser.js static/",
+    "lint-fix": "eslint -c .eslintrc-node.js *.js api/ lib/ --fix && eslint -c .eslintrc-browser.js static/ --fix",
     "rebase": "git pull -q --rebase origin master && git submodule -q update --rebase && npm update",
     "prestart": "npm stop && touch janitor.log janitor.pid && chmod 600 janitor.log janitor.pid",
     "start": "if [ -z \"$SCRIPT\" ] ; then printf \"Run which Janitor script? [join/app]:\" && read SCRIPT ; fi ; node \"$SCRIPT\" >> janitor.log 2>&1 & printf \"$!\\n\" > janitor.pid",
     "poststart": "printf \"[$(date -uIs)] Background process started (PID $(cat janitor.pid), LOGS $(pwd)/janitor.log).\\n\"",
     "stop": "if [ -e janitor.pid -a -n \"$(ps h $(cat janitor.pid))\" ] ; then kill $(cat janitor.pid) && printf \"[$(date -uIs)] Background process stopped (PID $(cat janitor.pid)).\\n\" ; fi ; rm -f janitor.pid",
     "test": "cd tests && node tests.js",
-    "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0",
-    "lint": "eslint -c .eslintrc-node.js *.js api/ lib/ && eslint -c .eslintrc-browser.js static/",
-    "lint-fix": "eslint -c .eslintrc-node.js *.js api/ lib/ --fix && eslint -c .eslintrc-browser.js static/ --fix"
+    "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0"
   },
   "dependencies": {
     "camp": "^17.2.0",
