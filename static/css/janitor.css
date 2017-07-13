@@ -178,11 +178,6 @@ h4 {
   padding: 0;
 }
 
-#invite-form > .form-control-feedback {
-  top: 0;
-  right: 60px;
-}
-
 #invite-form input[type='email'] {
   border-top-left-radius: 0;
 }
@@ -196,9 +191,16 @@ h4 {
 }
 
 .ajax-form > .form-control-feedback {
+  background: none;
+  border: none;
   outline: none;
+  pointer-events: none;
   padding: 1px;
   top: 5px;
+}
+
+.ajax-form > .form-control-feedback:invalid {
+  box-shadow: none;
 }
 
 .ajax-form.has-button > .form-control-feedback {
@@ -225,6 +227,11 @@ h4 {
 .ajax-form.is-submit-xs > .form-control-feedback {
   top: -5px;
   left: -30px;
+}
+
+#invite-form > .form-control-feedback {
+  top: 0;
+  right: 60px;
 }
 
 .row > .ajax-form > .form-control-feedback {

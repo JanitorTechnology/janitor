@@ -174,9 +174,18 @@ function updateFormStatus (form, status, message) {
   }
 
   var feedback = form.querySelector('.form-control-feedback');
+
+  // Reset the custom validity message so the element isn't invalid anymore,
+  // and the form can be submitted.
+  if (feedback) {
+    feedback.setCustomValidity('');
+  }
+  
   if (message && feedback) {
-    feedback.dataset.message = message;
-    feedback.focus();
+    // Set a custom validation message on the form feedback button.
+    feedback.setCustomValidity(message);
+    // Force the display of the custom validity message.
+    form.reportValidity();
   }
 
   if (form.dataset.refreshAfterSuccess && status == 'success') {
@@ -188,9 +197,8 @@ function updateFormStatus (form, status, message) {
 
 // Add visual feedback elements to a given <form>.
 function addFormFeedback (form) {
-  var feedback = document.createElement('div');
+  var feedback = document.createElement('button');
   feedback.classList.add('form-control-feedback');
-  feedback.dataset.message = '';
   feedback.setAttribute('tabindex', '99');
 
   // Append icons for 'success' and 'error' states.
@@ -199,16 +207,6 @@ function addFormFeedback (form) {
     icon.classList.add('glyphicon', 'glyphicon-' + name);
     icon.setAttribute('aria-hidden', 'true');
     feedback.appendChild(icon);
-  });
-
-  // Set-up the feedback message box (a bootstrap popover).
-  $(feedback).popover({
-    content: function () {
-      return this.dataset.message;
-    },
-    container: 'body',
-    placement: 'bottom',
-    trigger: 'focus'
   });
 
   form.appendChild(feedback);
