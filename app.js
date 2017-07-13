@@ -19,7 +19,6 @@ boot.executeInParallel([
   boot.ensureHttpsCertificates,
   boot.ensureDockerTlsCertificates
 ], () => {
-
   // You can customize these values in './db.json'.
   const hostname = db.get('hostname', 'localhost');
   const https = db.get('https');
@@ -495,11 +494,12 @@ boot.executeInParallel([
     }
 
     let key = '';
+    let match;
     switch (data.name) {
       case 'cloud9':
         // Extract a valid SSH public key from the user's input.
         // Regex adapted from https://gist.github.com/paranoiq/1932126.
-        var match = data.key.match(/ssh-rsa [\w+\/]+[=]{0,3}/);
+        match = data.key.match(/ssh-rsa [\w+/]+[=]{0,3}/);
         if (!match) {
           return end({ status: 'error', message: 'Invalid SSH key' });
         }
@@ -509,7 +509,7 @@ boot.executeInParallel([
 
       case 'cloud9user':
         // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
-        var match = data.key.trim().match(/^[a-z0-9_]+$/);
+        match = data.key.trim().match(/^[a-z0-9_]+$/);
         if (!match) {
           return end({ status: 'error', message: 'Invalid Cloud9 username' });
         }

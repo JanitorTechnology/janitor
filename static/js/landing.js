@@ -1,11 +1,9 @@
 // Copyright © 2015 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-
 // Alpha sign-up form.
 
 ajaxForm('#signup-form', 'signup', function (form, data) {
-
   var status = 'error';
   var message = data.message;
 
@@ -25,5 +23,4 @@ ajaxForm('#signup-form', 'signup', function (form, data) {
   }
 
   updateFormStatus(form, status, message);
-
 });

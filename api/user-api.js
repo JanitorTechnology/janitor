@@ -8,7 +8,6 @@ const configurations = require('../lib/configurations');
 const db = require('../lib/db');
 const log = require('../lib/log');
 const machines = require('../lib/machines');
-const users = require('../lib/users');
 
 // API resource to manage a Janitor user.
 const userAPI = module.exports = selfapi({

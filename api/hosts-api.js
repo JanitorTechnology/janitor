@@ -141,7 +141,6 @@ hostAPI.post({
     // No authentication.
     response.statusCode = 403; // Forbidden
     response.json({ error: 'Unauthorized' }, null, 2);
-    return;
 
     function createHost () {
       getHostProperties(properties => {

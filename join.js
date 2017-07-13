@@ -16,9 +16,8 @@ const sessions = require('./lib/sessions');
 const hostname = db.get('hostname', 'localhost');
 
 if (!hostname || hostname === 'localhost') {
-  log('[fail] cannot join cluster as [hostname = ' + hostname + ']: ' +
+  throw new Error('Cannot join cluster as [hostname = ' + hostname + ']: ' +
     'please fix the hostname in ./db.json and try again');
-  return;
 }
 
 log('[ok] will try to join cluster as [hostname = ' + hostname + ']');
@@ -256,18 +255,17 @@ function routeRequest (proxyParameters, request, response) {
   switch (proxy) {
     case 'https':
       routes.webProxy(request, response, { port, path });
-      return;
+      break;
 
     case 'none':
-      const url = 'https://' + hostname + ':' + port + path;
-      routes.redirect(response, url);
-      return;
+      routes.redirect(response, 'https://' + hostname + ':' + port + path);
+      break;
 
     default:
       log('[fail] unsupported proxy type:', proxy);
       response.statusCode = 500; // Internal Server Error
       response.end();
-      return;
+      break;
   }
 }
 

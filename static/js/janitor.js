@@ -3,7 +3,7 @@
 
 // Polyfill a few basic things.
 ['filter', 'forEach', 'map', 'reduce'].forEach(function (name) {
-  Array[name] = function(array, callback, init) {
+  Array[name] = function (array, callback, init) {
     return [][name].call(array, callback, init);
   };
 });
@@ -99,7 +99,7 @@ function fetchAPI (method, url, data, callback) {
   }).then(function (response) {
     // The server is responding!
     responseStatus = response.status;
-    return responseStatus == 204 ? null : response.json();
+    return responseStatus === 204 ? null : response.json();
   }).then(function (data) {
     // The response body was successfully parsed as JSON!
     if (data && data.error) {
@@ -136,7 +136,6 @@ function setupAsyncForm (form) {
     element.addEventListener('change', resetFormStatus);
     element.addEventListener('keydown', resetFormStatus);
   });
-
 
   // Elements can specify an event to submit the <form>.
   Array.forEach(form.querySelectorAll('[data-submit-on]'), function (element) {
@@ -188,7 +187,7 @@ function updateFormStatus (form, status, message) {
     form.reportValidity();
   }
 
-  if (form.dataset.refreshAfterSuccess && status == 'success') {
+  if (form.dataset.refreshAfterSuccess && status === 'success') {
     setTimeout(function () {
       location.reload();
     }, 400);

@@ -18,6 +18,8 @@
   "scripts": {
     "app": "SCRIPT=app npm start",
     "join": "SCRIPT=join npm start",
+    "lint": "eslint -c .eslintrc-node.js *.js api/ lib/ && eslint -c .eslintrc-browser.js static/",
+    "lint-fix": "eslint -c .eslintrc-node.js *.js api/ lib/ --fix && eslint -c .eslintrc-browser.js static/ --fix",
     "rebase": "git pull -q --rebase origin master && git submodule -q update --rebase && npm update",
     "prestart": "npm stop && touch janitor.log janitor.pid && chmod 600 janitor.log janitor.pid",
     "start": "if [ -z \"$SCRIPT\" ] ; then printf \"Run which Janitor script? [join/app]:\" && read SCRIPT ; fi ; node \"$SCRIPT\" >> janitor.log 2>&1 & printf \"$!\\n\" > janitor.pid",
@@ -27,7 +29,7 @@
     "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0"
   },
   "dependencies": {
-    "camp": "~17.2.0",
+    "camp": "^17.2.0",
     "dockerode": "~2.5.0",
     "email-login": "~1.1.0",
     "fast-json-patch": "~2.0.3",
@@ -40,6 +42,12 @@
     "tar-stream": "~1.5.4"
   },
   "devDependencies": {
+    "eslint": "^4.1.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "watch-run": "^1.2.5"
   },
   "engines": {
