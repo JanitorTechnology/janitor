@@ -179,7 +179,7 @@ function updateFormStatus (form, status, message) {
   if (feedback) {
     feedback.setCustomValidity('');
   }
-  
+
   if (message && feedback) {
     // Set a custom validation message on the form feedback button.
     feedback.setCustomValidity(message);
