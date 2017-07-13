@@ -49,7 +49,8 @@ function formatTime (milliseconds) {
 
 // Format bytes into human readable text.
 
-function formatMemory (bytes) { // eslint-disable-line no-unused-vars
+// eslint-disable-next-line no-unused-vars
+function formatMemory (bytes) {
   var prefix = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
   var p = 0;
   var value = Number(bytes);
