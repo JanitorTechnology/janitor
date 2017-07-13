@@ -252,21 +252,21 @@ function routeRequest (proxyParameters, request, response) {
   }
 
   const { port, proxy } = proxyParameters;
+  const url = 'https://' + hostname + ':' + port + path;
   switch (proxy) {
     case 'https':
       routes.webProxy(request, response, { port, path });
-      return;
+      break;
 
-    case 'none': {
-      const url = 'https://' + hostname + ':' + port + path;
+    case 'none':
       routes.redirect(response, url);
-      return;
-    }
+      break;
 
     default:
       log('[fail] unsupported proxy type:', proxy);
       response.statusCode = 500; // Internal Server Error
       response.end();
+      break;
   }
 }
 
