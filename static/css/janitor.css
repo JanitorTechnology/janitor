@@ -174,19 +174,8 @@ h4 {
 
 /* Forms */
 
-.form-control-feedback {
-  background: none;
-  border: none;
-  pointer-events: none;
-}
-
 #signup-form {
   padding: 0;
-}
-
-#invite-form > .form-control-feedback {
-  top: 0;
-  right: 60px;
 }
 
 #invite-form input[type='email'] {
@@ -202,9 +191,16 @@ h4 {
 }
 
 .ajax-form > .form-control-feedback {
+  background: none;
+  border: none;
   outline: none;
+  pointer-events: none;
   padding: 1px;
   top: 5px;
+}
+
+.ajax-form > .form-control-feedback:invalid {
+  box-shadow: none;
 }
 
 .ajax-form.has-button > .form-control-feedback {
@@ -233,6 +229,11 @@ h4 {
   left: -30px;
 }
 
+#invite-form > .form-control-feedback {
+  top: 0;
+  right: 60px;
+}
+
 .row > .ajax-form > .form-control-feedback {
   right: 15px;
 }
@@ -247,10 +248,6 @@ h4 {
 
 .ajax-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
   display: none;
-}
-
-.ajax-form :invalid {
-  box-shadow: none;
 }
 
 .login-with {
