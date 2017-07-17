@@ -1,6 +1,6 @@
 # The Janitor
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/JanitorTechnology/janitor.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
 
 *Fix bugs, faster*
 
