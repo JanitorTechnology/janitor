@@ -1,6 +1,8 @@
 # The Janitor
 
+[![Travis status badge](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
 [![Greenkeeper badge](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
+[![NPM version badge](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
 
 *Fix bugs, faster*
 
