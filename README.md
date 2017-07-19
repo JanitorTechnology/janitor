@@ -1,12 +1,12 @@
 # The Janitor
 
-[![Travis status badge](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
-[![Greenkeeper badge](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
-[![NPM version badge](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
+[![Travis status](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
+[![Greenkeeper](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
+[![NPM version](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
 
 *Fix bugs, faster*
 
-[![Janitor demo video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
+[![Janitor video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
 
 ## See it live
 
@@ -14,22 +14,46 @@ Sign in to [janitor.technology](https://janitor.technology).
 
 ## Try it at home
 
-Install [Docker](https://www.docker.com) and [Node.js](https://nodejs.org).
+Install [Node.js](https://nodejs.org) (and optionally [Docker](https://www.docker.com)).
 
 Clone this repository:
 
     git clone https://github.com/janitortechnology/janitor
     cd janitor/
 
-Install dependencies (only works on Ubuntu/Debian):
+Install dependencies:
 
-    make install
+    npm install
 
 Start the server:
 
     node app
 
 Then hit [https://localhost:1443](https://localhost:1443/)!
+
+## Hack it
+
+You can hack Janitor directly [on Janitor](https://janitor.technology/projects/)!
+
+Check your code:
+
+    npm run lint
+
+Auto-fix your code:
+
+    npm run lint-fix
+
+Test your code:
+
+    npm test
+
+Auto-restart the server when its files are modified:
+
+    npm run watch
+
+Run the server in the background (use `tail -f janitor.log` to check on it):
+
+    npm run app
 
 ## Help wanted!
 
@@ -39,6 +63,5 @@ Then hit [https://localhost:1443](https://localhost:1443/)!
 
 ## Thanks
 
-- [IRILL](http://www.irill.org/) for the server and hosting.
+- [IRILL](http://www.irill.org/) and [Mozilla](https://www.mozilla.org/) for hosting this project.
 - [Cloud9](https://c9.io/) for sponsoring alpha accounts.
-- [Mozilla](https://www.mozilla.org/).
