@@ -423,28 +423,6 @@ boot.executeInParallel([
     end({ status: 'success' });
   });
 
-  // Rebuild the base image of a project.
-  app.ajax.on('rebuild', (data, end, query) => {
-    const { user } = query.req;
-    if (!users.isAdmin(user)) {
-      end();
-      return;
-    }
-
-    machines.rebuild(data.project, error => {
-      if (error) {
-        end({ status: 'error', message: String(error) });
-        return;
-      }
-      end({ status: 'success' });
-    });
-
-    // For longer requests, make sure we reply before the browser retries.
-    setTimeout(() => {
-      end({ status: 'started' });
-    }, 42000);
-  });
-
   // Update the base image of a project.
   app.ajax.on('update', (data, end, query) => {
     const { user } = query.req;

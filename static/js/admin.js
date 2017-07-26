@@ -38,7 +38,7 @@ ajaxForm('#newproject-form', 'projectdb', function (form, data) {
   updateFormStatus(form, status, message);
 });
 
-// Project rebuild/update buttons.
+// Project update buttons.
 Array.map(document.querySelectorAll('button[data-action]'), function (button) {
   button.addEventListener('click', Scout.send(function (query) {
     query.action = button.dataset.action;
