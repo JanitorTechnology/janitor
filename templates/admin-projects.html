@@ -11,7 +11,6 @@
               <form action="/api/projects/{{= id in xmlattr}}/pull" class="ajax-form has-feedback is-submit" method="post">
                 <button class="btn btn-default" type="submit">Pull</button>
               </form>
-              <button data-action="rebuild" data-project={{= id in json}} class="btn btn-default">Rebuild</button>
               <button data-action="update" data-project={{= id in json}} class="btn btn-primary">Update</button>
             </div>
           </div>
@@ -39,11 +38,6 @@
                 <input class="form-control" data-submit-on="blur" name="/docker/path" value={{= project.docker.path in json}}>
               </form>
             </div>
-            <form id="{{= id in xmlattr}}-build" data-action="projectdb" class="ajax-form has-feedback">
-              <input type="hidden" name="id" value={{= id in json}}>
-              <label class="control-label">Build</label>
-              <textarea class="form-control" data-submit-on="blur" name="/docker/build" rows="9">{{= project.docker.build in html}}</textarea>
-            </form>
             <form id="{{= id in xmlattr}}-update" data-action="projectdb" class="ajax-form has-feedback">
               <input type="hidden" name="id" value={{= id in json}}>
               <label class="control-label">Update</label>
