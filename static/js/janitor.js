@@ -8,42 +8,43 @@
   };
 });
 
-// Automatically set up button forms (when their 'method' is 'delete' or 'put').
-Array.forEach(document.querySelectorAll('form[method=delete], form[method=put]'), function (form) {
+// Automatically set up asynchronous JSON forms (all with a 'method' attribute).
+Array.forEach(document.querySelectorAll('form[method]'), function (form) {
   setupAsyncForm(form);
   form.addEventListener('submit', function (event) {
-    var data = getFormData(form);
+    var elements = Array.filter(form.elements, function (element) {
+      // Only consider `form.elements` that have a `name` attribute.
+      return !!element.name;
+    }).map(function (element) {
+      // Extract values, properly handling elements with `type="checkbox"`.
+      return {
+        name: element.name,
+        value: element.type === 'checkbox' ? element.checked : element.value
+      };
+    });
+
+    // Build a JSON payload containing the submitted form data.
+    var data = {};
     var method = form.getAttribute('method').toUpperCase();
+    if (method === 'PATCH') {
+      // Set up JSON Patch forms to submit an Array of JSON Patch operations.
+      // See also: RFC 6902 - JSON Patch.
+      data = elements.map(function (element) {
+        return { op: 'add', path: element.name, value: element.value };
+      });
+    } else {
+      // By default, submit a JSON Object that maps element names and values.
+      elements.forEach(function (element) {
+        data[element.name] = element.value;
+      });
+    }
+
+    // Submit the JSON payload to the specified `form.action` URL.
     fetchAPI(method, form.action, data, function (error, data) {
       if (error) {
         updateFormStatus(form, 'error', String(error));
         return;
       }
-
-      updateFormStatus(form, 'success', data ? data.message : null);
-    });
-  });
-});
-
-// Automatically set up JSON Patch forms (when their 'method' is 'patch').
-// See also: RFC 6902 - JSON Patch.
-Array.forEach(document.querySelectorAll('form[method=patch]'), function (form) {
-  setupAsyncForm(form);
-  form.addEventListener('submit', function (event) {
-    // Convert named `form.elements` to an Array of JSON Patch operations.
-    var elements = Array.filter(form.elements, function (element) {
-      return element.name;
-    });
-    var operations = elements.map(function (element) {
-      return { op: 'add', path: element.name, value: element.value };
-    });
-
-    fetchAPI('PATCH', form.action, operations, function (error, data) {
-      if (error) {
-        updateFormStatus(form, 'error', String(error));
-        return;
-      }
-
       updateFormStatus(form, 'success', data ? data.message : null);
     });
   });

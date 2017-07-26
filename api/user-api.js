@@ -268,8 +268,7 @@ notificationsAPI.get({
 
   examples: [{
     response: {
-      body: JSON.stringify(
-        [], null, 2)
+      body: JSON.stringify([], null, 2)
     }
   }]
 });
