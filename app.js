@@ -11,6 +11,7 @@ const db = require('./lib/db');
 const hosts = require('./lib/hosts');
 const log = require('./lib/log');
 const machines = require('./lib/machines');
+const proxyHeuristics = require('./lib/proxy-heuristics');
 const routes = require('./lib/routes');
 const users = require('./lib/users');
 
@@ -66,9 +67,10 @@ boot.executeInParallel([
     log('[warning] disabled all https security policies');
   }
 
-  // Authenticate signed-in user requests with a server middleware.
+  // Authenticate signed-in user requests and sessions with a server middleware.
   app.handle((request, response, next) => {
-    users.get(request, user => {
+    users.get(request, (user, session) => {
+      request.session = session;
       request.user = user;
       next();
     });
@@ -283,48 +285,105 @@ boot.executeInParallel([
   // Example:
   //   'https://<hostname>/abc123/8080/index.html' should proxy to
   //   'http://localhost:8080/index.html' in Docker container 'abc123'.
-  app.route(/^\/([0-9a-f]{16,})\/(\d+)(\/.*)$/, (data, match, end, query) => {
-    // Note: In this regex, we expect a 16+ hex-digit container ID, a numeric
-    // port, and a path that starts with a '/'. These anonymous patterns are
-    // captured in the `match` array.
-    const { user } = query.req;
-    if (!user) {
-      routes.notFoundPage(query.res, user);
-      return;
-    }
-
-    const container = match[1];
-    const port = String(match[2]);
-    const path = nodepath.normalize(match[3]);
-
-    const machine = machines.getMachineByContainer(user, hostname, container);
-    if (!machine) {
-      routes.notFoundPage(query.res, user);
-      return;
-    }
-
-    const mappedPort = machine.docker.ports[port];
-    if (!mappedPort || mappedPort.proxy !== 'https') {
-      routes.notFoundPage(query.res, user);
-      return;
-    }
-
-    // Remember this port for the WebSocket proxy (see below).
-    user.lastProxyPort = mappedPort.port;
-    routes.webProxy(query.req, query.res, { port: mappedPort.port, path });
+  app.route(proxyHeuristics.proxyUrlPrefix, (data, match, end, query) => {
+    proxyRequest(query.req, query.res);
   });
+
+  // FIXME: Remove this deprecated handler (see comments above).
+  // Proxy Cloud9 IDE VFS requests to local containers.
+  // Example:
+  //   '/vfs/1/9ceokVZPKGlhYWec/workspace/_/_/tab1'
+  app.route(proxyHeuristics.cloud9VfsUrlPrefix, (data, match, end, query) => {
+    proxyRequest(query.req, query.res);
+  });
+
+  // FIXME: Remove this deprecated handler (see comments above).
+  // Proxy other Cloud9 IDE requests to local containers.
+  // Examples:
+  //   '/_ping'
+  //   '/static/lib/tern/defs/ecma5.json'
+  //   '/static/standalone/worker/plugins/c9.ide.language.core/worker.js'
+  app.route(/^\/(_ping|static\/.+)$/, (data, match, end, query) => {
+    proxyRequest(query.req, query.res);
+  });
+
+  // FIXME: Remove this deprecated handler (see comments above).
+  const proxyRequest = (request, response) => {
+    const { user } = request;
+    if (!user) {
+      routes.notFoundPage(response, user);
+      return;
+    }
+
+    proxyHeuristics.handleProxyUrls(request, response, () => {
+      let { container, port } = request.query;
+      if (!container || !port) {
+        // FIXME: Containers and ports should always be explicitly requested.
+        const likelyProxyRequest = proxyHeuristics.guessProxyRequest(request);
+        if (!likelyProxyRequest) {
+          routes.notFoundPage(response, user);
+          return;
+        }
+        container = request.query.container = likelyProxyRequest.container;
+        port = request.query.port = likelyProxyRequest.port;
+      }
+
+      const machine = machines.getMachineByContainer(user, hostname, container);
+      if (!machine) {
+        routes.notFoundPage(response, user);
+        return;
+      }
+
+      const mappedPort = machine.docker.ports[port];
+      if (!mappedPort || mappedPort.proxy !== 'https') {
+        routes.notFoundPage(response, user);
+        return;
+      }
+
+      // Remember this request for the WebSocket proxy (see below).
+      proxyHeuristics.rememberProxyRequest(request);
+
+      routes.webProxy(request, response, {
+        port: mappedPort.port,
+        path: nodepath.normalize(request.url)
+      });
+    });
+  };
 
   // FIXME: Remove this deprecated handler (see comments above).
   // Proxy WebSocket connections to local containers.
   app.on('upgrade', (request, socket, head) => {
     // Authenticate the user (our middleware only works for 'request' events).
-    users.get(request, user => {
-      if (!user || !user.lastProxyPort) {
+    users.get(request, (user, session) => {
+      if (!user || !session) {
         socket.end();
         return;
       }
 
-      const port = user.lastProxyPort;
+      // Note: Some proxy heuristics need a `request.session`. Add it here.
+      request.session = session;
+      request.user = user;
+
+      // FIXME: Containers and ports should always be explicitly requested.
+      const likelyProxyRequest = proxyHeuristics.guessProxyRequest(request);
+      if (!likelyProxyRequest) {
+        socket.end();
+        return;
+      }
+
+      const { container, port } = likelyProxyRequest;
+      const machine = machines.getMachineByContainer(user, hostname, container);
+      if (!machine) {
+        socket.end();
+        return;
+      }
+
+      const mappedPort = machine.docker.ports[port];
+      if (!mappedPort || mappedPort.proxy !== 'https') {
+        socket.end();
+        return;
+      }
+
       const path = nodepath.normalize(request.url);
       routes.webProxy(request, socket, { port, path });
     });
