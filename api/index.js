@@ -12,5 +12,6 @@ const api = module.exports = selfapi({
 
 // Janitor API sub-resources.
 api.api('/hosts', require('./hosts-api'));
+api.api('/projects', require('./projects-api'));
 api.api('/user', require('./user-api'));
 api.api('/admin', require('./admin-api'));

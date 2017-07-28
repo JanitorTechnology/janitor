@@ -7,6 +7,7 @@ const fs = require('fs');
 const net = require('net');
 const path = require('path');
 const selfapi = require('selfapi');
+const stream = require('stream');
 
 if (path.basename(process.cwd()) !== 'tests') {
   console.error('Warning: Tests need to run inside the tests/ folder.\n' +
@@ -61,9 +62,17 @@ tests.push({
       callback(null, { id: 'abcdef0123456789' }, '');
     };
     docker.copyIntoContainer = docker.execInContainer =
-      function (parameters, callback) {
-        callback();
-      };
+      function (parameters, callback) { callback(); };
+    docker.pullImage = function (parameters, callback) {
+      const readable = new stream.Readable();
+      readable.push('ok');
+      readable.push(null); // End the stream.
+      callback(null, readable);
+    };
+    docker.inspectImage = function (parameters, callback) {
+      callback(null, { Created: 1500000000000 });
+    };
+    docker.tagImage = function (parameters, callback) { callback(); };
     docker.version = function (parameters, callback) {
       callback(null, { Version: '17.06.0-ce' });
     };
@@ -85,7 +94,8 @@ tests.push({
       machines.setProject({
         'id': 'test-project',
         '/name': 'Test Project',
-        '/docker/host': 'example.com'
+        '/docker/host': 'example.com',
+        '/docker/image': 'image:latest',
       });
       next();
     }

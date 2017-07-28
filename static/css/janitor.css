@@ -395,8 +395,13 @@ h4 {
   padding: 10px;
 }
 
-.project-actions > .btn:not(:last-child) {
+.project-actions > .btn:not(:last-child),
+.project-actions > form:not(:last-child) {
   margin-right: 5px;
+}
+
+.project-actions > form {
+  display: inline-block;
 }
 
 .panel-project .form-control {
