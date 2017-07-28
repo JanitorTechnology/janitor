@@ -441,7 +441,8 @@ containerAPI.get('/:port', {
   description: 'Get the properties of a given Docker container port.',
 
   handler: (request, response) => {
-    let { user, oauth2scope } = request;
+    let { user } = request;
+    const { oauth2scope } = request;
     const { hostname } = request.query;
     if (!user && oauth2scope && oauth2scope.hostname === hostname) {
       const { scopes } = oauth2scope;

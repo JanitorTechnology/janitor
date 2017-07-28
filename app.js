@@ -96,7 +96,7 @@ boot.executeInParallel([
 
   // Public API reference.
   app.route(/^\/reference\/api\/?$/, (data, match, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     log('api reference');
     routes.apiPage(query.res, api, user);
   });
@@ -339,9 +339,9 @@ boot.executeInParallel([
 
   // Alpha version sign-up.
   app.ajax.on('signup', (data, end) => {
-    let email = data.email;
-    let users = db.get('users');
-    let waitlist = db.get('waitlist');
+    const email = data.email;
+    const users = db.get('users');
+    const waitlist = db.get('waitlist');
 
     log('signup', email);
 
@@ -363,13 +363,13 @@ boot.executeInParallel([
 
   // Alpha version invite.
   app.ajax.on('invite', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
     }
 
-    let email = data.email;
+    const email = data.email;
     if (email in db.get('users')) {
       end({ status: 'already-invited' });
       return;
@@ -377,7 +377,7 @@ boot.executeInParallel([
 
     users.sendInviteEmail(email, error => {
       if (error) {
-        let message = String(error);
+        const message = String(error);
         log(message, '(while inviting ' + email + ')');
         end({ status: 'error', message: message });
         return;
@@ -388,16 +388,16 @@ boot.executeInParallel([
 
   // Request a log-in key via email.
   app.ajax.on('login', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (user) {
       end({ status: 'logged-in' });
       return;
     }
 
-    let email = data.email;
+    const email = data.email;
     users.sendLoginEmail(email, query.req, error => {
       if (error) {
-        let message = String(error);
+        const message = String(error);
         log(message, '(while emailing ' + email + ')');
         end({ status: 'error', message: message });
         return;
@@ -408,7 +408,7 @@ boot.executeInParallel([
 
   // Change the parameters of a project.
   app.ajax.on('projectdb', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -425,7 +425,7 @@ boot.executeInParallel([
 
   // Rebuild the base image of a project.
   app.ajax.on('rebuild', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -447,7 +447,7 @@ boot.executeInParallel([
 
   // Update the base image of a project.
   app.ajax.on('update', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!users.isAdmin(user)) {
       end();
       return;
@@ -469,7 +469,7 @@ boot.executeInParallel([
 
   // Spawn a new machine for a project. (Fast!)
   app.ajax.on('spawn', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!user) {
       end({ status: 'error', message: 'Not signed in' });
       return;
@@ -486,7 +486,7 @@ boot.executeInParallel([
 
   // Destroy a machine.
   app.ajax.on('destroy', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!user) {
       end({ status: 'error', message: 'Not signed in' });
       return;
@@ -503,7 +503,7 @@ boot.executeInParallel([
 
   // Save a new user key, or update an existing one.
   app.ajax.on('key', (data, end, query) => {
-    let { user } = query.req;
+    const { user } = query.req;
     if (!user || !data.name || !data.key) {
       end();
       return;
