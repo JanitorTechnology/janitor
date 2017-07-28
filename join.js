@@ -271,7 +271,7 @@ function routeRequest (proxyParameters, request, response) {
 
 // Use the Janitor API to get the mapping information of a given container port.
 function getMappedPort (accessToken, container, port, callback) {
-  let parameters = {
+  const parameters = {
     provider: 'janitor',
     accessToken: accessToken,
     path: '/api/hosts/' + hostname + '/' + container + '/' + port
