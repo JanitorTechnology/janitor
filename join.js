@@ -9,6 +9,7 @@ const boot = require('./lib/boot');
 const db = require('./lib/db');
 const log = require('./lib/log');
 const oauth2 = require('./lib/oauth2');
+const proxyHeuristics = require('./lib/proxy-heuristics');
 const routes = require('./lib/routes');
 const sessions = require('./lib/sessions');
 
@@ -53,40 +54,15 @@ boot.executeInParallel([
     proxy.handle(ensureSession);
     proxy.handle(handleOAuth2Code);
     proxy.handle(ensureOAuth2Access);
+    proxy.handle(proxyHeuristics.handleProxyUrls);
 
-    // Proxy requests to local containers using URLs like '/:container/:port/*'.
-    // Example:
-    //   'https://<hostname>/abc123/8080/index.html' should proxy to
-    //   'http://localhost:8080/index.html' in Docker container 'abc123'.
-    proxy.path(/^\/([0-9a-f]{16,})\/(\d+)(\/.*)?$/, (request, response) => {
-      // Note: In this regex, we expect a 16+ hex-digit container ID, a numeric
-      // port, and a path that starts with a '/'. These anonymous patterns are
-      // captured in `request.query` as '1', '2' and '3', respectively.
-      const { query } = request;
-      const path = query[3];
-      if (!path) {
-        // We want the proxied `path` to always begin with a '/'.
-        // However `path` is empty in URLs like '/abc123/8080?p=1', so we
-        // redirect them to '/abc123/8080/?p=1' (where `path` is '/').
-        let url = request.url;
-        url = url.includes('?') ? url.replace('?', '/?') : url + '/';
-        routes.redirect(response, url, true);
-        return;
-      }
-
-      // Add the requested container ID and port to `request.query`.
-      const container = query.container = query[1];
-      const port = query.port = query[2];
-
-      // Strip the prefix from `request.url`, then proxy the request as usual.
-      request.url = request.url.replace('/' + container + '/' + port, '');
-      proxyRequest(request, response);
-    });
-
-    // Proxy requests to local containers using query parameters.
-    // Example:
-    //   'https://<hostname>/a.html?container=abc123&port=8080' should proxy to
-    //   'http://localhost:8080/a.html' in Docker container 'abc123'.
+    // Proxy HTTPS requests to local containers.
+    // Examples:
+    //   'https://<hostname>/abc123/8080/index.html'
+    //   'https://<hostname>/index.html?container=abc123&port=8080'
+    //   'https://<hostname>/index.html' (Referer: '<hostname>/abc123/8080/')
+    // All of these requests should route to:
+    //   'http://localhost:8080/index.html' in the Docker container 'abc123'.
     proxy.path('/*', proxyRequest);
 
     // Proxy WebSocket connections to local containers.
@@ -96,6 +72,8 @@ boot.executeInParallel([
       request.query = {};
       ensureSession(request, socket, () => {
         ensureOAuth2Access(request, socket, () => {
+          // Note: We don't handle proxy URLs here, because they don't work with
+          // WebSockets (no 'referer' HTTP header in WebSocket requests).
           proxyRequest(request, socket);
         });
       });
@@ -106,7 +84,6 @@ boot.executeInParallel([
 // Associate some non-persistent data to sessions.
 const oauth2States = {};
 const oauth2Tokens = {};
-const lastProxyParameters = {};
 
 // Assign a stable session to all requests.
 function ensureSession (request, response, next) {
@@ -204,40 +181,40 @@ function ensureOAuth2Access (request, response, next) {
 // Proxy a request to a local Docker container.
 function proxyRequest (request, response) {
   const { session } = request;
-  const { container, port } = request.query;
+  let { container, port } = request.query;
   if (!container || !port) {
-    // No container port was explicitly requested, so we re-use the session's
-    // last proxy parameters.
-    const proxyParameters = lastProxyParameters[session.id];
-    if (proxyParameters) {
-      routeRequest(proxyParameters, request, response);
-    } else {
+    // FIXME: Containers and ports should always be explicitly requested.
+    // Let's Encrypt will soon support wildcard certificates, which could allow
+    // us to enforce consistently explicit proxy requests, with domains like:
+    //   'https://8080.abc123.<hostname>/index.html'
+    // In the meantime, we try to guess which container port this is meant for.
+    const likelyProxyRequest = proxyHeuristics.guessProxyRequest(request);
+    if (!likelyProxyRequest) {
       log('[fail] no container port requested', request.url);
       response.statusCode = 400; // Bad Request
       response.end();
+      return;
     }
-    return;
+
+    container = request.query.container = likelyProxyRequest.container;
+    port = request.query.port = likelyProxyRequest.port;
   }
+
+  // Remember explicit proxy requests to help with future ambiguous requests.
+  proxyHeuristics.rememberProxyRequest(request);
 
   // Use the Janitor API to check which local host port the requested Docker
   // container port is mapped to. This also verifies that the container exists
   // on this host, and that the authenticated user is allowed to access it.
   getMappedPort(oauth2Tokens[session.id], container, port, (error, data) => {
     if (error) {
-      log('[fail] oauth2 port', error);
-      response.statusCode = 400; // Bad Request
+      log('[fail] getting mapped port', error);
+      response.statusCode = 404; // Not Found
       response.end();
       return;
     }
 
-    const proxyParameters = {
-      port: data.port,
-      proxy: data.proxy
-    };
-
-    // Remember these proxy parameters for future requests in the same session.
-    lastProxyParameters[session.id] = proxyParameters;
-    routeRequest(proxyParameters, request, response);
+    routeRequest({ port: data.port, proxy: data.proxy }, request, response);
   });
 }
 
