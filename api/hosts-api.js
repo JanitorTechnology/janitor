@@ -336,8 +336,46 @@ hostAPI.get('/version', {
   }]
 });
 
+// API sub-resource to manage Docker containers on a cluster host.
+const containersAPI = hostAPI.api('/containers', 'Containers');
+
+containersAPI.put({
+  title: 'Create a container',
+
+  handler (request, response) {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    const projectId = request.query.project;
+    if (!(projectId in db.get('projects'))) {
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Project not found' }, null, 2);
+      return;
+    }
+
+    machines.spawn(user, projectId, (error, machine) => {
+      if (error) {
+        log('[fail] could not spawn machine', error);
+        response.statusCode = 500; // Internal Server Error
+        response.json({ error: 'Could not create new container' }, null, 2);
+        return;
+      }
+
+      response.json({
+        container: machine.docker.container
+      }, null, 2);
+    });
+  },
+
+  examples: []
+});
+
 // API sub-resource to manage a single container on a cluster host.
-const containerAPI = hostAPI.api('/:container', 'Containers');
+const containerAPI = containersAPI.api('/:container', 'Container');
 
 containerAPI.patch({
   title: 'Update a container',
@@ -434,6 +472,46 @@ containerAPI.patch({
       body: JSON.stringify({ error: 'Container not found' }, null, 2)
     }
   }]
+});
+
+containerAPI.delete({
+  title: 'Delete a container',
+
+  handler ({ user, query }, response) {
+    const { container } = query;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Invalid container ID' }, null, 2);
+      return;
+    }
+
+    const { hostname } = query;
+    const machine = machines.getMachineByContainer(user, hostname, container);
+    if (!machine) {
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Container not found' }, null, 2);
+      return;
+    }
+
+    machines.destroy(user, machine.project, machine, error => {
+      if (error) {
+        log('[fail] destroying machine', error);
+        response.statusCode = 500; // Internal Server Error
+        response.json({ error: 'Could not delete container' }, null, 2);
+        return;
+      }
+      response.statusCode = 204; // No Content
+      response.end();
+    });
+  },
+
+  examples: []
 });
 
 containerAPI.get('/:port', {

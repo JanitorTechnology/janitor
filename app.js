@@ -500,40 +500,6 @@ boot.executeInParallel([
     }, 42000);
   });
 
-  // Spawn a new machine for a project. (Fast!)
-  app.ajax.on('spawn', (data, end, query) => {
-    const { user } = query.req;
-    if (!user) {
-      end({ status: 'error', message: 'Not signed in' });
-      return;
-    }
-
-    machines.spawn(user, data.project, error => {
-      if (error) {
-        end({ status: 'error', message: String(error) });
-        return;
-      }
-      end({ status: 'success' });
-    });
-  });
-
-  // Destroy a machine.
-  app.ajax.on('destroy', (data, end, query) => {
-    const { user } = query.req;
-    if (!user) {
-      end({ status: 'error', message: 'Not signed in' });
-      return;
-    }
-
-    machines.destroy(user, data.project, data.machine, error => {
-      if (error) {
-        end({ status: 'error', message: String(error) });
-        return;
-      }
-      end({ status: 'success' });
-    });
-  });
-
   // Save a new user key, or update an existing one.
   app.ajax.on('key', (data, end, query) => {
     const { user } = query.req;

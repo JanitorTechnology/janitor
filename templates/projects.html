@@ -9,11 +9,11 @@
           <div class="panel-heading">
             <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
             <h4 class="project-title">{{= project.name in html}}</h4>
-            <div class="project-actions">
-              <a class="btn btn-primary" {{if user then
-                {{data-action="spawn" data-project="{{= id in id}}" href="https://c9.io/open/ssh?name={{= id in id}}-{{= machines[id].id in integer}}&description={{= project.name in uri}}%20on%20janitor.technology&host={{= project.docker.host in uri}}&port={{= machines[id].docker.ports['22'].port in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" target="_blank"}}
-                else {{href="/login"}}
-              }}><span class="hidden-xs">Edit in </span>Cloud9</a>
+            <div class="project-actions">{{if user then {{
+              <form action="/api/hosts/{{= project.docker.host in uri}}/containers?project={{= id in id}}" class="ajax-form has-feedback is-submit" data-redirect-after-success="/contributions/" method="put">
+                <button class="btn btn-primary" title="Create a new container for this project" type="submit">New Container</button>
+              </form>}} else {{
+              <a class="btn btn-primary" href="/login">New Container</a>}}}}
             </div>
           </div>
           <div class="panel-body">

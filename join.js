@@ -251,7 +251,7 @@ function getMappedPort (accessToken, container, port, callback) {
   const parameters = {
     provider: 'janitor',
     accessToken: accessToken,
-    path: '/api/hosts/' + hostname + '/' + container + '/' + port
+    path: `/api/hosts/${hostname}/containers/${container}/${port}`
   };
 
   oauth2.request(parameters, (error, body, response) => {

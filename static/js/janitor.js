@@ -193,6 +193,12 @@ function updateFormStatus (form, status, message) {
       location.reload();
     }, 400);
   }
+
+  if (form.dataset.redirectAfterSuccess && status === 'success') {
+    setTimeout(function () {
+      location.href = form.dataset.redirectAfterSuccess;
+    }, 400);
+  }
 }
 
 // Add visual feedback elements to a given <form>.
@@ -234,6 +240,24 @@ Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
   toggle.addEventListener('click', function () {
     label.classList.add('editing');
   });
+});
+
+// Setup modals
+$('.modal-form').on('show.bs.modal', function (event) {
+  var menuItem = $(event.relatedTarget);
+  $(this).find('.modal-title').text(menuItem.data('confirm'));
+  $(this).find('.modal-details').text(menuItem.data('details'));
+  $(this).find('button[type="submit"]').text(menuItem.text());
+  $(this).attr('method', menuItem.data('form-method'));
+  $(this).attr('action', menuItem.data('form-action'));
+});
+
+$('.modal-form').on('hidden.bs.modal', function (event) {
+  $(this).find('.modal-title').text('');
+  $(this).find('.modal-details').text('');
+  $(this).find('button[type="submit"]').text('');
+  $(this).removeAttr('method');
+  $(this).removeAttr('action');
 });
 
 // Remove the query string (e.g. '?key=123') from the URL.
