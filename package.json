@@ -20,6 +20,8 @@
     "join": "SCRIPT=join npm start",
     "lint": "eslint -c .eslintrc-node.js *.js api/ lib/ && eslint -c .eslintrc-browser.js static/",
     "lint-fix": "eslint -c .eslintrc-node.js *.js api/ lib/ --fix && eslint -c .eslintrc-browser.js static/ --fix",
+    "precommit": "lint-staged",
+    "prepush": "lint-staged",
     "rebase": "git pull -q --rebase origin master && git submodule -q update --rebase && npm update",
     "prestart": "npm stop && touch janitor.log janitor.pid && chmod 600 janitor.log janitor.pid",
     "start": "if [ -z \"$SCRIPT\" ] ; then printf \"Run which Janitor script? [join/app]:\" && read SCRIPT ; fi ; node \"$SCRIPT\" >> janitor.log 2>&1 & printf \"$!\\n\" > janitor.pid",
@@ -48,9 +50,21 @@
     "eslint-plugin-node": "^5.1.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.1",
     "watch-run": "^1.2.5"
   },
   "engines": {
     "node": ">=8.0.0"
+  },
+  "lint-staged": {
+    "static/**/*.js": [
+      "lint-browser-fix",
+      "git add"
+    ],
+    "{*.js,api/**/*.js,lib/**/*.js}": [
+      "lint-node-fix",
+      "git add"
+    ]
   }
 }
