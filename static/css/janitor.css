@@ -521,6 +521,10 @@ h4 {
   max-width: 100%;
 }
 
+.docker-tree pre {
+  line-height: 1.19; /* The Docker containers ASCII tree shows gaps > 1.20 */
+}
+
 /* Sections */
 
 section.alert {

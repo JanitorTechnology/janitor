@@ -2,7 +2,6 @@
 // The following code is covered by the AGPL-3.0 license.
 
 // Set-up all time series graphs.
-
 Array.map(document.querySelectorAll('*[data-data]'), function (div) {
   var data = JSON.parse(div.dataset.data);
   var title = div.dataset.title;
@@ -15,8 +14,8 @@ Array.map(document.querySelectorAll('*[data-data]'), function (div) {
     title: title,
     axes: {
       y: {
-        valueFormatter: formatTime,
-        axisLabelFormatter: formatTime,
+        valueFormatter: window.formatTime,
+        axisLabelFormatter: window.formatTime,
         axisLabelWidth: 60,
         includeZero: true
       }
@@ -26,8 +25,7 @@ Array.map(document.querySelectorAll('*[data-data]'), function (div) {
 });
 
 // Format milliseconds into human readable text.
-
-function formatTime (milliseconds) {
+window.formatTime = function (milliseconds) {
   var units = [
     { code: 'ms', max: 1000 },
     { code: 's', max: 60 },
@@ -45,12 +43,10 @@ function formatTime (milliseconds) {
   }
 
   return (Math.round(value * 10) / 10) + ' ' + unit.code;
-}
+};
 
 // Format bytes into human readable text.
-
-// eslint-disable-next-line no-unused-vars
-function formatMemory (bytes) {
+window.formatMemory = function (bytes) {
   var prefix = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
   var p = 0;
   var value = Number(bytes);
@@ -61,4 +57,4 @@ function formatMemory (bytes) {
   }
 
   return (Math.round(value * 100) / 100) + ' ' + prefix[p] + 'B';
-}
+};

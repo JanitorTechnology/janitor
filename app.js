@@ -269,7 +269,7 @@ boot.executeInParallel([
 
     // Select the requested section, or serve the default one.
     const sectionUri = match[1];
-    const section = sectionUri ? sectionUri.slice(1) : 'hosts';
+    const section = sectionUri ? sectionUri.slice(1) : 'docker';
 
     log('admin', section, '(' + user.email + ')');
 
