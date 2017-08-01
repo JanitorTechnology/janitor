@@ -87,7 +87,7 @@ hostAPI.get({
       }
     }
 
-    response.statusCode = 404;
+    response.statusCode = 404; // Not Found
     response.json({ error: 'Host not found' }, null, 2);
   },
 
@@ -228,14 +228,14 @@ credentialsAPI.get({
   handler: (request, response) => {
     const { user } = request;
     if (!users.isAdmin(user)) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     const host = hosts.get(request.query.hostname);
     if (!host) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Host not found' }, null, 2);
       return;
     }
@@ -260,14 +260,14 @@ credentialsAPI.delete({
   handler: (request, response) => {
     const { user } = request;
     if (!users.isAdmin(user)) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     const host = hosts.get(request.query.hostname);
     if (!host) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Host not found' }, null, 2);
       return;
     }
@@ -289,20 +289,53 @@ credentialsAPI.delete({
   }]
 });
 
-hostAPI.get('/version', {
-  title: 'Show host version',
+hostAPI.get('/images', {
+  title: 'List host images',
+  description: 'List the Docker images available on this host.',
 
   handler: (request, response) => {
     const { user } = request;
     if (!users.isAdmin(user)) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Host not found' }, null, 2);
       return;
     }
 
     const { hostname } = request.query;
     if (!hosts.get(hostname)) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Host not found' }, null, 2);
+      return;
+    }
+
+    docker.listImages({ host: hostname }, (error, images) => {
+      if (error) {
+        log('[fail] host images', error);
+        response.statusCode = 503; // Service Unavailable
+        response.json({ error: 'Host unreachable' }, null, 2);
+        return;
+      }
+      response.json(images, null, 2);
+    });
+  },
+
+  examples: [],
+});
+
+hostAPI.get('/version', {
+  title: 'Show host version',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!users.isAdmin(user)) {
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Host not found' }, null, 2);
+      return;
+    }
+
+    const { hostname } = request.query;
+    if (!hosts.get(hostname)) {
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Host not found' }, null, 2);
       return;
     }
@@ -310,7 +343,7 @@ hostAPI.get('/version', {
     docker.version({ host: hostname }, (error, version) => {
       if (error) {
         log('[fail] host version', error);
-        response.statusCode = 404;
+        response.statusCode = 503; // Service Unavailable
         response.json({ error: 'Host unreachable' }, null, 2);
         return;
       }
@@ -338,6 +371,39 @@ hostAPI.get('/version', {
 
 // API sub-resource to manage Docker containers on a cluster host.
 const containersAPI = hostAPI.api('/containers', 'Containers');
+
+containersAPI.get({
+  title: 'List containers',
+  description: 'List all Docker containers on this host.',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!users.isAdmin(user)) {
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Host not found' }, null, 2);
+      return;
+    }
+
+    const { hostname } = request.query;
+    if (!hosts.get(hostname)) {
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Host not found' }, null, 2);
+      return;
+    }
+
+    docker.listContainers({ host: hostname }, (error, containers) => {
+      if (error) {
+        log('[fail] host containers', error);
+        response.statusCode = 503; // Service Unavailable
+        response.json({ error: 'Host unreachable' }, null, 2);
+        return;
+      }
+      response.json(containers, null, 2);
+    });
+  },
+
+  examples: [],
+});
 
 containersAPI.put({
   title: 'Create a container',
@@ -399,7 +465,7 @@ containerAPI.patch({
     const { hostname } = request.query;
     const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Container not found' }, null, 2);
       return;
     }
@@ -544,7 +610,7 @@ containerAPI.get('/:port', {
 
     const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
-      response.statusCode = 404;
+      response.statusCode = 404; // Not Found
       response.json({ error: 'Container not found' }, null, 2);
       return;
     }
@@ -557,7 +623,7 @@ containerAPI.get('/:port', {
       }
     }
 
-    response.statusCode = 404;
+    response.statusCode = 404; // Not Found
     response.json({ error: 'Port not found' }, null, 2);
   },
 
