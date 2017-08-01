@@ -22,6 +22,25 @@ ajaxForm('#invite-form', 'invite', function (form, data) {
   updateFormStatus(form, status, message);
 });
 
+// New host form.
+var newHostForm = document.querySelector('#newhost-form');
+if (newHostForm) {
+  window.setupAsyncForm(newHostForm);
+  newHostForm.addEventListener('submit', function (event) {
+    var hostname = newHostForm.elements.hostname.value;
+    window.fetchAPI('POST', '/api/hosts/' + hostname, {}, function (error, data) {
+      if (error) {
+        updateFormStatus(newHostForm, 'error', String(error));
+        return;
+      }
+      updateFormStatus(newHostForm, 'success', data ? data.message : null);
+      setTimeout(function () {
+        location.reload();
+      }, 400);
+    });
+  });
+}
+
 // New project form.
 ajaxForm('#newproject-form', 'projectdb', function (form, data) {
   var status = 'error';

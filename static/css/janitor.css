@@ -242,12 +242,9 @@ h4 {
   right: 25px;
 }
 
-.ajax-form:not(.has-success) > .form-control-feedback > .glyphicon-ok {
-  display: none;
-}
-
+.ajax-form:not(.has-success) > .form-control-feedback > .glyphicon-ok,
 .ajax-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
-  display: none;
+  visibility: hidden;
 }
 
 .login-with {

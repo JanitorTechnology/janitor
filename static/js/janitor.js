@@ -88,16 +88,21 @@ function ajaxForm (selector, action, callback) {
 // Use `window.fetch()` to make an asynchronous Janitor API request.
 function fetchAPI (method, url, data, callback) {
   var responseStatus = null;
-
-  window.fetch(url, {
+  var options = {
     method: method.toUpperCase(),
     headers: new Headers({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     }),
-    credentials: 'same-origin',
-    body: JSON.stringify(data, null, 2)
-  }).then(function (response) {
+    credentials: 'same-origin'
+  };
+
+  // Requests with method 'GET' or 'HEAD' cannot have `options.body`.
+  if (data && ['GET', 'HEAD'].indexOf(options.method) < 0) {
+    options.body = JSON.stringify(data, null, 2);
+  }
+
+  window.fetch(url, options).then(function (response) {
     // The server is responding!
     responseStatus = response.status;
     return responseStatus === 204 ? null : response.json();
