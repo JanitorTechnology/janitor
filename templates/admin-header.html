@@ -1,6 +1,7 @@
     <section class="tabs">
       <div class="container">
         <ul class="nav nav-tabs">
+          <li role="presentation" {{if {{section === "docker"}} then {{class="active"}}}}><a href="/admin/docker/">Docker</a></li>
           <li role="presentation" {{if {{section === "hosts"}} then {{class="active"}}}}><a href="/admin/hosts/">Hosts</a></li>
           <li role="presentation" {{if {{section === "projects"}} then {{class="active"}}}}><a href="/admin/projects/">Projects</a></li>
           <li role="presentation" {{if {{section === "users"}} then {{class="active"}}}}><a href="/admin/users/">Users</a></li>

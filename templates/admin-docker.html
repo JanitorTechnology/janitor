@@ -1,0 +1,37 @@
+    <section>
+      <div class="container">{{
+          for (let hostname in hosts) {
+            let host = hosts[hostname];
+        }}
+        <div class="panel panel-default panel-project">
+          <div class="panel-heading">
+            <span class="project-icon glyphicon glyphicon-globe" aria-hidden="true"></span>
+            <h4 class="project-title">{{= hostname in html}}</h4>
+            <div class="project-actions"></div>
+          </div>
+          <div class="panel-body">
+            <div class="docker-version row">
+              <div class="col-sm-12 top-right-controls">
+                <button class="btn btn-default btn-xs" data-hostname="{{= hostname in xmlattr}}">Refresh</button>
+              </div>
+              <div class="col-sm-12">
+                <label>Docker version</label>
+                <pre></pre>
+              </div>
+            </div>
+            <div class="docker-tree row">
+              <div class="col-sm-12 top-right-controls">
+                <button class="btn btn-default btn-xs" data-hostname="{{= hostname in xmlattr}}">Refresh</button>
+              </div>
+              <div class="col-sm-12">
+                <label>Container tree (slow)</label>
+                <pre></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>{{
+          }
+        }}
+      </div>
+    </section>
