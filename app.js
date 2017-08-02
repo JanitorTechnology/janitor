@@ -384,8 +384,10 @@ boot.executeInParallel([
         return;
       }
 
-      const path = nodepath.normalize(request.url);
-      routes.webProxy(request, socket, { port, path });
+      routes.webProxy(request, socket, {
+        port: mappedPort.port,
+        path: nodepath.normalize(request.url)
+      });
     });
   });
 
