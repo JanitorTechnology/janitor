@@ -290,20 +290,14 @@ boot.executeInParallel([
   });
 
   // FIXME: Remove this deprecated handler (see comments above).
-  // Proxy Cloud9 IDE VFS requests to local containers.
-  // Example:
-  //   '/vfs/1/9ceokVZPKGlhYWec/workspace/_/_/tab1'
-  app.route(proxyHeuristics.cloud9VfsUrlPrefix, (data, match, end, query) => {
-    proxyRequest(query.req, query.res);
-  });
-
-  // FIXME: Remove this deprecated handler (see comments above).
-  // Proxy other Cloud9 IDE requests to local containers.
+  // Proxy Cloud9 IDE requests to local containers.
   // Examples:
   //   '/_ping'
   //   '/static/lib/tern/defs/ecma5.json'
   //   '/static/standalone/worker/plugins/c9.ide.language.core/worker.js'
-  app.route(/^\/(_ping|static\/.+)$/, (data, match, end, query) => {
+  //   '/vfs/1?access_token=token'
+  //   '/vfs/1/9ceokVZPKGlhYWec/workspace/_/_/tab1'
+  app.route(/^\/(_ping|static\/.+|vfs\/.+)$/, (data, match, end, query) => {
     proxyRequest(query.req, query.res);
   });
 
