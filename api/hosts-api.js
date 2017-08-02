@@ -499,7 +499,7 @@ containerAPI.delete({
       return;
     }
 
-    machines.destroy(user, machine.project, machine, error => {
+    machines.destroy(user, machine.project, machine.id, error => {
       if (error) {
         log('[fail] destroying machine', error);
         response.statusCode = 500; // Internal Server Error
