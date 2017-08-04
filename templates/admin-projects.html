@@ -8,10 +8,10 @@
             <img class="project-icon" src={{= project.icon in json}} alt="{{= project.name in xmlattr}} Logo">
             <h4 class="project-title">{{= project.name in html}}</h4>
             <div class="project-actions">
+              <button data-action="update" data-project={{= id in json}} class="btn btn-default">Update</button>
               <form action="/api/projects/{{= id in xmlattr}}/pull" class="ajax-form has-feedback is-submit" method="post">
-                <button class="btn btn-default" type="submit">Pull</button>
+                <button class="btn btn-primary" type="submit">Pull</button>
               </form>
-              <button data-action="update" data-project={{= id in json}} class="btn btn-primary">Update</button>
             </div>
           </div>
           <div class="panel-body">
