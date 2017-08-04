@@ -79,7 +79,6 @@ function ajaxForm (selector, action, callback) {
       callback(form, data);
     };
     Array.forEach(form.elements, function (element) {
-      element.blur();
       element.classList.add('disabled');
     });
   });
@@ -161,7 +160,6 @@ function setupAsyncForm (form) {
       if (element.classList.contains('form-control-feedback')) {
         return;
       }
-      element.blur();
       element.classList.add('disabled');
     });
     // Ensure that submitting the <form> doesn't reload the page.
