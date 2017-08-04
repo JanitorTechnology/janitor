@@ -203,7 +203,8 @@ h4 {
   box-shadow: none;
 }
 
-.ajax-form.has-button > .form-control-feedback {
+.ajax-form.has-button > .form-control-feedback,
+.row > .ajax-form.has-button > .form-control-feedback {
   right: 75px;
 }
 
@@ -234,6 +235,10 @@ h4 {
   right: 60px;
 }
 
+#login-form > .form-control-feedback {
+  top: 0;
+}
+
 .row > .ajax-form > .form-control-feedback {
   right: 15px;
 }
@@ -245,6 +250,11 @@ h4 {
 .ajax-form:not(.has-success) > .form-control-feedback > .glyphicon-ok,
 .ajax-form:not(.has-error) > .form-control-feedback > .glyphicon-remove {
   visibility: hidden;
+}
+
+.ajax-form.has-error > .form-control-feedback > .glyphicon-ok,
+.ajax-form.has-success > .form-control-feedback > .glyphicon-remove {
+  display: none;
 }
 
 .login-with {

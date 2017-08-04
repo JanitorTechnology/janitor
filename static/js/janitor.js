@@ -78,7 +78,7 @@ function ajaxForm (selector, action, callback) {
     query.resp = function (data) {
       callback(form, data);
     };
-    Array.map(form.elements, function (element) {
+    Array.forEach(form.elements, function (element) {
       element.blur();
       element.classList.add('disabled');
     });
@@ -155,8 +155,16 @@ function setupAsyncForm (form) {
     addFormFeedback(form);
   }
 
-  // Ensure that submitting the <form> doesn't reload the page.
   form.addEventListener('submit', function (event) {
+    // Disable all form elements while waiting for the server.
+    Array.map(form.elements, function (element) {
+      if (element.classList.contains('form-control-feedback')) {
+        return;
+      }
+      element.blur();
+      element.classList.add('disabled');
+    });
+    // Ensure that submitting the <form> doesn't reload the page.
     event.preventDefault();
   });
 }
@@ -172,7 +180,7 @@ function updateFormStatus (form, status, message) {
       form.classList.add('has-error');
       break;
     default:
-      Array.map(form.elements, function (element) {
+      Array.forEach(form.elements, function (element) {
         element.classList.remove('disabled');
       });
       break;
