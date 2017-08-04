@@ -157,7 +157,7 @@ function setupAsyncForm (form) {
 
   form.addEventListener('submit', function (event) {
     // Disable all form elements while waiting for the server.
-    Array.map(form.elements, function (element) {
+    Array.forEach(form.elements, function (element) {
       if (element.classList.contains('form-control-feedback')) {
         return;
       }
