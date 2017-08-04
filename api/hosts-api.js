@@ -441,7 +441,7 @@ containersAPI.put({
 });
 
 // API sub-resource to manage a single container on a cluster host.
-const containerAPI = containersAPI.api('/:container', 'Container');
+const containerAPI = containersAPI.api('/:container');
 
 containerAPI.patch({
   title: 'Update a container',
