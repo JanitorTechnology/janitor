@@ -409,17 +409,29 @@ containersAPI.put({
   title: 'Create a container',
 
   handler (request, response) {
-    const { user } = request;
-    if (!user) {
-      response.statusCode = 403; // Forbidden
-      response.json({ error: 'Unauthorized' }, null, 2);
-      return;
-    }
-
     const projectId = request.query.project;
     if (!(projectId in db.get('projects'))) {
       response.statusCode = 404; // Not Found
       response.json({ error: 'Project not found' }, null, 2);
+      return;
+    }
+
+    const { user, session } = request;
+    if (!user) {
+      if (!session) {
+        return;
+      }
+
+      machines.spawnTemporary(session.id, projectId, (error, machine) => {
+        if (error) {
+          response.statusCode = 500; // Internal Server Error
+          response.json({ error: 'Could not create container' }, null, 2);
+          return;
+        }
+        response.json({
+          container: machine.docker.container
+        }, null, 2);
+      });
       return;
     }
 
