@@ -576,6 +576,7 @@ section.video {
   margin: 0;
 }
 
+/* Override bootstrap alert margin */
 .alert {
-  margin: 0;
+  margin-bottom: 0;
 }
