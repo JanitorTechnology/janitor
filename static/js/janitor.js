@@ -177,12 +177,11 @@ function updateFormStatus (form, status, message) {
     case 'error':
       form.classList.add('has-error');
       break;
-    default:
-      Array.forEach(form.elements, function (element) {
-        element.classList.remove('disabled');
-      });
-      break;
   }
+
+  Array.forEach(form.elements, function (element) {
+    element.classList.remove('disabled');
+  });
 
   var feedback = form.querySelector('.form-control-feedback');
 
@@ -259,16 +258,16 @@ $('.modal-form').on('show.bs.modal', function (event) {
   $(this).find('.modal-title').text(menuItem.data('confirm'));
   $(this).find('.modal-details').text(menuItem.data('details'));
   $(this).find('button[type="submit"]').text(menuItem.text());
-  $(this).attr('method', menuItem.data('form-method'));
-  $(this).attr('action', menuItem.data('form-action'));
+  $(this).find('.ajax-form').attr('method', menuItem.data('form-method'));
+  $(this).find('.ajax-form').attr('action', menuItem.data('form-action'));
 });
 
 $('.modal-form').on('hidden.bs.modal', function (event) {
   $(this).find('.modal-title').text('');
   $(this).find('.modal-details').text('');
   $(this).find('button[type="submit"]').text('');
-  $(this).removeAttr('method');
-  $(this).removeAttr('action');
+  $(this).find('.ajax-form').removeAttr('method');
+  $(this).find('.ajax-form').removeAttr('action');
 });
 
 // Remove the query string (e.g. '?key=123') from the URL.
