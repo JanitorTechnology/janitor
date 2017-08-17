@@ -59,8 +59,8 @@
           }
         }}
       </div>
-      <form class="ajax-form modal-form modal fade" data-refresh-after-success="true" id="confirm" method="delete" tabindex="-1" role="dialog" aria-labelledby="confirm-title">
-        <div class="modal-dialog" role="document">
+      <div class="modal-form modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="confirm-title">
+        <form class="ajax-form has-feedback modal-dialog" data-refresh-after-success="true" method="delete" role="document">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -74,6 +74,6 @@
               <button class="btn btn-danger" type="submit" id="confirm-button">Delete</button>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </section>
