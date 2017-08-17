@@ -575,3 +575,8 @@ section.video {
   text-align: center;
   margin: 0;
 }
+
+/* Override bootstrap alert margin */
+.alert {
+  margin-bottom: 0;
+}
