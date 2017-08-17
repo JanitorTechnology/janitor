@@ -575,3 +575,7 @@ section.video {
   text-align: center;
   margin: 0;
 }
+
+.alert {
+  margin: 0;
+}
