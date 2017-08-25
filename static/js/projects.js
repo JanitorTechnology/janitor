@@ -41,14 +41,14 @@ Array.map(document.querySelectorAll('*[data-status]'), function (element) {
 });
 
 // Add fuzzy timestamps to elements with a 'data-timestamp' attribute.
-
-Array.map(document.querySelectorAll('*[data-timestamp]'), function (element) {
+var timestampElements = document.querySelectorAll('[data-timestamp]');
+Array.forEach(timestampElements, function (element) {
   var date = new Date(parseInt(element.dataset.timestamp));
 
   // GMT is deprecated (see https://en.wikipedia.org/wiki/UTC).
   element.title = date.toUTCString().replace('GMT', 'UTC');
   element.setAttribute('datetime', date.toISOString());
 
-  // Use jQuery's live-updating timeago plugin.
-  $(element).timeago();
+  // Use live-updating timeago plugin.
+  timeago().render(element);
 });

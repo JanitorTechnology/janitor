@@ -12,6 +12,7 @@ module.exports = {
     "Dygraph": true,
     "Scout": true,
     "ajaxForm": true,
+    "timeago": true,
     "updateFormStatus": true,
   },
   "rules": {
