@@ -1,21 +1,24 @@
-    <section class="login">
-      <div class="container">
-        <h2 class="header">Sign in</h2>
-        <div class="row">
-          <div class="col-md-5">
-            <div class="login-with">
-              <a class="btn btn-lg btn-default disabled" href="#" title="Coming soon">GitHub</a>
-              <a class="btn btn-lg btn-default disabled" href="#" title="Coming soon">Cloud9</a>
-            </div>
-            <form class="ajax-form has-feedback has-button" id="login-form">
-              <div class="input-group input-group-lg">
-                <input class="form-control" name="email" placeholder="Email address" type="email">
-                <span class="input-group-btn">
-                  <input class="btn btn-primary" type="submit" value="Send">
-                </span>
-              </div>
-            </form>
+    <section class="login content">
+      <div class="container medium">
+        <div class="header">
+          <span class="text text-center">
+            Log in
+          </span>
+        </div>
+        <p class="text-center">
+          Log in using your email-address. An email having a link will be sent to you, using which you can log in to your account.
+        </p>
+        <form class="ajax-form" id="login-form">
+          <div class="input-group">
+            <input class="text-input" name="email" placeholder="Email address" type="email" autocomplete="off">
+            <input class="button dark" type="submit" value="Send">
           </div>
+        </form>
+        <p class="text-center">
+          Have a GitHub Account?
+        </p>
+        <div class="login-with">
+          <a class="button disabled" href="#" title="Coming soon">GitHub</a>
         </div>
       </div>
     </section>
