@@ -27,7 +27,8 @@ boot.executeInParallel([
   boot.forwardHttp,
   boot.ensureHttpsCertificates,
   boot.ensureDockerTlsCertificates,
-  boot.verifyJanitorOAuth2Access
+  boot.verifyJanitorOAuth2Access,
+  boot.loadTasks,
 ], () => {
   boot.registerDockerClient(() => {
     log('[ok] joined cluster as [hostname = ' + hostname + ']');
