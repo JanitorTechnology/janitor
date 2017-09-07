@@ -284,6 +284,7 @@ h4 {
 .top-right-controls > * {
   float: right;
   margin: -5px 0 0 10px;
+  position: relative;
   z-index: 10;
 }
 
