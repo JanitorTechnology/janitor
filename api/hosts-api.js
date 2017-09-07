@@ -602,8 +602,9 @@ containerAPI.get('/changes', {
     }
 
     const { hostname } = request.query;
+    // FIXME: For admins, find the machine regardless of which user owns it.
     const machine = machines.getMachineByContainer(user, hostname, container);
-    if (!machine) {
+    if (!machine && !users.isAdmin(user)) {
       response.statusCode = 404; // Not Found
       response.json({ error: 'Container not found' }, null, 2);
       return;
@@ -627,7 +628,7 @@ containerAPI.get('/changes', {
       urlParameters: {
         hostname: 'example.com',
         container: 'abcdef0123456789',
-      },
+      }
     },
     response: {
       body: JSON.stringify([

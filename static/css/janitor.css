@@ -532,6 +532,18 @@ h4 {
   line-height: 1.19; /* The Docker containers ASCII tree shows gaps > 1.20 */
 }
 
+.diff-added {
+  color: #28a745;
+}
+
+.diff-deleted {
+  color: #cb2431;
+}
+
+.diff-hidden {
+  color: #a3aab1;
+}
+
 /* Sections */
 
 section.alert {
