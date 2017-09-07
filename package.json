@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "camp": "17.2.0",
-    "dockerode": "2.5.0",
+    "dockerode": "2.4.3",
     "email-login": "1.2.0",
     "fast-json-patch": "2.0.3",
     "fleau": "16.2.0",
