@@ -29,17 +29,17 @@
     "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0"
   },
   "dependencies": {
-    "camp": "^17.2.0",
-    "dockerode": "~2.5.0",
-    "email-login": "~1.2.0",
-    "fast-json-patch": "~2.0.3",
-    "fleau": "~16.2.0",
-    "le-acme-core": "~2.1.1",
-    "node-forge": "~0.7.1",
-    "oauth": "~0.9.15",
-    "oauth2provider": "~0.0.2",
-    "selfapi": "~0.2.0",
-    "tar-stream": "~1.5.4"
+    "camp": "17.2.0",
+    "dockerode": "2.5.0",
+    "email-login": "1.2.0",
+    "fast-json-patch": "2.0.3",
+    "fleau": "16.2.0",
+    "le-acme-core": "2.1.1",
+    "node-forge": "0.7.1",
+    "oauth": "0.9.15",
+    "oauth2provider": "0.0.2",
+    "selfapi": "0.2.0",
+    "tar-stream": "1.5.4"
   },
   "devDependencies": {
     "eslint": "^4.1.1",
