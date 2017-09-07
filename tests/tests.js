@@ -58,11 +58,6 @@ tests.push({
     // Fake several Docker methods for testing.
     // TODO Maybe use a real Docker Remote API server (or a full mock) for more
     // realistic tests?
-    docker.runContainer = function (parameters, callback) {
-      callback(null, { id: 'abcdef0123456789' }, '');
-    };
-    docker.copyIntoContainer = docker.execInContainer =
-      function (parameters, callback) { callback(); };
     docker.pullImage = function (parameters, callback) {
       const readable = new stream.Readable();
       readable.push('ok');
@@ -73,6 +68,17 @@ tests.push({
       callback(null, { Created: 1500000000000 });
     };
     docker.tagImage = function (parameters, callback) { callback(); };
+    docker.runContainer = function (parameters, callback) {
+      callback(null, { id: 'abcdef0123456789' }, '');
+    };
+    docker.copyIntoContainer = docker.execInContainer =
+      function (parameters, callback) { callback(); };
+    docker.listChangedFilesInContainer = function (parameters, callback) {
+      callback(null, [
+        { Path: '/tmp', Kind: 0 },
+        { Path: '/tmp/test', Kind: 1 }
+      ]);
+    };
     docker.version = function (parameters, callback) {
       callback(null, { Version: '17.06.0-ce' });
     };

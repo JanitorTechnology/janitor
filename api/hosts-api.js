@@ -431,9 +431,8 @@ containersAPI.put({
         return;
       }
 
-      response.json({
-        container: machine.docker.container
-      }, null, 2);
+      response.statusCode = 201; // Created
+      response.json({ container: machine.docker.container }, null, 2);
     });
   },
 
@@ -543,21 +542,22 @@ containerAPI.patch({
 containerAPI.delete({
   title: 'Delete a container',
 
-  handler ({ user, query }, response) {
-    const { container } = query;
+  handler: (request, response) => {
+    const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
+    const { container } = request.query;
     if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
       response.statusCode = 400; // Bad Request
       response.json({ error: 'Invalid container ID' }, null, 2);
       return;
     }
 
-    const { hostname } = query;
+    const { hostname } = request.query;
     const machine = machines.getMachineByContainer(user, hostname, container);
     if (!machine) {
       response.statusCode = 404; // Not Found
@@ -578,6 +578,64 @@ containerAPI.delete({
   },
 
   examples: []
+});
+
+containerAPI.get('/changes', {
+  title: 'List changed files in a container',
+  description:
+    'List all files that were modified (Kind: 0), added (1) or deleted (2) ' +
+    'in a given Docker container.',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    const { container } = request.query;
+    if (container.length < 16 || !/^[0-9a-f]+$/.test(container)) {
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Invalid container ID' }, null, 2);
+      return;
+    }
+
+    const { hostname } = request.query;
+    const machine = machines.getMachineByContainer(user, hostname, container);
+    if (!machine) {
+      response.statusCode = 404; // Not Found
+      response.json({ error: 'Container not found' }, null, 2);
+      return;
+    }
+
+    const parameters = { host: hostname, container };
+    docker.listChangedFilesInContainer(parameters, (error, changedFiles) => {
+      if (error) {
+        log('[fail] container changes', error);
+        response.statusCode = 503; // Service Unavailable
+        response.json({ error: 'Host unreachable' }, null, 2);
+        return;
+      }
+
+      response.json(changedFiles, null, 2);
+    });
+  },
+
+  examples: [{
+    request: {
+      urlParameters: {
+        hostname: 'example.com',
+        container: 'abcdef0123456789',
+      },
+    },
+    response: {
+      body: JSON.stringify([
+        { Path: '/tmp', Kind: 0 },
+        { Path: '/tmp/test', Kind: 1 }
+      ], null, 2)
+    }
+  }]
 });
 
 containerAPI.get('/:port', {
