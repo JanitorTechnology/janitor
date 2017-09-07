@@ -28,6 +28,20 @@
                 <pre></pre>
               </div>
             </div>
+            <div class="docker-diff row">
+              <div class="col-sm-12">
+                <label>Changed files</label>
+                <form class="ajax-form has-feedback" data-hostname="{{= hostname in xmlattr}}">
+                  <div class="input-group input-group-sm">
+                    <input class="form-control" name="container" placeholder="Container ID" style="margin: 0" type="text">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default btn-sm" type="submit">Refresh</button>
+                    </span>
+                  </div>
+                </form>
+                <pre></pre>
+              </div>
+            </div>
           </div>
         </div>
         <div>{{

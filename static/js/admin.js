@@ -87,7 +87,7 @@ Array.forEach(document.querySelectorAll('.docker-version'), function (div) {
   });
 });
 
-// Docker Container tree button.
+// Docker container tree button.
 Array.forEach(document.querySelectorAll('.docker-tree'), function (div) {
   var button = div.querySelector('button');
   var pre = div.querySelector('pre');
@@ -167,7 +167,7 @@ function formatContainerTree (image, linePrefix, lastChild, parentSize) {
 
   // Format tree branches, image ID and any tags.
   var text = linePrefix + (lastChild ? '└─' : '├─');
-  text += image.Id.split(':')[1].slice(0, 12);
+  text += image.Id.split(':')[1].slice(0, 16);
   text += ' ' + window.formatMemory(image.VirtualSize - parentSize);
   if (image.RepoTags.length > 0) {
     text += ' (tags: ' + image.RepoTags.join(', ') + ')';
@@ -181,7 +181,7 @@ function formatContainerTree (image, linePrefix, lastChild, parentSize) {
       .toISOString().split('T')[0];
     text += '\n' + childPrefix +
       (i === image.Containers.length - 1 ? '└─' : '├─') +
-      container.Id.slice(0, 12) + ' Container (created: ' + created + ')';
+      container.Id.slice(0, 16) + ' Container (created: ' + created + ')';
   });
 
   // Format child images recursively.
@@ -191,4 +191,130 @@ function formatContainerTree (image, linePrefix, lastChild, parentSize) {
   });
 
   return text;
+}
+
+// Docker container filesystem paths that can be ignored.
+var diffHiddenPaths = {
+  '/etc': true,
+  '/home/user/.bash_history': true,
+  '/home/user/.c9': true,
+  '/home/user/.c9sdk': true,
+  '/home/user/.cache': true,
+  '/home/user/.ccache': true,
+  '/home/user/.config': true,
+  '/home/user/.dbus': true,
+  '/home/user/.fehbg': true,
+  '/home/user/.fluxbox': true,
+  '/home/user/.emacs': true,
+  '/home/user/.eslintrc': true,
+  '/home/user/.gconf': true,
+  '/home/user/.gdbinit': true,
+  '/home/user/.gitconfig': true,
+  '/home/user/.gitignore': true,
+  '/home/user/.hgrc': true,
+  '/home/user/.mozilla': true,
+  '/home/user/.nanorc': true,
+  '/home/user/.netrc': true,
+  '/home/user/.novnc': true,
+  '/home/user/.rnd': true,
+  '/home/user/.ssh': true,
+  '/home/user/.viminfo': true,
+  '/home/user/.vimrc': true,
+  '/home/user/.z': true,
+  '/home/user/Desktop': true,
+  '/home/user/Downloads': true,
+  '/home/user/janitor.json': true,
+  '/home/user/novnc': true,
+  '/lib': true,
+  '/run': true,
+  '/tmp': true,
+  '/usr': true,
+  '/var': true,
+};
+
+// Docker container filesystem diff button.
+Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
+  var form = div.querySelector('form');
+  var pre = div.querySelector('pre');
+  window.setupAsyncForm(form);
+  form.addEventListener('submit', function (event) {
+    // Request the list of all files that were changed in this container.
+    var url = '/api/hosts/' + form.dataset.hostname + '/containers/' +
+      form.elements.container.value.trim() + '/changes';
+    pre.textContent = 'Fetching filesystem changes…';
+    window.fetchAPI('GET', url, null, function (error, changes) {
+      if (error) {
+        pre.textContent = error;
+        return;
+      }
+
+      // Build the changes into a file tree.
+      var tree = { Children: {}, TotalNodes: 0 };
+      changes.forEach(function (change) {
+        // Descend into the tree following the changed path.
+        var node = tree;
+        var paths = change.Path.slice(1).split('/');
+        for (var i in paths) {
+          var path = paths[i];
+          var child = node.Children[path];
+          // Create any missing branches along the way.
+          if (!child) {
+            child = node.Children[path] = { Children: {}, TotalNodes: 0 };
+          }
+          // Keep track of how many nodes this sub-tree contains.
+          node.TotalNodes++;
+          node = child;
+        }
+        // Import the change into the tree and create an HTML element for it.
+        node.Hidden = diffHiddenPaths[change.Path] || false;
+        node.Element = document.createElement('div');
+        node.Element.textContent =
+          ['M', 'A', 'D'][change.Kind] + ' ' + change.Path;
+        node.Element.classList.add(node.Hidden
+          ? 'diff-hidden'
+          : ['diff-changed', 'diff-added', 'diff-deleted'][change.Kind]);
+      });
+
+      // Export the tree to HTML, sort paths alphabetically.
+      var documentFragment = document.createDocumentFragment();
+      var sortedPaths = Object.keys(tree.Children).sort();
+      for (var i = 0; i < sortedPaths.length; i++) {
+        var path = sortedPaths[i];
+        exportDiffTree(documentFragment, tree.Children[path]);
+      }
+      pre.textContent = '';
+      pre.appendChild(documentFragment);
+    });
+  });
+});
+
+// Export a Docker filesystem diff tree with hidden branches to HTML.
+function exportDiffTree (element, node) {
+  element.appendChild(node.Element);
+
+  // By default, append child nodes to the same root element.
+  var parentElement = element;
+  if (node.Hidden && node.TotalNodes > 0) {
+    // If this node is hidden, append its children to a collapsed <div> instead.
+    parentElement = document.createElement('div');
+    parentElement.classList.add('collapse');
+    // Add a link to reveal hidden child nodes.
+    var a = document.createElement('a');
+    a.href = 'javascript:void(0)';
+    a.textContent = node.TotalNodes + ' hidden';
+    a.addEventListener('click', function (event) {
+      window.$(parentElement).collapse('toggle');
+    });
+    node.Element.appendChild(document.createTextNode(' ('));
+    node.Element.appendChild(a);
+    node.Element.appendChild(document.createTextNode(')'));
+    element.appendChild(parentElement);
+  }
+
+  // Export all child nodes recursively, in alphabetical order.
+  var sortedPaths = Object.keys(node.Children).sort();
+  for (var i = 0; i < sortedPaths.length; i++) {
+    var path = sortedPaths[i];
+    exportDiffTree(parentElement, node.Children[path]);
+  }
 }
