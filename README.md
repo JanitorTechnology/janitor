@@ -1,4 +1,4 @@
-# The Janitor
+# Janitor
 
 [![Travis status](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
 [![Greenkeeper](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
@@ -6,7 +6,7 @@
 
 *Fix bugs, faster*
 
-[![Janitor video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and the Janitor)")
+[![Janitor video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and Janitor)")
 
 ## See it live
 
