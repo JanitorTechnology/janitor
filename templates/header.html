@@ -1,36 +1,33 @@
 <!doctype html>
 <html lang="en">
+
   <head>
     <meta charset="utf-8">
-    <meta name="application-name" content="The Janitor">
-    <meta name="theme-color" content="#333">
+    <meta name="application-name" content="Janitor">
+    <meta name="theme-color" content="#000">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> {{= title in html}}{{if title then {{ • }}}}The Janitor </title>
+    <title> {{= title in html}}{{if title then {{ • }}}}Janitor </title>
     <link href="/manifest.json" rel="manifest">
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/janitor.css" rel="stylesheet">
+    <link href="/css/janitor.new.css" rel="stylesheet">
     <link href="/img/janitor.svg" rel="icon" sizes="any" type="image/svg+xml">
   </head>
+
   <body>
-    <header class="navbar navbar-inverse navbar-static-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" href="javascript:void(0)">
-            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-          </a>
-          <a class="navbar-brand" href="/">
-            <img src="/img/janitor.svg" alt="Janitor Logo">
-            <span>The Janitor</span>
-          </a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">{{if user then {{
-            <li><a href="/projects/">Projects</a></li>
-            <li><a href="/contributions/">Contributions</a></li>
-            <li><a href="/settings/">Settings</a></li>
-            <li><a href="/logout">Sign out</a></li>}} else {{
-            <li><a href="/login">Sign in</a></li>}}}}
-          </ul>
-        </div>
+    <header role="navigation">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">
+          <img id="logo-image" src="/img/janitor.svg" alt="Janitor Logo" />
+          <span id="logo">Janitor</span>
+        </a>
+        <span class="sm-visible menu-toggle"></span>
+      </div>
+      <div class="navbar-menu">
+        <nav>{{if user then {{
+          <a href="/projects/">Projects</a>
+          <a href="/contributions/">Contributions</a>
+          <a href="/settings/">Settings</a>
+          <a href="/logout">Log out</a>}} else {{
+          <a href="/login">Log in</a>}}}}
+        </nav>
       </div>
     </header>

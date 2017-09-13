@@ -292,3 +292,10 @@ if ('serviceWorker' in navigator) {
       console.error(error);
     });
 }
+
+function toggleMenu() {
+  document.querySelector('.menu-toggle').classList.toggle('on')
+  document.querySelector('.navbar-menu').classList.toggle('open');
+}
+
+document.querySelector('.menu-toggle').addEventListener("click", toggleMenu);
