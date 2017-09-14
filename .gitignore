@@ -1,5 +1,6 @@
 .c9
 .DS_Store
+.vscode
 Thumbs.db
 npm-debug.log
 node_modules
@@ -14,4 +15,3 @@ backups
 tokens
 tests/db.json
 tests/templates
-.vscode

@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
   <head>
     <meta charset="utf-8">
     <meta name="application-name" content="Janitor">
@@ -11,23 +10,24 @@
     <link href="/css/janitor.new.css" rel="stylesheet">
     <link href="/img/janitor.svg" rel="icon" sizes="any" type="image/svg+xml">
   </head>
-
   <body>
     <header role="navigation">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">
-          <img id="logo-image" src="/img/janitor.svg" alt="Janitor Logo" />
-          <span id="logo">Janitor</span>
-        </a>
-        <span class="sm-visible menu-toggle"></span>
-      </div>
-      <div class="navbar-menu">
-        <nav>{{if user then {{
-          <a href="/projects/">Projects</a>
-          <a href="/contributions/">Contributions</a>
-          <a href="/settings/">Settings</a>
-          <a href="/logout">Log out</a>}} else {{
-          <a href="/login">Log in</a>}}}}
-        </nav>
+      <div class="navbar">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">
+            <img id="logo-image" src="/img/janitor.svg" alt="Janitor Logo" />
+            <span id="logo">Janitor</span>
+          </a>
+          <span class="sm-visible menu-toggle"></span>
+        </div>
+        <div class="navbar-menu">
+          <nav>{{if user then {{
+            <a href="/projects/">Projects</a>
+            <a href="/contributions/">Contributions</a>
+            <a href="/settings/">Settings</a>
+            <a href="/logout">Log out</a>}} else {{
+            <a href="/login">Log in</a>}}}}
+          </nav>
+        </div>
       </div>
     </header>

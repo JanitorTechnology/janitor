@@ -294,9 +294,32 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-function toggleMenu() {
-  document.querySelector('.menu-toggle').classList.toggle('on')
-  document.querySelector('.navbar-menu').classList.toggle('open');
+function toggleMenu () {
+  var navbar = document.querySelector('.navbar');
+  var navbarMenu = document.querySelector('.navbar-menu');
+  // nav height + margin
+  var height = document.querySelector(".navbar-menu nav").scrollHeight + 20;
+
+  navbar.classList.toggle('is-active');
+
+  if(navbar.classList.contains('is-active')) {
+    navbarMenu.style.height = height + 'px';
+  } else {
+    navbarMenu.style.height = '0px';
+  }
 }
 
-document.querySelector('.menu-toggle').addEventListener("click", toggleMenu);
+document.querySelector('.menu-toggle').addEventListener('click', toggleMenu);
+
+// If user is resizing screen then we need manage the state of navbar
+window.addEventListener('resize', function() {
+  var navbarMenu = document.querySelector('.navbar-menu');
+  var navbar = document.querySelector('.navbar');
+
+  if(window.innerWidth > 700) {
+    // This makes sure navbarMenu is close and navbar doesn't have `is-active` class
+    // when user resizes from small screen to large screen
+    navbarMenu.style = '';
+    navbar.classList.remove('is-active');
+  }
+});

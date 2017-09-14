@@ -1,269 +1,137 @@
 /***** common css starts *****/
 :root {
   --white: #fff;
-  --white-rgb: 255, 255, 255;
   --black: #000;
-  --black-rgb: 0, 0, 0;
   --gray-0: #f8f9fa;
-  --gray-0-rgb: 248, 249, 250;
   --gray-1: #f1f3f5;
-  --gray-1-rgb: 241, 243, 245;
   --gray-2: #e9ecef;
-  --gray-2-rgb: 233, 236, 239;
   --gray-3: #dee2e6;
-  --gray-3-rgb: 222, 226, 230;
   --gray-4: #ced4da;
-  --gray-4-rgb: 206, 212, 218;
   --gray-5: #adb5bd;
-  --gray-5-rgb: 173, 181, 189;
   --gray-6: #868e96;
-  --gray-6-rgb: 134, 142, 150;
   --gray-7: #495057;
-  --gray-7-rgb: 73, 80, 87;
   --gray-8: #343a40;
-  --gray-8-rgb: 52, 58, 64;
   --gray-9: #212529;
-  --gray-9-rgb: 33, 37, 41;
   --red-0: #fff5f5;
-  --red-0-rgb: 255, 245, 245;
   --red-1: #ffe3e3;
-  --red-1-rgb: 255, 227, 227;
   --red-2: #ffc9c9;
-  --red-2-rgb: 255, 201, 201;
   --red-3: #ffa8a8;
-  --red-3-rgb: 255, 168, 168;
   --red-4: #ff8787;
-  --red-4-rgb: 255, 135, 135;
   --red-5: #ff6b6b;
-  --red-5-rgb: 255, 107, 107;
   --red-6: #fa5252;
-  --red-6-rgb: 250, 82, 82;
   --red-7: #f03e3e;
-  --red-7-rgb: 240, 62, 62;
   --red-8: #e03131;
-  --red-8-rgb: 224, 49, 49;
   --red-9: #c92a2a;
-  --red-9-rgb: 201, 42, 42;
   --pink-0: #fff0f6;
-  --pink-0-rgb: 255, 240, 246;
   --pink-1: #ffdeeb;
-  --pink-1-rgb: 255, 222, 235;
   --pink-2: #fcc2d7;
-  --pink-2-rgb: 252, 194, 215;
   --pink-3: #faa2c1;
-  --pink-3-rgb: 250, 162, 193;
   --pink-4: #f783ac;
-  --pink-4-rgb: 247, 131, 172;
   --pink-5: #f06595;
-  --pink-5-rgb: 240, 101, 149;
   --pink-6: #e64980;
-  --pink-6-rgb: 230, 73, 128;
   --pink-7: #d6336c;
-  --pink-7-rgb: 214, 51, 108;
   --pink-8: #c2255c;
-  --pink-8-rgb: 194, 37, 92;
   --pink-9: #a61e4d;
-  --pink-9-rgb: 166, 30, 77;
   --grape-0: #f8f0fc;
-  --grape-0-rgb: 248, 240, 252;
   --grape-1: #f3d9fa;
-  --grape-1-rgb: 243, 217, 250;
   --grape-2: #eebefa;
-  --grape-2-rgb: 238, 190, 250;
   --grape-3: #e599f7;
-  --grape-3-rgb: 229, 153, 247;
   --grape-4: #da77f2;
-  --grape-4-rgb: 218, 119, 242;
   --grape-5: #cc5de8;
-  --grape-5-rgb: 204, 93, 232;
   --grape-6: #be4bdb;
-  --grape-6-rgb: 190, 75, 219;
   --grape-7: #ae3ec9;
-  --grape-7-rgb: 174, 62, 201;
   --grape-8: #9c36b5;
-  --grape-8-rgb: 156, 54, 181;
   --grape-9: #862e9c;
-  --grape-9-rgb: 134, 46, 156;
   --violet-0: #f3f0ff;
-  --violet-0-rgb: 243, 240, 255;
   --violet-1: #e5dbff;
-  --violet-1-rgb: 229, 219, 255;
   --violet-2: #d0bfff;
-  --violet-2-rgb: 208, 191, 255;
   --violet-3: #b197fc;
-  --violet-3-rgb: 177, 151, 252;
   --violet-4: #9775fa;
-  --violet-4-rgb: 151, 117, 250;
   --violet-5: #845ef7;
-  --violet-5-rgb: 132, 94, 247;
   --violet-6: #7950f2;
-  --violet-6-rgb: 121, 80, 242;
   --violet-7: #7048e8;
-  --violet-7-rgb: 112, 72, 232;
   --violet-8: #6741d9;
-  --violet-8-rgb: 103, 65, 217;
   --violet-9: #5f3dc4;
-  --violet-9-rgb: 95, 61, 196;
   --indigo-0: #edf2ff;
-  --indigo-0-rgb: 237, 242, 255;
   --indigo-1: #dbe4ff;
-  --indigo-1-rgb: 219, 228, 255;
   --indigo-2: #bac8ff;
-  --indigo-2-rgb: 186, 200, 255;
   --indigo-3: #91a7ff;
-  --indigo-3-rgb: 145, 167, 255;
   --indigo-4: #748ffc;
-  --indigo-4-rgb: 116, 143, 252;
   --indigo-5: #5c7cfa;
-  --indigo-5-rgb: 92, 124, 250;
   --indigo-6: #4c6ef5;
-  --indigo-6-rgb: 76, 110, 245;
   --indigo-7: #4263eb;
-  --indigo-7-rgb: 66, 99, 235;
   --indigo-8: #3b5bdb;
-  --indigo-8-rgb: 59, 91, 219;
   --indigo-9: #364fc7;
-  --indigo-9-rgb: 54, 79, 199;
   --blue-0: #e8f7ff;
-  --blue-0-rgb: 232, 247, 255;
   --blue-1: #ccedff;
-  --blue-1-rgb: 204, 237, 255;
   --blue-2: #a3daff;
-  --blue-2-rgb: 163, 218, 255;
   --blue-3: #72c3fc;
-  --blue-3-rgb: 114, 195, 252;
   --blue-4: #4dadf7;
-  --blue-4-rgb: 77, 173, 247;
   --blue-5: #329af0;
-  --blue-5-rgb: 50, 154, 240;
   --blue-6: #228ae6;
-  --blue-6-rgb: 34, 138, 230;
   --blue-7: #1c7cd6;
-  --blue-7-rgb: 28, 124, 214;
   --blue-8: #1b6ec2;
-  --blue-8-rgb: 27, 110, 194;
   --blue-9: #1862ab;
-  --blue-9-rgb: 24, 98, 171;
   --cyan-0: #e3fafc;
-  --cyan-0-rgb: 227, 250, 252;
   --cyan-1: #c5f6fa;
-  --cyan-1-rgb: 197, 246, 250;
   --cyan-2: #99e9f2;
-  --cyan-2-rgb: 153, 233, 242;
   --cyan-3: #66d9e8;
-  --cyan-3-rgb: 102, 217, 232;
   --cyan-4: #3bc9db;
-  --cyan-4-rgb: 59, 201, 219;
   --cyan-5: #22b8cf;
-  --cyan-5-rgb: 34, 184, 207;
   --cyan-6: #15aabf;
-  --cyan-6-rgb: 21, 170, 191;
   --cyan-7: #1098ad;
-  --cyan-7-rgb: 16, 152, 173;
   --cyan-8: #0c8599;
-  --cyan-8-rgb: 12, 133, 153;
   --cyan-9: #0b7285;
-  --cyan-9-rgb: 11, 114, 133;
   --teal-0: #e6fcf5;
-  --teal-0-rgb: 230, 252, 245;
   --teal-1: #c3fae8;
-  --teal-1-rgb: 195, 250, 232;
   --teal-2: #96f2d7;
-  --teal-2-rgb: 150, 242, 215;
   --teal-3: #63e6be;
-  --teal-3-rgb: 99, 230, 190;
   --teal-4: #38d9a9;
-  --teal-4-rgb: 56, 217, 169;
   --teal-5: #20c997;
-  --teal-5-rgb: 32, 201, 151;
   --teal-6: #12b886;
-  --teal-6-rgb: 18, 184, 134;
   --teal-7: #0ca678;
-  --teal-7-rgb: 12, 166, 120;
   --teal-8: #099268;
-  --teal-8-rgb: 9, 146, 104;
   --teal-9: #087f5b;
-  --teal-9-rgb: 8, 127, 91;
   --green-0: #ebfbee;
-  --green-0-rgb: 235, 251, 238;
   --green-1: #d3f9d8;
-  --green-1-rgb: 211, 249, 216;
   --green-2: #b2f2bb;
-  --green-2-rgb: 178, 242, 187;
   --green-3: #8ce99a;
-  --green-3-rgb: 140, 233, 154;
   --green-4: #69db7c;
-  --green-4-rgb: 105, 219, 124;
   --green-5: #51cf66;
-  --green-5-rgb: 81, 207, 102;
   --green-6: #40c057;
-  --green-6-rgb: 64, 192, 87;
   --green-7: #37b24d;
-  --green-7-rgb: 55, 178, 77;
   --green-8: #2f9e44;
-  --green-8-rgb: 47, 158, 68;
   --green-9: #2b8a3e;
-  --green-9-rgb: 43, 138, 62;
   --lime-0: #f4fce3;
-  --lime-0-rgb: 244, 252, 227;
   --lime-1: #e9fac8;
-  --lime-1-rgb: 233, 250, 200;
   --lime-2: #d8f5a2;
-  --lime-2-rgb: 216, 245, 162;
   --lime-3: #c0eb75;
-  --lime-3-rgb: 192, 235, 117;
   --lime-4: #a9e34b;
-  --lime-4-rgb: 169, 227, 75;
   --lime-5: #94d82d;
-  --lime-5-rgb: 148, 216, 45;
   --lime-6: #82c91e;
-  --lime-6-rgb: 130, 201, 30;
   --lime-7: #74b816;
-  --lime-7-rgb: 116, 184, 22;
   --lime-8: #66a80f;
-  --lime-8-rgb: 102, 168, 15;
   --lime-9: #5c940d;
-  --lime-9-rgb: 92, 148, 13;
   --yellow-0: #fff9db;
-  --yellow-0-rgb: 255, 249, 219;
   --yellow-1: #fff3bf;
-  --yellow-1-rgb: 255, 243, 191;
   --yellow-2: #ffec99;
-  --yellow-2-rgb: 255, 236, 153;
   --yellow-3: #ffe066;
-  --yellow-3-rgb: 255, 224, 102;
   --yellow-4: #ffd43b;
-  --yellow-4-rgb: 255, 212, 59;
   --yellow-5: #fcc419;
-  --yellow-5-rgb: 252, 196, 25;
   --yellow-6: #fab005;
-  --yellow-6-rgb: 250, 176, 5;
   --yellow-7: #f59f00;
-  --yellow-7-rgb: 245, 159, 0;
   --yellow-8: #f08c00;
-  --yellow-8-rgb: 240, 140, 0;
   --yellow-9: #e67700;
-  --yellow-9-rgb: 230, 119, 0;
   --orange-0: #fff4e6;
-  --orange-0-rgb: 255, 244, 230;
   --orange-1: #ffe8cc;
-  --orange-1-rgb: 255, 232, 204;
   --orange-2: #ffd8a8;
-  --orange-2-rgb: 255, 216, 168;
   --orange-3: #ffc078;
-  --orange-3-rgb: 255, 192, 120;
   --orange-4: #ffa94d;
-  --orange-4-rgb: 255, 169, 77;
   --orange-5: #ff922b;
-  --orange-5-rgb: 255, 146, 43;
   --orange-6: #fd7e14;
-  --orange-6-rgb: 253, 126, 20;
   --orange-7: #f76707;
-  --orange-7-rgb: 247, 103, 7;
   --orange-8: #e8590c;
-  --orange-8-rgb: 232, 89, 12;
   --orange-9: #d9480f;
-  --orange-9-rgb: 217, 72, 15;
   --font-size: 14px;
   --font-size-small: 12px;
   --font-size-extra-small: 10px;
@@ -271,22 +139,23 @@
   --edge-pad: 30px 25px;
   --pad-content-x: 25px;
   --pad-link: 15px;
+  --border-dark: var(--gray-4);
   --border-light: var(--gray-2);
   --border-lighter: var(--gray-0);
   --icon-small-size: 12px;
   --icon-small-pad: 5px;
-  --tracking: 0.05rem;
+  --tracking-extra-small: 0.05rem;
   --tracking-small: 0.3rem;
   --tracking-medium: 0.5rem;
   --tracking-large: 0.8rem;
-  --shadow-small: 0 -4px 15px 0 var(--gray-5);
-  --shadow-large: 0 16px 32px 0 rgba(0, 0, 0, 0.1);
+  --shadow-small: 0 -5px 15px 0 var(--gray-4);
   --dark: #000;
   --slate: #0f1113;
   --light-gray: #fafafa;
   --bg-color: #fff;
   --fg-color: var(--dark);
   --fg-color-light: var(--gray-6);
+  --lg-scr-width: 960px;
 }
 
 * {
@@ -391,6 +260,7 @@ ul li strong {
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.1em;
+  border-radius: 0;
 }
 
 .button:hover {
@@ -444,6 +314,11 @@ input.text-input {
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.1em;
+  border-radius: 0;
+}
+
+input.text-input:focus {
+  outline: 0;
 }
 
 ::placeholder,
@@ -477,31 +352,37 @@ input.text-input {
   max-width: 600px;
 }
 
-.header {
+.title {
   margin: 5px 0;
   line-height: 2.2em;
 }
 
-.header.margin {
+.title.margin {
   margin-bottom: 80px;
 }
 
-.header > span {
+.title.center {
+  text-align: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.title > span {
   display: block;
 }
 
-.header .subtext {
+.title .subtext {
   color: var(--fg-color-light);
 }
 
-.header .text {
+.title .text {
   letter-spacing: var(--tracking-medium);
   text-transform: uppercase;
   font-weight: 700;
   font-size: 16px;
 }
 
-.header.small .text {
+.title.small .text {
   font-size: 14px;
   text-transform: none;
   letter-spacing: normal;
@@ -512,16 +393,22 @@ input.text-input {
 /***** header css starts *****/
 header {
   --color: var(--fg-color);
+  --pad-content-y: 20px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: var(--edge-pad);
+  padding: var(--pad-content-y) var(--pad-content-x);
   background: #fff;
   box-shadow: var(--shadow-small);
   z-index: 2;
+}
+
+header .navbar {
   display: flex;
   justify-content: space-between;
+  max-width: var(--lg-scr-width);
+  margin: auto;
 }
 
 .navbar-header {
@@ -553,6 +440,12 @@ header {
 .navbar-menu {
   display: flex;
   align-items: center;
+  overflow: auto;
+  height: auto;
+}
+
+.navbar-menu nav {
+  line-height: calc(1em + 10px);
 }
 
 .navbar-menu li {
@@ -560,6 +453,8 @@ header {
 }
 
 .navbar-menu a {
+  --pad-x: 5px;
+  --pad-y: 5px;
   position: relative;
   text-decoration: none;
   text-transform: uppercase;
@@ -567,26 +462,30 @@ header {
   font-weight: 500;
   margin: 0 var(--pad-link);
   user-select: none;
-  letter-spacing: var(--tracking);
+  letter-spacing: var(--tracking-extra-small);
   opacity: 0.45;
   color: var(--color);
+  padding: var(--pad-x) var(--pad-y);
 }
 
 .navbar-menu a:last-child {
-  margin-right: 0;
+  /* outline doesn't get cropped when 1px of right margin is set */
+  margin-right: 1px;
 }
 
 .navbar-menu a:before {
+  --total-pad: calc(2 * var(--pad-x));
   content: "";
   position: absolute;
-  width: 100%;
+  width: calc(100% - var(--total-pad));
   height: 1px;
-  bottom: -5px;
+  bottom: 0;
   left: 0;
   background-color: var(--color);
   visibility: hidden;
   transform: scaleX(0);
   transition: all 0.25s var(--ease);
+  margin-left: var(--pad-x)
 }
 
 .navbar-menu a:hover:before {
@@ -603,16 +502,16 @@ header {
   font-size: var(--font-size-small);
   font-weight: 500;
   user-select: none;
-  letter-spacing: var(--tracking);
+  letter-spacing: var(--tracking-extra-small);
   opacity: 0.45;
   color: var(--color);
 }
 
-.menu-toggle::before {
+.navbar .menu-toggle::before {
   content: 'menu';
 }
 
-.menu-toggle.on::before {
+.navbar.is-active .menu-toggle::before {
   content: 'close';
 }
 
@@ -635,9 +534,11 @@ footer a:hover {
 }
 
 footer .flex {
-  max-width: 960px;
+  max-width: var(--lg-scr-width);
   margin: auto;
   justify-content: space-between;
+  border-top: solid 1px var(--border-light);
+  padding-top: 40px;
 }
 
 footer nav {
@@ -647,8 +548,9 @@ footer nav {
 footer nav a {
   text-transform: uppercase;
   font-weight: 500;
-  margin: 0 15px 10px 0;
+  margin: 0 15px 0 0;
   display: inline-block;
+  padding: 5px;
 }
 
 footer nav a:last-child {
@@ -658,13 +560,12 @@ footer nav a:last-child {
 
 /***** login section css starts *****/
 .login {
-  margin: auto;
   flex: 1;
   padding-top: calc(50px + var(--pad-content-y))
 }
 
 form#login-form {
-  margin: 80px 0;
+  margin: 0 0 50px 0;
 }
 
 .login-with {
@@ -678,7 +579,6 @@ form#login-form {
 
 .input-group {
   display: flex;
-  margin: 20px 0 60px 0;
 }
 
 .input-group > input.text-input {
@@ -703,10 +603,10 @@ form#login-form {
   .navbar-menu {
     height: 0;
     overflow: hidden;
-    transition: height 200ms var(--ease);
+    transition: height .3s var(--ease);
   }
 
-  header {
+  header .navbar {
     flex-direction: column;
   }
 
@@ -719,10 +619,6 @@ form#login-form {
     align-items: center;
   }
 
-  .navbar-menu.open {
-    height: 195px;
-  }
-
   .navbar-menu nav {
     display: flex;
     flex-direction: column;
@@ -731,13 +627,13 @@ form#login-form {
   }
 
   .navbar-menu nav a:first-child {
-    border-top: 1px solid var(--gray-4);
+    border-top: 1px solid var(--border-dark);
   }
 
   .navbar-menu nav a {
     margin: 0;
     padding: 15px 0;
-    border-bottom: 1px solid var(--gray-4);
+    border-bottom: 1px solid var(--border-dark);
   }
 
   .navbar-menu a:hover:before {
@@ -753,16 +649,37 @@ form#login-form {
     font-size: 12px;
   }
 
+  footer {
+    margin-top: 30px;
+  }
+
   footer .flex {
     flex-direction: column;
   }
 
-  footer, header {
+  footer {
     --edge-pad: 20px;
   }
 
-  footer {
-    padding-bottom: 10px;
+  header {
+    --pad-content-x: 20px;
+    --pad-content-y: 15px;
+  }
+
+  footer nav a {
+    margin: 0 10px 15px 10px;
+  }
+
+  footer nav:last-child a {
+    margin-bottom: 0;
+  }
+
+  footer nav:last-child {
+    margin-bottom: 20px;
+  }
+
+  footer nav a:last-child {
+    margin-right: 10px;
   }
 
   .content {
@@ -774,11 +691,19 @@ form#login-form {
     padding-top: calc(50px + var(--pad-content-y));
     padding-bottom: calc(20px + var(--pad-content-y));
   }
+
+  .title .text {
+    font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 500px) {
+  .title.margin {
+    margin-bottom: 60px;
+  }
+
   form#login-form {
-    margin: 40px 0;
+    margin-bottom: 40px;
   }
 
   .login .input-group {
@@ -791,21 +716,3 @@ form#login-form {
   }
 }
 /***** media query css ends *****/
-
-@keyframes a {
-  0% {
-    opacity: 0;
-    transform: translateY(-150px);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-}
