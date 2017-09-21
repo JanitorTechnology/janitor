@@ -290,7 +290,12 @@ Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
 
 // Export a Docker filesystem diff tree with hidden branches to HTML.
 function exportDiffTree (element, node) {
-  element.appendChild(node.Element);
+  if (node.Element) {
+    // Append the node's element if it has one.
+    // Note: For some folders, Docker won't send a dedicated change item, so we
+    // simply omit them from the diff. We'll still add their children though.
+    element.appendChild(node.Element);
+  }
 
   // By default, append child nodes to the same root element.
   var parentElement = element;
