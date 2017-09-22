@@ -1,29 +1,6 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-// Set-up all time series graphs.
-Array.map(document.querySelectorAll('*[data-data]'), function (div) {
-  var data = JSON.parse(div.dataset.data);
-  var title = div.dataset.title;
-
-  data.forEach(function (row) {
-    row[0] = new Date(row[0]);
-  });
-
-  new Dygraph(div, data, {
-    title: title,
-    axes: {
-      y: {
-        valueFormatter: window.formatTime,
-        axisLabelFormatter: window.formatTime,
-        axisLabelWidth: 60,
-        includeZero: true
-      }
-    },
-    labelsUTC: true
-  });
-});
-
 // Format milliseconds into human readable text.
 window.formatTime = function (milliseconds) {
   var units = [
@@ -58,3 +35,26 @@ window.formatMemory = function (bytes) {
 
   return (Math.round(value * 100) / 100) + ' ' + prefix[p] + 'B';
 };
+
+// Set-up all time series graphs.
+Array.map(document.querySelectorAll('*[data-data]'), function (div) {
+  var data = JSON.parse(div.dataset.data);
+  var title = div.dataset.title;
+
+  data.forEach(function (row) {
+    row[0] = new Date(row[0]);
+  });
+
+  new window.Dygraph(div, data, {
+    title: title,
+    axes: {
+      y: {
+        valueFormatter: window.formatTime,
+        axisLabelFormatter: window.formatTime,
+        axisLabelWidth: 60,
+        includeZero: true
+      }
+    },
+    labelsUTC: true
+  });
+});
