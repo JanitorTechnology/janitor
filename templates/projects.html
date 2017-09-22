@@ -1,26 +1,30 @@
     <section class="projects">
       <div class="container">
         <h1>Contribute to incredible software</h1>
-        <h4>In just a single click, enter a fully-functional development environment. Yes, it's that easy.</h4>{{
+        <h4>In just a few clicks, enter a fully-functional development environment. Yes, it's that easy.</h4>
+        <div class="row">{{
           for (let id in projects) {
             let project = projects[id];
-        }}
-        <div class="panel panel-default panel-project">
-          <div class="panel-heading">
-            <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
-            <h4 class="project-title">{{= project.name in html}}</h4>
-            <div class="project-actions">{{if user then {{
-              <form action="/api/hosts/{{= project.docker.host in uri}}/containers?project={{= id in id}}" class="ajax-form has-feedback is-submit" data-redirect-after-success="/contributions/" method="put">
-                <button class="btn btn-primary" title="Create a new container for this project" type="submit">New Container</button>
-              </form>}} else {{
-              <a class="btn btn-primary" href="/login">New Container</a>}}}}
+          }}
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default panel-project">
+              <div class="panel-heading">
+                <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
+                <h4 class="project-title">{{= project.name in html}}</h4>
+                <div class="project-actions">{{if user then {{
+                  <form action="/api/hosts/{{= project.docker.host in uri}}/containers?project={{= id in id}}" class="ajax-form has-feedback is-submit" data-redirect-after-success="/contributions/" method="put">
+                    <button class="btn btn-primary" title="Create a new container for this project" type="submit">New Container</button>
+                  </form>}} else {{
+                  <a class="btn btn-primary" href="/login">New Container</a>}}}}
+                </div>
+              </div>
+              <div class="panel-body">
+                <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}"></time>.</p>
+              </div>
             </div>
-          </div>
-          <div class="panel-body">
-            <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}"></time>.</p>
-          </div>
-        </div>{{
-          }
-        }}
+          </div>{{
+            }
+          }}
+        </div>
       </div>
     </section>
