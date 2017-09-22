@@ -43,7 +43,7 @@
               <a class="btn btn-primary"{{
                 if (updated < c9sdkStart) { }} href="https://c9.io/open/ssh?name={{= projectId in id}}-{{= id in id}}&description={{= project.name in uri}}%20on%20janitor.technology&host={{= machine.docker.host in uri}}&port={{= machine.docker.ports['22'].port in integer}}&user=user&workspaceDir={{= project.docker.path in uri}}&nodePath=%2Fhome%2Fuser%2F.c9%2Fnode%2Fbin%2Fnode" {{ }
                 else { }} href="https://{{= machine.docker.host in uri}}/{{= machine.docker.container.slice(0,16) in uri}}/8089/ide.html" {{ }
-              }}target="_blank"><span class="hidden-xs">Edit in </span>Cloud9</a>
+              }}target="_blank"><span class="hidden-xs">Open </span>IDE</a>
             </div>
           </div>
           <div class="panel-body">
