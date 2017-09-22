@@ -26,6 +26,7 @@
     "poststart": "printf \"[$(date -uIs)] Background process started (PID $(cat janitor.pid), LOGS $(pwd)/janitor.log).\\n\"",
     "stop": "if [ -e janitor.pid -a -n \"$(ps h $(cat janitor.pid))\" ] ; then kill $(cat janitor.pid) && printf \"[$(date -uIs)] Background process stopped (PID $(cat janitor.pid)).\\n\" ; fi ; rm -f janitor.pid",
     "test": "cd tests && node tests.js",
+    "prewatch": "touch janitor.log && chmod 600 janitor.log",
     "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0"
   },
   "dependencies": {
