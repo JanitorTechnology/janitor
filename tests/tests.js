@@ -52,6 +52,7 @@ tests.push({
 
     const boot = require('../lib/boot');
     const docker = require('../lib/docker');
+    const hosts = require('../lib/hosts');
     const machines = require('../lib/machines');
     const users = require('../lib/users');
 
@@ -96,7 +97,17 @@ tests.push({
       });
     }
 
-    function registerTestProject (next) {
+    function createTestHost (next) {
+      hosts.create('example.com', {}, (error, host) => {
+        if (error) {
+          callback(error);
+          return;
+        }
+        next();
+      });
+    }
+
+    function createTestProject (next) {
       machines.setProject({
         'id': 'test-project',
         '/name': 'Test Project',
@@ -106,7 +117,7 @@ tests.push({
       next();
     }
 
-    function registerTestContainer (next) {
+    function createTestContainer (next) {
       const user = db.get('users')['admin@example.com'];
       // Create a new user machine for the project "test-project".
       machines.spawn(user, 'test-project', error => {
@@ -122,9 +133,10 @@ tests.push({
       boot.forwardHttp,
       boot.ensureDockerTlsCertificates,
       registerTestUser,
-      registerTestProject,
+      createTestHost,
+      createTestProject,
     ], () => {
-      registerTestContainer(() => {
+      createTestContainer(() => {
         const camp = require('camp');
         const app = camp.start({
           documentRoot: process.cwd() + '/../static',
