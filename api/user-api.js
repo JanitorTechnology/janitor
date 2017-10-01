@@ -194,20 +194,25 @@ configurationsAPI.patch({
 });
 
 // API sub-resource to manage a single configuration file.
-const configurationAPI = configurationsAPI.api('/:file');
+// Warning: `*` will match every character, including '/'.
+// We do this to match configuration files like '.config/hub'.
+const configurationAPI = configurationsAPI.api('/*');
 
 configurationAPI.delete({
   title: 'Reset a user configuration',
   description: 'Reset a user configuration file to its default template value.',
 
-  handler ({ user, query }, response) {
+  handler: (request, response) => {
+    const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
-    configurations.resetToDefault(user, query.file, error => {
+    const file = request.query[0];
+    log('resetting file', file);
+    configurations.resetToDefault(user, file, error => {
       if (error) {
         response.statusCode = 500; // Internal Server Error
         response.json({ error: 'Could not reset configuration' }, null, 2);
@@ -221,7 +226,7 @@ configurationAPI.delete({
 
   examples: [{
     request: {
-      urlParameters: { file: '.gitconfig' },
+      urlParameters: { '*': '.gitconfig' },
     },
     response: {
       status: 204
@@ -235,14 +240,16 @@ configurationAPI.put({
     'Install or overwrite a configuration file in all the user\'s containers ' +
     '(any local changes will be lost!)',
 
-  handler ({ user, query }, response) {
+  handler: (request, response) => {
+    const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
       response.json({ error: 'Unauthorized' }, null, 2);
       return;
     }
 
-    const { file } = query;
+    const file = request.query[0];
+    log('deploying file', file);
     machines.deployConfigurationInAllContainers(user, file).then(count => {
       response.json({
         message: 'Successfully deployed to ' + count + ' container' +
@@ -257,7 +264,7 @@ configurationAPI.put({
 
   examples: [{
     request: {
-      urlParameters: { file: '.gitconfig' },
+      urlParameters: { '*': '.gitconfig' },
     },
     response: {
       body: JSON.stringify({
