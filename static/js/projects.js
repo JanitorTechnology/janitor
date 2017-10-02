@@ -10,7 +10,7 @@ Array.map(document.querySelectorAll('a[data-action="spawn"]'), function (link) {
       project: link.dataset.project
     };
     query.resp = function (data) {
-      document.location = '/contributions/';
+      document.location = '/containers/';
     };
   }));
 });
