@@ -436,14 +436,14 @@ h4 {
 }
 
 @media (max-width: 768px) {
-  .contributions .panel-heading {
+  .containers .panel-heading {
     justify-content: space-between;
     flex-wrap: wrap;
   }
-  .contributions .project-icon {
+  .containers .project-icon {
     margin-right: 5px;
   }
-  .contributions .project-title {
+  .containers .project-title {
     order: 5;
     margin: 10px 0 0;
     width: 100%;
@@ -552,7 +552,7 @@ section.alert {
   margin: 0;
 }
 
-section.contributions > .container,
+section.containers > .container,
 section.data > .container,
 section.login > .container,
 section.projects > .container,

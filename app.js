@@ -228,8 +228,13 @@ boot.executeInParallel([
     });
   });
 
-  // User contributions list.
+  // User contributions list. (legacy - redirect to containers page)
   app.route(/^\/contributions\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/containers/', true);
+  });
+
+  // User containers list.
+  app.route(/^\/containers\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
@@ -237,7 +242,7 @@ boot.executeInParallel([
       return;
     }
 
-    routes.contributionsPage(response, user);
+    routes.containersPage(response, user);
   });
 
   // User notifications.
