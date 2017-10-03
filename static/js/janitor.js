@@ -249,6 +249,7 @@ Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
   }
   toggle.addEventListener('click', function () {
     label.classList.add('editing');
+    label.querySelector('.editable-editor input').focus();
   });
 });
 
