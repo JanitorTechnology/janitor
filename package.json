@@ -27,7 +27,9 @@
     "stop": "if [ -e janitor.pid -a -n \"$(ps h $(cat janitor.pid))\" ] ; then kill $(cat janitor.pid) && printf \"[$(date -uIs)] Background process stopped (PID $(cat janitor.pid)).\\n\" ; fi ; rm -f janitor.pid",
     "test": "cd tests && node tests.js",
     "prewatch": "touch janitor.log && chmod 600 janitor.log",
-    "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0"
+    "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tailf janitor.log -n 0",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "camp": "17.2.0",
@@ -40,7 +42,8 @@
     "oauth": "0.9.15",
     "oauth2provider": "0.0.2",
     "selfapi": "0.2.0",
-    "tar-stream": "1.5.4"
+    "tar-stream": "1.5.4",
+    "snyk": "^1.42.7"
   },
   "devDependencies": {
     "eslint": "^4.1.1",
@@ -53,5 +56,6 @@
   },
   "engines": {
     "node": ">=8.0.0"
-  }
+  },
+  "snyk": true
 }
