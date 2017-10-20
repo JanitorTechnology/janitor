@@ -33,7 +33,7 @@
     "camp": "17.2.0",
     "dockerode": "2.5.2",
     "email-login": "1.2.0",
-    "fast-json-patch": "2.0.3",
+    "fast-json-patch": "2.0.6",
     "fleau": "16.2.0",
     "le-acme-core": "2.1.1",
     "node-forge": "0.7.1",
