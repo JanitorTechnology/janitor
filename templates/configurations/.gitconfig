@@ -1,6 +1,6 @@
 [user]
-	name = {{= user.profile.name}}
-	email = {{= user.email}}
+	name = {{= user.profile.name }}
+	email = {{= user._primaryEmail }}
 [core]
 	editor = vim
 	autocrlf = false

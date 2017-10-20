@@ -302,7 +302,7 @@ boot.executeInParallel([
     const sectionUri = match[1];
     const section = sectionUri ? sectionUri.slice(1) : 'docker';
 
-    log('admin', section, '(' + user.email + ')');
+    log('admin', section, '(' + user._primaryEmail + ')');
 
     routes.adminPage(query.res, section, user);
   });
@@ -550,7 +550,7 @@ boot.executeInParallel([
           return end({ status: 'error', message: 'Invalid SSH key' });
         }
         key = match[0];
-        log('key', data.name, user.email);
+        log('key', data.name, user._primaryEmail);
         break;
 
       case 'cloud9user':
@@ -560,7 +560,7 @@ boot.executeInParallel([
           return end({ status: 'error', message: 'Invalid Cloud9 username' });
         }
         key = match[0];
-        log('key', data.name, user.email, key);
+        log('key', data.name, user._primaryEmail, key);
         break;
 
       default:

@@ -3,7 +3,7 @@
         <div class="row">
           <div class="account-form col-sm-4">
             <label>Email</label>
-            <input class="form-control" disabled="true" type="text" value={{= user.email in json}}>
+            <input class="form-control" disabled="true" type="text" value={{= user._primaryEmail in json}}>
           </div>
           <form action="/api/user" class="account-form ajax-form has-feedback col-sm-4" method="patch">
             <label class="control-label">Name</label>
