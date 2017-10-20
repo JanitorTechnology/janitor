@@ -1,8 +1,8 @@
 [ui]
-username = {{= user.profile.name}} <{{= user.email}}>
+username = {{= user.profile.name }} <{{= user._primaryEmail }}>
 interface = curses
 [bugzilla]
-username = {{= user.email}}
+username = {{= user._primaryEmail }}
 [diff]
 git = true
 showfunc = true

@@ -86,6 +86,30 @@ userAPI.patch({
   }]
 });
 
+// API sub-resource to manage user emails.
+const emailsAPI = userAPI.api('/emails');
+
+emailsAPI.get({
+  title: 'Get all email addresses',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    response.json(user.emails, null, 2);
+  },
+
+  examples: [{
+    response: {
+      body: JSON.stringify([ 'admin@example.com' ], null, 2)
+    }
+  }]
+});
+
 // API sub-resource to manage personal configuration files.
 const configurationsAPI = userAPI.api('/configurations', {
   beforeEachTest: next => {
