@@ -252,6 +252,18 @@ boot.executeInParallel([
     routes.containersPage(response, user);
   });
 
+  // User new containers list.
+  app.route(/^\/containers-new\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user } = request;
+    if (!user) {
+      routes.loginPage(response);
+      return;
+    }
+
+    routes.containersPageNew(response, user);
+  });
+
   // User notifications.
   app.route(/^\/notifications\/?$/, (data, match, end, query) => {
     const { user } = query.req;

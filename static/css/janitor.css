@@ -599,6 +599,33 @@ section.video {
   margin: 0;
 }
 
+/* Status icons */
+
+.status-icon {
+  border-radius: 100%;
+  border: 1px solid rgba(0,0,0,0.1);
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-inline-end: 0.5em;
+}
+
+.status-icon.primary {
+  background: #0a84ff;
+}
+
+.status-icon.success {
+  background: #30e60b;
+}
+
+.status-icon.error {
+  background: #ff0039;
+}
+
+.status-icon.warning {
+  background: #ff9400;
+}
+
 /* Override bootstrap alert margin */
 .alert {
   margin-bottom: 0;
