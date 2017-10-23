@@ -1,0 +1,448 @@
+/* General */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* The list of system fonts after "Droid Sans" are from github.com */
+  font-family: "Fira Sans", Roboto, "Droid Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+*:not(:hover) > .show-on-hover {
+  visibility: hidden;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.gray-text {
+  color: #737373;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+main {
+  padding: 0 20vw;
+  overflow: auto;
+  flex-grow: 1;
+}
+
+/* Buttons */
+
+.btn {
+  border: none;
+  border-radius: 2px;
+  background: #ededf0;
+  padding: 5px 9px;
+  color: #0c0c0d;
+  text-decoration: none;
+  font: inherit;
+}
+
+.btn:hover {
+  background: #d7d7db;
+}
+
+.btn:hover:active {
+  background: #b1b1b3;
+}
+
+.btn:focus {
+  box-shadow: inset 0 0 0 2px #0a84ff, 0 0 0 3px rgba(10, 132, 255, 0.3);
+}
+
+.btn-primary {
+  background: #0060df;
+  color: #f9f9fa;
+}
+
+.btn-primary:hover {
+  background: #003eaa;
+}
+
+.btn-primary:hover:active {
+  background: #002275;
+}
+
+.btn-error {
+  background: #ff0039;
+  color: #f9f9fa;
+}
+
+.btn-error:hover {
+  background: #d70022;
+}
+
+.btn-error:hover:active {
+  background: #a4000f;
+}
+
+/* Inputs */
+
+.form-control {
+  border: 1px solid rgba(12, 12, 13,0.3);
+  padding: 0.5em;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 0.8em;
+  margin: 0 0.5em;
+}
+
+.form-control:hover {
+  border-color: rgba(12, 12, 13,0.5);
+}
+
+.form-control:focus {
+  border-color: #0a84ff;
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+}
+
+.form-control.disabled,
+.form-control:disabled {
+  pointer-events: none;
+  background: #f5f5f5;
+}
+
+/* Navigation bar */
+
+.navbar {
+  background: #fff;
+  color: #0b0b0d;
+  box-shadow: 0 4px 16px rgba(12,12,13,.1);
+  overflow: auto;
+  z-index: 999;
+  font-size: 1.1em;
+  position: sticky;
+  top: 0;
+}
+
+.navbar,
+.navbar div {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+  padding: 1em 1em;
+}
+
+.navbar-brand img {
+  width: 2em;
+  height: 2em;
+  margin-right: 1em;
+}
+
+.navbar .icon.menu,
+.menu-toggle {
+  display: none;
+}
+
+.navbar ul:last-child {
+  text-align: right;
+  flex: 1;
+}
+
+.navbar ul,
+.navbar ul li,
+.navbar ul li a {
+  list-style: none;
+  color: inherit;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar ul li a {
+  text-decoration: none;
+  padding: 1.25em 1em;
+}
+
+.navbar ul li a:hover {
+  text-decoration: underline;
+}
+
+
+@media (max-width: 768px) {
+  .navbar,
+  .navbar ul {
+    display: block;
+  }
+  
+  .navbar .menu-toggle:not(:checked) + ul {
+    display: none;
+  }
+  
+  .navbar .icon.menu {
+    display: block;
+    cursor: pointer;
+    padding: 0 1em;
+  }
+  
+  .navbar ul {
+    margin-bottom: 0.5em;
+  }
+
+  .navbar ul li {
+    display: block;
+    text-align: center;
+  }
+
+  .navbar ul li a {
+    display: block;
+    padding: 10px !important;
+  }
+
+  .navbar ul li a:hover {
+    background-color: #ededf0;
+    text-decoration: none;
+  }
+
+  main {
+    padding: 1em;
+  }
+}
+
+/* Footer */
+
+.footer {
+  box-shadow: none;
+  z-index: 998;
+}
+
+/* Tabs */
+
+.tab-nav, .tab-nav li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tab-nav li {
+  display: inline-block;
+  margin: 0 1em;
+}
+
+.tab-nav li a {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+  padding: .5em 0;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  height: 100%;
+  vertical-align: bottom;
+}
+.tab-nav li a::after {
+  content: "";
+  transition: transform 1s cubic-bezier(.07,.95,0,1);
+  transform: scale(0);
+  display: block;
+  background: #0a84ff;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;  
+}
+
+.tab-nav li.selected a {
+  color: #0a84ff;
+}
+.tab-nav li.selected a::after {
+  transform: none;
+}
+
+.tab-panel {
+  padding: 1em;
+}
+.tab-panel iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.tab-panels .tab-panel:not(.selected) {
+  display: none;
+}
+
+/* Panels */
+
+.panel {
+  box-shadow: 0 2px 8px rgba(12,12,13,.1);
+  margin: 20px 0;
+  border-radius: 2px;
+}
+
+.panel-icon {
+  width: 32px;
+  height: 32px;
+  margin: 0 5px;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #ededf0;
+  padding: 5px;
+}
+
+.panel-heading > * {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.panel-body {
+  background: #fcfcfc;
+}
+
+/* Status icons */
+
+.status-icon {
+  border-radius: 100%;
+  border: 1px solid rgba(0,0,0,0.1);
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+
+.status-icon.primary {
+  background: #0a84ff;
+}
+
+.status-icon.success {
+  background: #30e60b;
+}
+
+.status-icon.error {
+  background: #ff0039;
+}
+
+.status-icon.warning {
+  background: #ff9400;
+}
+
+/* Editable labels */
+
+.editable-value > * {
+  margin: 0;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.editable-label:not(.editing) .editable-editor,
+.editable-label.editing .editable-value {
+  display: none;
+}
+
+.editable-editor {
+  width: 100%;
+  display: flex;
+}
+
+.editable-editor > input {
+  flex: 1;
+}
+
+.editable-toggle {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+/* Alerts */
+
+.alert {
+  padding: 10px;
+  margin: 1.5em 0;
+  border-radius: 4px;
+}
+
+.alert.alert-warning {
+  background: #ffe900;
+}
+
+/* Icons */
+
+.icon::before,
+.form-control-feedback::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.8;
+}
+
+.icon.white::before {
+  filter: invert(1);
+}
+
+.icon.edit::before {
+  background-image: url(../img/icons/edit.svg);
+}
+
+.icon.menu::before {
+  background-image: url(../img/icons/menu.svg);
+}
+
+/* Form control feedback */
+
+.ajax-form {
+  position: relative;
+}
+
+.form-control-feedback {
+  border: none;
+  background: none;
+  box-shadow: none;
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+}
+
+.ajax-form:not(.success):not(.error) .form-control-feedback {
+  display: none;
+}
+
+.ajax-form.pending .form-control-feedback::before {
+  content: "...";
+}
+
+.ajax-form.success .form-control-feedback::before {
+  background-image: url(../img/icons/check.svg);
+}
+
+.ajax-form.error .form-control-feedback::before {
+  background-image: url(../img/icons/error.svg);
+}
+
+/* Projects page */
+
+.panel-project:not(:hover) .editable-toggle:not(:focus) {
+    visibility: hidden;
+}
