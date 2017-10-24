@@ -170,15 +170,12 @@ boot.executeInParallel([
       return;
     }
 
-    github.authenticate(request, (error, accessToken, refreshToken) => {
-      if (error) {
-        log('[fail] github authenticate', error);
-        routes.notFoundPage(response, user);
-        return;
-      }
-
+    github.authenticate(request).then(({ accessToken, refreshToken }) => {
       users.refreshGitHubAccount(user, accessToken, refreshToken);
       routes.redirect(response, '/settings/integrations/');
+    }).catch(error => {
+      log('[fail] github authenticate', error);
+      routes.notFoundPage(response, user);
     });
   });
 
