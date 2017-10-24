@@ -171,8 +171,12 @@ boot.executeInParallel([
     }
 
     github.authenticate(request).then(({ accessToken, refreshToken }) => {
-      users.refreshGitHubAccount(user, accessToken, refreshToken);
-      routes.redirect(response, '/settings/integrations/');
+      users.refreshGitHubAccount(user, accessToken, refreshToken).then(() => {
+        routes.redirect(response, '/settings/integrations/');
+      }).catch(error => {
+        log('[fail] could not refresh github account', error);
+        routes.redirect(response, '/settings/integrations/');
+      });
     }).catch(error => {
       log('[fail] github authenticate', error);
       routes.notFoundPage(response, user);
