@@ -173,14 +173,7 @@ function ensureOAuth2Access (request, response, next) {
   }
 
   // Generate a new OAuth2 state parameter for this authentication attempt.
-  oauth2.generateStateParameter((error, state) => {
-    if (error) {
-      log('[fail] oauth2 state', error);
-      response.statusCode = 500; // Internal Server Error
-      response.end();
-      return;
-    }
-
+  oauth2.generateStateParameter().then(state => {
     oauth2States[session.id] = state;
 
     // Redirect the request to Janitor's OAuth2 provider for authorization.
@@ -194,6 +187,10 @@ function ensureOAuth2Access (request, response, next) {
 
       routes.redirect(response, url);
     });
+  }).catch(error => {
+    log('[fail] oauth2 state', error);
+    response.statusCode = 500; // Internal Server Error
+    response.end();
   });
 }
 
@@ -273,12 +270,7 @@ function getMappedPort (accessToken, container, port, callback) {
     path: `/api/hosts/${hostname}/containers/${container}/${port}`
   };
 
-  oauth2.request(parameters, (error, body, response) => {
-    if (error) {
-      callback(error);
-      return;
-    }
-
+  oauth2.request(parameters).then(({ body, response }) => {
     const status = response.statusCode;
     if (status !== 200) {
       callback(new Error('OAuth2 port request failed: ' + status + ' ' + body));
@@ -291,6 +283,8 @@ function getMappedPort (accessToken, container, port, callback) {
     } catch (error) {
       callback(error);
     }
+  }).catch(error => {
+    callback(error);
   });
 }
 
@@ -310,8 +304,10 @@ function getOAuth2AuthorizationUrl (redirectUrl, state, callback) {
     }
   };
 
-  oauth2.getAuthorizationUrl(parameters, (error, url) => {
-    callback(error, url);
+  oauth2.getAuthorizationUrl(parameters).then(url => {
+    callback(null, url);
+  }).catch(error => {
+    callback(error);
   });
 }
 
@@ -323,7 +319,9 @@ function getOAuth2AccessToken (code, state, callback) {
     code
   };
 
-  oauth2.getAccessToken(parameters, (error, accessToken, refreshToken) => {
-    callback(error, accessToken, refreshToken);
+  oauth2.getAccessToken(parameters).then(({ accessToken, refreshToken }) => {
+    callback(null, accessToken, refreshToken);
+  }).catch(error => {
+    callback(error);
   });
 }
