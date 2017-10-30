@@ -12,12 +12,17 @@ help:
 
 ### SET UP NON-SUDO WEB PORTS ###
 
+# If unspecified, auto-detect the primary network interface (e.g. "eth0").
+ifeq ($(strip $(PRIMARY_INTERFACE)),)
+  PRIMARY_INTERFACE := `route | grep default | awk '{print $$8}'`
+endif
+
 ports:
 	cat /etc/rc.local | grep -ve "^exit 0$$" > rc.local
 	printf "\n# Non-sudo web ports for Janitor.\n" >> rc.local
-	printf "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 1080\n" >> rc.local
+	printf "iptables -t nat -A PREROUTING -i $(PRIMARY_INTERFACE) -p tcp --dport 80 -j REDIRECT --to-port 1080\n" >> rc.local
 	printf "iptables -t nat -I OUTPUT -o lo -p tcp --dport 80 -j REDIRECT --to-port 1080\n" >> rc.local
-	printf "iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 443 -j REDIRECT --to-port 1443\n" >> rc.local
+	printf "iptables -t nat -A PREROUTING -i $(PRIMARY_INTERFACE) -p tcp --dport 443 -j REDIRECT --to-port 1443\n" >> rc.local
 	printf "iptables -t nat -I OUTPUT -o lo -p tcp --dport 443 -j REDIRECT --to-port 1443\n" >> rc.local
 	printf "\nexit 0\n" >> rc.local
 	sudo chown root:root rc.local
