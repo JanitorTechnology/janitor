@@ -39,15 +39,21 @@ unports:
 ### ENABLE TLS DOCKER REMOTE API ###
 
 # Install certificates allowing secure remote access to the local Docker host.
+# Use the new "daemon.json" file, and work around a configuration conflict:
+#   See https://github.com/moby/moby/issues/25471#issuecomment-341912718
 docker: docker.ca docker.crt docker.key
-	sudo cp /etc/default/docker /etc/default/docker.old
-	printf "\n# Accept secure remote access from Janitor via TLS.\nDOCKER_OPTS=\"\$$DOCKER_OPTS --tlsverify --tlscacert=$$(pwd)/docker.ca --tlscert=$$(pwd)/docker.crt --tlskey=$$(pwd)/docker.key -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock\"\n" | sudo tee -a /etc/default/docker
-	printf "\n# Allow containers and images to grow larger than 10G.\nDOCKER_OPTS=\"\$$DOCKER_OPTS --storage-opt dm.basesize=100G\"\n" | sudo tee -a /etc/default/docker
+	sudo mkdir -p /etc/systemd/system/docker.service.d
+	printf "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd\n" | sudo tee /etc/systemd/system/docker.service.d/simple_dockerd.conf # work around "-H fd://" conflict
+	sudo systemctl daemon-reload
+	sudo cp /etc/docker/daemon.json /etc/docker/daemon.json.old 2>/dev/null; true # backup any prior daemon.json, but ignore errors
+	printf "{\n  \"tls\": true,\n  \"tlscacert\": \"$$(pwd)/docker.ca\",\n  \"tlscert\": \"$$(pwd)/docker.crt\",\n  \"tlskey\": \"$$(pwd)/docker.key\",\n  \"hosts\": [\"tcp://0.0.0.0:2376\", \"unix:///var/run/docker.sock\"]\n}\n" | sudo tee /etc/docker/daemon.json
 	sudo service docker restart && sleep 1
 
 # Delete all the installed certificates.
 undocker:
-	sudo mv /etc/default/docker.old /etc/default/docker
+	sudo rm -f /etc/systemd/system/docker.service.d/simple_dockerd.conf # remove "-H fd://" conflict work-around
+	sudo systemctl daemon-reload
+	sudo mv /etc/docker/daemon.json.old /etc/docker/daemon.json 2>/dev/null || sudo rm /etc/docker/daemon.json 2>/dev/null; true # restore any prior daemon.json, but ignore errors
 	sudo rm -f docker.crt docker.key docker.ca
 	rm -f extfile.cnf ca.crt docker.csr
 	sudo service docker restart && sleep 1
