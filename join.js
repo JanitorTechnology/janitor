@@ -4,6 +4,7 @@
 const camp = require('camp');
 const http = require('http');
 const nodepath = require('path');
+const nodeurl = require('url');
 
 const boot = require('./lib/boot');
 const db = require('./lib/db');
@@ -130,7 +131,25 @@ function handleOAuth2Code (request, response, next) {
     // Associate the new OAuth2 access token to the current session.
     // TODO: Also save the `refreshToken` when it's fully supported.
     oauth2Tokens[session.id] = accessToken;
-    next();
+
+    const requestUrl = nodeurl.parse(request.url);
+    if (!requestUrl.search) {
+      // There are no URL parameters to remove, proceed without redirection.
+      next();
+      return;
+    }
+
+    // Remove the used OAuth2 code and state parameters from the requested URL.
+    const oldUrlParameters = requestUrl.search.slice(1).split('&');
+    const newUrlParameters = oldUrlParameters.filter(parameter => {
+      return !parameter.startsWith('code=') && !parameter.startsWith('state=');
+    });
+    requestUrl.search = newUrlParameters.length > 0
+      ? '?' + newUrlParameters.join('&')
+      : null;
+
+    // Redirect the request to a safer URL (which can be revisited without 403).
+    routes.redirect(response, nodeurl.format(requestUrl), true);
   });
 }
 
