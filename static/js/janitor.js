@@ -272,15 +272,22 @@ $('.modal-form').on('hidden.bs.modal', function (event) {
 });
 
 // Remove the query string (e.g. '?key=123') from the URL.
-function removeQueryString () {
-  var search = window.location.search;
-  if (search) {
-    var url = String(window.location).replace(search, '');
-    window.history.replaceState({}, document.title, url);
-  }
+if (window.location.search) {
+  var url = String(window.location).replace(window.location.search, '');
+  window.history.replaceState({}, document.title, url);
 }
 
-removeQueryString();
+// Add helpful anchor links to title elements with an 'id' attribute.
+Array.forEach(document.querySelectorAll('h1[id],h2[id]'), element => {
+  const link = document.createElement('a');
+  link.href = '#' + element.id;
+  link.textContent = '#';
+  const small = document.createElement('small');
+  small.classList.add('show-on-hover');
+  small.appendChild(link);
+  element.appendChild(document.createTextNode(' '));
+  element.appendChild(small);
+});
 
 // If the web browser supports it, register and install a Service Worker.
 if ('serviceWorker' in navigator) {
