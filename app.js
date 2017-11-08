@@ -22,7 +22,7 @@ boot.executeInParallel([
   boot.ensureDockerTlsCertificates
 ], () => {
   // You can customize these values in './db.json'.
-  const hostname = db.get('hostname', 'localhost');
+  const hostnames = db.get('hostnames', [ 'localhost' ]);
   const https = db.get('https');
   const ports = db.get('ports');
   const security = db.get('security');
@@ -39,13 +39,13 @@ boot.executeInParallel([
   });
 
   log('[ok] Janitor → http' + (security.forceHttp ? '' : 's') + '://' +
-    hostname + ':' + ports.https);
+    hostnames[0] + ':' + ports.https);
 
   // Protect the server and its users with a security policies middleware.
   const enforceSecurityPolicies = (request, response, next) => {
-    // Only accept requests addressed to our actual hostname.
+    // Only accept requests addressed to our actual hostnames.
     const requestedHostname = request.headers.host;
-    if (requestedHostname !== hostname) {
+    if (!requestedHostname || hostnames.indexOf(requestedHostname) < 0) {
       routes.drop(response, 'invalid hostname: ' + requestedHostname);
       return;
     }
