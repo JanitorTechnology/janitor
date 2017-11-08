@@ -2,7 +2,6 @@
 // The following code is covered by the AGPL-3.0 license.
 
 const camp = require('camp');
-const nodepath = require('path');
 const selfapi = require('selfapi');
 
 const api = require('./api/');
@@ -13,7 +12,6 @@ const github = require('./lib/github');
 const hosts = require('./lib/hosts');
 const log = require('./lib/log');
 const machines = require('./lib/machines');
-const proxyHeuristics = require('./lib/proxy-heuristics');
 const routes = require('./lib/routes');
 const users = require('./lib/users');
 
@@ -380,115 +378,6 @@ boot.executeInParallel([
     log('admin', section, '(' + user._primaryEmail + ')');
 
     routes.adminPage(query.res, section, user);
-  });
-
-  // FIXME: The main Janitor server should only operate a cluster of dedicated
-  // Docker servers, but not host containers itself directly. We should remove
-  // the containers from the main server, and delete the proxy handlers below.
-
-  // FIXME: Remove this deprecated handler (see comments above).
-  // Proxy requests to local containers using URLs like '/:container/:port/*'.
-  // Example:
-  //   'https://<hostname>/abc123/8080/index.html' should proxy to
-  //   'http://localhost:8080/index.html' in Docker container 'abc123'.
-  app.route(proxyHeuristics.proxyUrlPrefix, (data, match, end, query) => {
-    proxyRequest(query.req, query.res);
-  });
-
-  // FIXME: Remove this deprecated handler (see comments above).
-  // Proxy Cloud9 IDE requests to local containers.
-  // Examples:
-  //   '/_ping'
-  //   '/static/lib/tern/defs/ecma5.json'
-  //   '/static/standalone/worker/plugins/c9.ide.language.core/worker.js'
-  //   '/vfs/1?access_token=token'
-  //   '/vfs/1/9ceokVZPKGlhYWec/workspace/_/_/tab1'
-  app.route(/^\/(_ping|static\/.+|vfs\/.+)$/, (data, match, end, query) => {
-    proxyRequest(query.req, query.res);
-  });
-
-  // FIXME: Remove this deprecated handler (see comments above).
-  const proxyRequest = (request, response) => {
-    const { user } = request;
-    if (!user) {
-      routes.notFoundPage(response, user);
-      return;
-    }
-
-    proxyHeuristics.handleProxyUrls(request, response, () => {
-      let { container, port } = request.query;
-      if (!container || !port) {
-        // FIXME: Containers and ports should always be explicitly requested.
-        const likelyProxyRequest = proxyHeuristics.guessProxyRequest(request);
-        if (!likelyProxyRequest) {
-          routes.notFoundPage(response, user);
-          return;
-        }
-        container = request.query.container = likelyProxyRequest.container;
-        port = request.query.port = likelyProxyRequest.port;
-      }
-
-      const machine = machines.getMachineByContainer(user, hostname, container);
-      if (!machine) {
-        routes.notFoundPage(response, user);
-        return;
-      }
-
-      const mappedPort = machine.docker.ports[port];
-      if (!mappedPort || mappedPort.proxy !== 'https') {
-        routes.notFoundPage(response, user);
-        return;
-      }
-
-      // Remember this request for the WebSocket proxy (see below).
-      proxyHeuristics.rememberProxyRequest(request);
-
-      routes.webProxy(request, response, {
-        port: mappedPort.port,
-        path: nodepath.normalize(request.url)
-      });
-    });
-  };
-
-  // FIXME: Remove this deprecated handler (see comments above).
-  // Proxy WebSocket connections to local containers.
-  app.on('upgrade', (request, socket, head) => {
-    // Authenticate the user (our middleware only works for 'request' events).
-    users.get(request, (user, session) => {
-      if (!user || !session) {
-        socket.end();
-        return;
-      }
-
-      // Note: Some proxy heuristics need a `request.session`. Add it here.
-      request.session = session;
-      request.user = user;
-
-      // FIXME: Containers and ports should always be explicitly requested.
-      const likelyProxyRequest = proxyHeuristics.guessProxyRequest(request);
-      if (!likelyProxyRequest) {
-        socket.end();
-        return;
-      }
-
-      const { container, port } = likelyProxyRequest;
-      const machine = machines.getMachineByContainer(user, hostname, container);
-      if (!machine) {
-        socket.end();
-        return;
-      }
-
-      const mappedPort = machine.docker.ports[port];
-      if (!mappedPort || mappedPort.proxy !== 'https') {
-        socket.end();
-        return;
-      }
-
-      routes.webProxy(request, socket, {
-        port: mappedPort.port,
-        path: nodepath.normalize(request.url)
-      });
-    });
   });
 
   // New 404 Not Found page
