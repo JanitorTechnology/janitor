@@ -41,6 +41,7 @@
                 <h4 class="project-title">GitHub</h4>
               </div>
               <div class="panel-body">
+                <a href="https://github.com/settings/developers">GitHub OAuth apps</a>
                 <form action="/api/admin/oauth2providers/github" class="ajax-form has-feedback has-submit" method="patch">
                   <label class="control-label">Client ID</label>
                   <input class="form-control" name="/id" type="text" value={{= oauth2providers.github.id in json}}>
