@@ -161,7 +161,7 @@ boot.executeInParallel([
   });
 
   // User login via GitHub.
-  app.route(/^\/login\/github\/?$/, (data, match, end, query) => {
+  app.route(/^\/login\/github\/?$/, async (data, match, end, query) => {
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
@@ -170,17 +170,23 @@ boot.executeInParallel([
       return;
     }
 
-    github.authenticate(request).then(({ accessToken, refreshToken }) => {
-      users.refreshGitHubAccount(user, accessToken, refreshToken).then(() => {
-        routes.redirect(response, '/settings/integrations/');
-      }).catch(error => {
-        log('[fail] could not refresh github account', error);
-        routes.redirect(response, '/settings/integrations/');
-      });
-    }).catch(error => {
-      log('[fail] github authenticate', error);
+    let accessToken = null;
+    let refreshToken = null;
+    try {
+      ({ accessToken, refreshToken } = await github.authenticate(request));
+    } catch (error) {
+      log('[fail] github authentication', error);
       routes.notFoundPage(response, user);
-    });
+      return;
+    }
+
+    try {
+      await users.refreshGitHubAccount(user, accessToken, refreshToken);
+    } catch (error) {
+      log('[fail] could not refresh github account', error);
+    }
+
+    routes.redirect(response, '/settings/integrations/');
   });
 
   // User OAuth2 authorization.
