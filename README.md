@@ -59,7 +59,7 @@ Run the server in the background (use `tail -f janitor.log` to check on it):
 
 - If you find bugs, please open [issues](https://github.com/janitortechnology/janitor/issues).
 - To suggest changes, please open [pull requests](https://help.github.com/articles/using-pull-requests/).
-- For general questions, please join our IRC channel [#janitor](https://kiwiirc.com/client/irc.freenode.net/?#janitor).
+- For general questions, ask on [Discourse](https://discourse.janitor.technology/) or [IRC](https://kiwiirc.com/client/irc.freenode.net/?#janitor "irc.freenode.net#janitor").
 
 ## Thanks
 
