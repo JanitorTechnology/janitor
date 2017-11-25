@@ -6,6 +6,8 @@
 
 html {
   height: 100%;
+  background-color: #fff;
+  color: #0b0b0d;
   overflow-y: scroll;
 }
 
@@ -127,12 +129,14 @@ main {
 .navbar {
   background: #fff;
   color: #0b0b0d;
-  box-shadow: 0 4px 16px rgba(12,12,13,.1);
-  overflow: auto;
   z-index: 999;
   font-size: 1.1em;
+}
+
+.navbar-sticky {
   position: sticky;
   top: 0;
+  box-shadow: 0 4px 16px rgba(12,12,13,.1);
 }
 
 .navbar,
@@ -230,8 +234,7 @@ main {
 /* Footer */
 
 .footer {
-  box-shadow: none;
-  z-index: 998;
+  border-top: solid 1px #ededf0;
 }
 
 /* Tabs */
@@ -384,6 +387,7 @@ main {
 
 .alert.alert-warning {
   background: #ffe900;
+  color: #3e2800;
 }
 
 /* Icons */
