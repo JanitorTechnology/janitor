@@ -195,6 +195,7 @@ main {
   .navbar,
   .navbar ul {
     display: block;
+    overflow: auto;
   }
   
   .navbar .menu-toggle:not(:checked) + ul {
@@ -225,7 +226,7 @@ main {
     background-color: #ededf0;
     text-decoration: none;
   }
-
+  
   main {
     padding: 1em;
   }
