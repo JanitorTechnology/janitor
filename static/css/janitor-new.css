@@ -8,7 +8,6 @@ html {
   height: 100%;
   background-color: #fff;
   color: #0b0b0d;
-  overflow-y: scroll;
 }
 
 body {
@@ -42,6 +41,30 @@ body {
   flex-grow: 1;
 }
 
+.padded {
+  padding: 0.75em;
+}
+
+h1 {
+  font-weight: 200;
+  font-size: 33px;
+}
+
+h2 {
+  font-weight: 300;
+  font-size: 22px;
+}
+
+h3 {
+  font-weight: 500;
+  font-size: 17px;
+}
+
+h4 {
+  font-weight: 500;
+  font-size: 1em;
+}
+
 main {
   padding: 0 20vw;
   overflow: auto;
@@ -54,10 +77,14 @@ main {
   border: none;
   border-radius: 2px;
   background: #ededf0;
-  padding: 5px 9px;
+  padding: 6px 10px;
   color: #0c0c0d;
   text-decoration: none;
   font: inherit;
+}
+
+.btn:not(:first-child) {
+  margin-left: 0.5em;
 }
 
 .btn:hover {
@@ -102,11 +129,11 @@ main {
 
 .form-control {
   border: 1px solid rgba(12, 12, 13,0.3);
-  padding: 0.5em;
+  padding: 5px 9px;
   border-radius: 2px;
   font: inherit;
-  font-size: 0.8em;
   margin: 0 0.5em;
+  transition: box-shadow 0.15s cubic-bezier(.07,.95,0,1);
 }
 
 .form-control:hover {
@@ -115,7 +142,7 @@ main {
 
 .form-control:focus {
   border-color: #0a84ff;
-  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+  box-shadow: 0 0 0 1px #0a84ff, 0 0 0 4px rgba(10, 132, 255, 0.3);
 }
 
 .form-control.disabled,
@@ -226,7 +253,7 @@ main {
     background-color: #ededf0;
     text-decoration: none;
   }
-  
+
   main {
     padding: 1em;
   }
@@ -282,9 +309,6 @@ main {
   transform: none;
 }
 
-.tab-panel {
-  padding: 1em;
-}
 .tab-panel iframe {
   width: 100%;
   height: 100%;
@@ -313,7 +337,6 @@ main {
   align-items: center;
   flex-wrap: wrap;
   border-bottom: 1px solid #ededf0;
-  padding: 5px;
 }
 
 .panel-heading > * {
@@ -455,10 +478,6 @@ main {
 }
 
 .danger-zone {
-  border-top: solid 1px #5a000211;
   color: #3e0200;
-  padding: 14px;
-  margin: -14px;
-  margin-top: 0;
-  background: #ff003911;
+  background: rgba(255, 0, 57, 0.1);
 }

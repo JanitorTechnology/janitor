@@ -117,6 +117,12 @@ boot.executeInParallel([
     routes.dataPage(query.res, user);
   });
 
+  // Public design page
+  app.route(/^\/design\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    routes.designPage(query.res, user);
+  });
+
   // Public project pages.
   app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
     const { user } = query.req;
