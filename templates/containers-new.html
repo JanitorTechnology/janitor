@@ -11,7 +11,7 @@
             const name = machine.properties.name || `${project.name} #${id}`;
       }}
       <div class="panel panel-default panel-project">
-        <div class="panel-heading">
+        <div class="panel-heading padded">
           <span class="status-icon" data-status="{{= machine.status in xmlattr}}"></span>
           <img class="panel-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
           <div class="grow">
@@ -47,17 +47,19 @@
             <li class="tab" data-tab="advanced"><a href="#">Advanced</a></li>
           </ul>
           <div class="tab-panels">
-            <div class="tab-panel" data-tab="info">
+            <div class="tab-panel padded" data-tab="info">
               <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}"></time>.</p>
             </div>
             <div class="tab-panel" data-tab="terminal">
               <iframe src="https://{{= machine.docker.host in uri}}/{{= machine.docker.container.slice(0,16) in uri}}/8087/terminal"></iframe>
             </div>
             <div class="tab-panel" data-tab="advanced">
-              <b>Connect via SSH</b>
-              <p>Use the following command to connect to your container via SSH:</p>
-              <pre>ssh -p{{= machine.docker.ports['22'].port in integer}} user@{{= machine.docker.host in html}}</pre>
-              <div class="danger-zone">
+              <div class="padded">
+                <b>Connect via SSH</b>
+                <p>Use the following command to connect to your container via SSH:</p>
+                <pre>ssh -p{{= machine.docker.ports['22'].port in integer}} user@{{= machine.docker.host in html}}</pre>
+              </div>
+              <div class="danger-zone padded">
                 <b>Danger zone!</b>
                 <p>This action can't be undone, please make sure you've backed up everything valuable.</p>
                 <form class="ajax-form" data-refresh-after-success="true" method="delete" action="/api/hosts/{{= machine.docker.host in xmlattr}}/containers/{{= machine.docker.container in xmlattr}}">
