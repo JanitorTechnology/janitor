@@ -367,17 +367,31 @@ boot.executeInParallel([
       }
 
       const mappedPort = machine.docker.ports[port];
-      if (!mappedPort || mappedPort.proxy !== 'https') {
+      if (!mappedPort) {
         routes.notFoundPage(response, user);
         return;
       }
 
       // Remember this request for the WebSocket proxy (see below).
       proxyHeuristics.rememberProxyRequest(request);
+      
+      let proxied_url;
+      switch (mappedPort.proxy) {
+        case 'https':
+          proxied_url = request.url;
+          break;
+        case 'https-auto':
+          proxied_url = request.query.url;
+          break;
+        default:
+          log('[fail] unsupported proxy type:', mappedPort.proxy);
+          routes.notFoundPage(response, user);
+          return;       
+      }
 
       routes.webProxy(request, response, {
         port: mappedPort.port,
-        path: nodepath.normalize(request.url)
+        path: nodepath.normalize(proxied_url)
       });
     });
   };

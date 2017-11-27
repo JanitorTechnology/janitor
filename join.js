@@ -236,21 +236,19 @@ function proxyRequest (request, response) {
 
 // Route a request to the given port, using the given proxy type.
 function routeRequest (proxyParameters, request, response) {
-  const path = nodepath.normalize(request.url);
-  if (path[0] !== '/') {
-    log('[fail] invalid proxy path:', path);
-    response.statusCode = 500; // Internal Server Error
-    response.end();
-    return;
-  }
-
   const { port, proxy } = proxyParameters;
   switch (proxy) {
     case 'https':
+      const path = nodepath.normalize(request.url);
+      routes.webProxy(request, response, { port, path });
+    
+    case 'https-auto':
+      const path = nodepath.normalize(request.query.url);
       routes.webProxy(request, response, { port, path });
       break;
 
     case 'none':
+      const path = nodepath.normalize(request.query.url);
       routes.redirect(response, 'https://' + hostname + ':' + port + path);
       break;
 
