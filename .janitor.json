@@ -12,7 +12,8 @@
     },
     "8080": {
       "label": "Preview",
-      "proxy": "https"
+      "proxy": "https",
+      "preview": true
     },
     "8088": {
       "label": "VNC",
