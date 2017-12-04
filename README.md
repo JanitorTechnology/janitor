@@ -4,12 +4,13 @@
 [![Docker Hub](https://img.shields.io/docker/build/janitortechnology/janitor.svg)](https://hub.docker.com/r/janitortechnology/janitor/)
 [![Greenkeeper](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
 [![NPM version](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
+[![IRC channel](https://img.shields.io/badge/%23janitor-on%20freenode-brightgreen.svg)](https://kiwiirc.com/client/irc.freenode.net/?#janitor "irc.freenode.net#janitor")
 
 *Fix bugs, faster*
 
 [![Janitor video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and Janitor)")
 
-## See it live
+## Try it live
 
 Sign in to [janitor.technology](https://janitor.technology).
 
