@@ -6,6 +6,7 @@ const nodepath = require('path');
 const selfapi = require('selfapi');
 
 const api = require('./api/');
+const blog = require('./lib/blog');
 const boot = require('./lib/boot');
 const db = require('./lib/db');
 const github = require('./lib/github');
@@ -109,6 +110,19 @@ boot.executeInParallel([
     const { user } = query.req;
     log('blog');
     routes.blogPage(query.res, user);
+  });
+
+  // New public blog page.
+  app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    log('blog-new');
+    routes.blogPageNew(query.res, {user, blog: blog.getDb()});
+  });
+
+  // New public blog page webhook.
+  app.route(/^\/blog-new-webhook\/?$/, (data, match, end, query) => {
+    log('blog-new-webhook');
+    routes.blogWebhookNew(query.res);
   });
 
   // Public live data page.

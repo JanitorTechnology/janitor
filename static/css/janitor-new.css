@@ -81,6 +81,7 @@ main {
   color: #0c0c0d;
   text-decoration: none;
   font: inherit;
+  display: inline-block;
 }
 
 .btn:not(:first-child) {
@@ -480,4 +481,84 @@ main {
 .danger-zone {
   color: #3e0200;
   background: rgba(255, 0, 57, 0.1);
+}
+
+/* Blogs page */
+.blog {
+  font-size: 16px;
+}
+.blog article {
+  border-top: solid 1px #ededf0;
+  margin: 1.5em 0;
+}
+.blog article:first-child {
+  border: none;
+  padding-top: 0;
+}
+.blog footer {
+  margin: 1.5em 0;
+}
+.onebox {
+  box-shadow: 0 2px 8px rgba(12,12,13,.1);
+  padding: 0.75em;
+  margin: 20px 0;
+  font-size: 14px;
+}
+article.onebox-body {
+  border: none;
+  padding: 0 0;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.onebox .source a,
+.onebox .label1,
+.onebox .label2 {
+  color: #38383d;
+}
+.onebox .source img {
+  vertical-align: middle;
+}
+.onebox .label2 {
+  float: right;
+}
+.onebox-body p {
+  margin-bottom: 0;
+}
+.onebox-body .aspect-image {
+  max-height: 170px;
+  --magic-ratio: calc(var(--aspect-ratio) + 0.15);
+  width: calc(128px * var(--magic-ratio));
+  max-width: 20%;
+  float: left;
+  margin-right: 10px;
+  height: auto;
+}
+.onebox-body img {
+  width: 100%;
+}
+.onebox-body h3 {
+  margin-top: 0;
+}
+article a {
+  text-decoration: none;
+}
+
+article a:hover {
+  text-decoration: underline;
+}
+
+article a,
+article a:hover,
+article a:focus {
+  color: #0060df;
+}
+
+article a:active {
+  color: #003eaa;
+}
+
+article a:focus {
+  box-shadow: 0 0 0 1px #0a84ff, 0 0 0 4px rgba(10, 132, 255, 0.2);
+  border-radius: 2px;
+  text-decoration: none;
 }
