@@ -16,7 +16,7 @@ Sign in to [janitor.technology](https://janitor.technology).
 
 ## Try it at home
 
-Install [Node.js](https://nodejs.org) (and optionally [Docker](https://www.docker.com)).
+Install [Node.js](https://nodejs.org) (version 8 minimum) (and optionally [Docker](https://www.docker.com)).
 
 Clone this repository:
 
