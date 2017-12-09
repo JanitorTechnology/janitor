@@ -18,8 +18,6 @@ Sign in to [janitor.technology](https://janitor.technology).
 
 Install [Node.js](https://nodejs.org) (and optionally [Docker](https://www.docker.com)).
 
-You will need to edit `/db.json` with the following [configuration](https://github.com/JanitorTechnology/dockerfiles/blob/master/janitor/db.json).
-
 Clone this repository:
 
     git clone https://github.com/janitortechnology/janitor
@@ -28,6 +26,8 @@ Clone this repository:
 Install dependencies:
 
     npm install
+
+Configure `./db.json` for a local use or simply download the following [configuration](https://raw.githubusercontent.com/JanitorTechnology/dockerfiles/master/janitor/db.json).
 
 Start the server:
 
