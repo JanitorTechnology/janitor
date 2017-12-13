@@ -1,20 +1,22 @@
 # Janitor
 
-[![Travis status](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
+[![Travis CI](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
+[![Docker Hub](https://img.shields.io/docker/build/janitortechnology/janitor.svg)](https://hub.docker.com/r/janitortechnology/janitor/)
 [![Greenkeeper](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
 [![NPM version](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
+[![IRC channel](https://img.shields.io/badge/%23janitor-on%20freenode-brightgreen.svg)](https://kiwiirc.com/client/irc.freenode.net/?#janitor "irc.freenode.net#janitor")
 
 *Fix bugs, faster*
 
 [![Janitor video](https://j.gifs.com/m89qbk.gif)](http://www.youtube.com/watch?v=5sNDMIh-iVw "Coding Firefox directly in the Web (using Cloud9 and Janitor)")
 
-## See it live
+## Try it live
 
 Sign in to [janitor.technology](https://janitor.technology).
 
 ## Try it at home
 
-Install [Node.js](https://nodejs.org) (and optionally [Docker](https://www.docker.com)).
+Install [Node.js](https://nodejs.org) (version 8 minimum) (and optionally [Docker](https://www.docker.com)).
 
 Clone this repository:
 
@@ -24,6 +26,8 @@ Clone this repository:
 Install dependencies:
 
     npm install
+
+Configure `./db.json` for a local use or simply download the following [configuration](https://raw.githubusercontent.com/JanitorTechnology/dockerfiles/master/janitor/db.json).
 
 Start the server:
 
