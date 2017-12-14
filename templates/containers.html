@@ -13,6 +13,7 @@
         }}
         <div class="panel panel-default panel-project">
           <div class="panel-heading">
+            <span class="status-icon" data-status="{{= machine.status in xmlattr}}"></span>
             <img class="project-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
             <div class="editable-label project-title">
               <form action="/api/hosts/{{= machine.docker.host in xmlattr}}/containers/{{= machine.docker.container in xmlattr}}" class="ajax-form editable-editor has-feedback" data-refresh-after-success="true" method="patch">
@@ -47,8 +48,6 @@
             </div>
           </div>
           <div class="panel-body">
-            <label>Status</label>
-            <span class="project-status" data-status="{{= machine.status in xmlattr}}"></span>
             <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}"></time>.</p>
           </div>
         </div>{{

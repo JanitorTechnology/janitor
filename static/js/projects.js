@@ -18,26 +18,22 @@ Array.map(document.querySelectorAll('a[data-action="spawn"]'), function (link) {
 // Add status badges to elements with a 'data-status' attribute.
 
 Array.map(document.querySelectorAll('*[data-status]'), function (element) {
-  var span = document.createElement('span');
   var status = element.dataset.status;
 
   // Format the status.
-  span.textContent = status.split('-').join(' ');
-  span.classList.add('text-capitalize');
+  element.title = 'Status: ' + status.split('-').join(' ');
 
-  // Choose a relevant bootstrap label class.
-  var label = {
+  // Choose a relevant status class.
+  var classMap = {
     started: 'success',
     accepted: 'success',
     rejected: 'warning',
     merged: 'primary'
   };
-  label['build-failed'] = 'danger';
-  label['start-failed'] = 'danger';
-  label['update-failed'] = 'warning';
-  span.classList.add('label', 'label-' + (label[status] || 'default'));
-
-  element.appendChild(span);
+  classMap['build-failed'] = 'error';
+  classMap['start-failed'] = 'error';
+  classMap['update-failed'] = 'warning';
+  element.classList.add(classMap[status] || 'default');
 });
 
 // Add fuzzy timestamps to elements with a 'data-timestamp' attribute.

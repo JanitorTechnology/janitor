@@ -453,3 +453,12 @@ main {
 .panel-project:not(:hover) .editable-toggle:not(:focus) {
     visibility: hidden;
 }
+
+.danger-zone {
+  border-top: solid 1px #5a000211;
+  color: #3e0200;
+  padding: 14px;
+  margin: -14px;
+  margin-top: 0;
+  background: #ff003911;
+}
