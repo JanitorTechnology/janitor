@@ -607,7 +607,7 @@ section.video {
   width: 10px;
   height: 10px;
   display: inline-block;
-  margin-inline-end: 0.5em;
+  margin-right: 0.5em;
 }
 
 .status-icon.primary {
