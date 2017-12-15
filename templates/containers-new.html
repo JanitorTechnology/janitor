@@ -62,7 +62,7 @@
               <div class="danger-zone padded">
                 <b>Danger zone!</b>
                 <p>This action can't be undone, please make sure you've backed up everything valuable.</p>
-                <form class="ajax-form" data-refresh-after-success="true" method="delete" action="/api/hosts/{{= machine.docker.host in xmlattr}}/containers/{{= machine.docker.container in xmlattr}}">
+                <form class="ajax-form has-feedback" data-refresh-after-success="true" method="delete" action="/api/hosts/{{= machine.docker.host in xmlattr}}/containers/{{= machine.docker.container in xmlattr}}">
                   <button type="submit" class="btn btn-error">Delete {{= name in html}}</button>
                 </form>
               </div>
