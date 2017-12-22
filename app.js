@@ -119,12 +119,6 @@ boot.executeInParallel([
     routes.blogPageNew(query.res, {user, blog: blog.getDb()});
   });
 
-  // New public blog page webhook.
-  app.route(/^\/blog-new-webhook\/?$/, (data, match, end, query) => {
-    log('blog-new-webhook');
-    routes.blogWebhookNew(query.res);
-  });
-
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
     const { user } = query.req;
