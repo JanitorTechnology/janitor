@@ -1,6 +1,8 @@
 [user]
 	name = {{= user.profile.name }}
 	email = {{= user._primaryEmail }}
+[bz]
+	username = {{= user._primaryEmail }}
 [core]
 	editor = vim
 	autocrlf = false
@@ -9,7 +11,10 @@
 [color]
 	ui = auto
 [diff]
+	context = 8
 	indentHeuristic = true
+[help]
+	autocorrect = 1
 [hub]
 	protocol = https
 [push]
