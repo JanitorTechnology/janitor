@@ -4,6 +4,7 @@
 const selfapi = require('selfapi');
 
 const blog = require('../lib/blog');
+const log = require('../lib/log');
 
 // API resource to manage Janitor's Discourse-backed news section.
 const blogAPI = module.exports = selfapi({
@@ -18,7 +19,7 @@ webhookAPI.get({
   description: 'Pull the blog section from Discourse.',
 
   handler: (_request, response) => {
-    blog.pull();
+    blog.pull().then(null, log);
     response.json({}, null, 2);
   },
 
