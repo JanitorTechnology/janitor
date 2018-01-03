@@ -114,9 +114,10 @@ boot.executeInParallel([
 
   // New public blog page.
   app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     log('blog-new');
-    routes.blogPageNew(query.res, {user, blog: blog.getDb()});
+    routes.blogPageNew(response, {blog, user, topics: blog.getDb().topics});
   });
 
   // Public live data page.

@@ -1,22 +1,18 @@
     <section class="blog">{{
-        for (let post in blog.posts) {
-          const {title, body_html, slug, id, posts_count} = blog.posts[post];
-          const title_url = blog.post_url_template
-            .replace("{{slug}}", slug)
-            .replace("{{id}}", id);
+        for (const topic of topics) {
+          const {title, post_body_html, slug, id, posts_count} = topic;
+          const title_url = blog.getPostUrl(topic);
           // the newsletter itself counts as a "post" in this "topic"
           // all other posts are comments
           const comments_count = posts_count - 1;
-          const comments_url = blog.comments_url_template
-            .replace("{{slug}}", slug)
-            .replace("{{id}}", id);
+          const comments_url = blog.getCommentsUrl(topic);
           const url = comments_count > 0 ? comments_url : title_url;
       }}
       <article>
         <h2 id="{{= slug in xmlattr}}">{{= title in html}}</h2>
-        {{= body_html}}
+        {{= post_body_html}}
       </article>
-      <footer><a class="btn" href="{{= url}}">{{= comments_count in html}} comments</a></footer>{{
+      <footer><a class="btn" href="{{= url in xmlattr}}">{{= comments_count in html}} comments</a></footer>{{
       }
       }}
     </section>
