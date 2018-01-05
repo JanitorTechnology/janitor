@@ -102,7 +102,7 @@ function ensureSession (request, response, next) {
 }
 
 // Handle any OAuth2 authorization codes.
-function handleOAuth2Code (request, response, next) {
+async function handleOAuth2Code (request, response, next) {
   const { code, state } = request.query;
   if (!code) {
     next();
@@ -120,41 +120,40 @@ function handleOAuth2Code (request, response, next) {
   }
 
   // If they match, use the code to request an OAuth2 access token.
-  getOAuth2AccessToken(code, state, (error, accessToken, refreshToken) => {
-    if (error) {
-      log('[fail] oauth2 access token', error);
-      response.statusCode = 403; // Forbidden
-      response.end();
-      return;
-    }
-
+  try {
     // Associate the new OAuth2 access token to the current session.
     // TODO: Also save the `refreshToken` when it's fully supported.
+    const { accessToken } = await getOAuth2AccessToken(code, state);
     oauth2Tokens[session.id] = accessToken;
+  } catch (error) {
+    log('[fail] oauth2 access token', error);
+    response.statusCode = 403; // Forbidden
+    response.end();
+    return;
+  }
 
-    const requestUrl = nodeurl.parse(request.url);
-    if (!requestUrl.search) {
-      // There are no URL parameters to remove, proceed without redirection.
-      next();
-      return;
-    }
+  const requestUrl = nodeurl.parse(request.url);
+  if (!requestUrl.search) {
+    // There are no URL parameters to remove, proceed without redirection.
+    next();
+    return;
+  }
 
-    // Remove the used OAuth2 code and state parameters from the requested URL.
-    const oldUrlParameters = requestUrl.search.slice(1).split('&');
-    const newUrlParameters = oldUrlParameters.filter(parameter => {
-      return !parameter.startsWith('code=') && !parameter.startsWith('state=');
-    });
-    requestUrl.search = newUrlParameters.length > 0
-      ? '?' + newUrlParameters.join('&')
-      : null;
-
-    // Redirect the request to a safer URL (which can be revisited without 403).
-    routes.redirect(response, nodeurl.format(requestUrl), true);
+  // Remove the used OAuth2 code and state parameters from the requested URL.
+  const oldUrlParameters = requestUrl.search.slice(1).split('&');
+  const newUrlParameters = oldUrlParameters.filter(parameter => {
+    return !parameter.startsWith('code=') && !parameter.startsWith('state=');
   });
+  requestUrl.search = newUrlParameters.length > 0
+    ? '?' + newUrlParameters.join('&')
+    : null;
+
+  // Redirect the request to a safer URL (which can be revisited without 403).
+  routes.redirect(response, nodeurl.format(requestUrl), true);
 }
 
 // Ensure that all requests are authenticated via OAuth2.
-function ensureOAuth2Access (request, response, next) {
+async function ensureOAuth2Access (request, response, next) {
   const { session } = request;
   if (oauth2Tokens[session.id]) {
     // This session has an OAuth2 access token, so it's authenticated.
@@ -172,30 +171,23 @@ function ensureOAuth2Access (request, response, next) {
     return;
   }
 
-  // Generate a new OAuth2 state parameter for this authentication attempt.
-  oauth2.generateStateParameter().then(state => {
+  try {
+    // Generate a new OAuth2 state parameter for this authentication attempt.
+    const state = await oauth2.generateStateParameter();
     oauth2States[session.id] = state;
 
     // Redirect the request to Janitor's OAuth2 provider for authorization.
-    getOAuth2AuthorizationUrl(request.url, state, (error, url) => {
-      if (error) {
-        log('[fail] oauth2 authorize url:', url, error);
-        response.statusCode = 500; // Internal Server Error
-        response.end();
-        return;
-      }
-
-      routes.redirect(response, url);
-    });
-  }).catch(error => {
-    log('[fail] oauth2 state', error);
+    const url = await getOAuth2AuthorizationUrl(request.url, state);
+    routes.redirect(response, url);
+  } catch (error) {
+    log('[fail] could not redirect to oauth2 provider', error);
     response.statusCode = 500; // Internal Server Error
     response.end();
-  });
+  }
 }
 
 // Proxy a request to a local Docker container.
-function proxyRequest (request, response) {
+async function proxyRequest (request, response) {
   const { session } = request;
   let { container, port } = request.query;
   if (!container || !port) {
@@ -219,19 +211,17 @@ function proxyRequest (request, response) {
   // Remember explicit proxy requests to help with future ambiguous requests.
   proxyHeuristics.rememberProxyRequest(request);
 
-  // Use the Janitor API to check which local host port the requested Docker
-  // container port is mapped to. This also verifies that the container exists
-  // on this host, and that the authenticated user is allowed to access it.
-  getMappedPort(oauth2Tokens[session.id], container, port, (error, data) => {
-    if (error) {
-      log('[fail] getting mapped port', error);
-      response.statusCode = 404; // Not Found
-      response.end();
-      return;
-    }
-
+  try {
+    // Use the Janitor API to check which local host port the requested Docker
+    // container port is mapped to. This also ensures that the container exists
+    // on this host, and that the authenticated user is allowed to access it.
+    const data = await getMappedPort(oauth2Tokens[session.id], container, port);
     routeRequest({ port: data.port, proxy: data.proxy }, request, response);
-  });
+  } catch (error) {
+    log('[fail] getting mapped port', error);
+    response.statusCode = 404; // Not Found
+    response.end();
+  }
 }
 
 // Route a request to the given port, using the given proxy type.
@@ -263,36 +253,26 @@ function routeRequest (proxyParameters, request, response) {
 }
 
 // Use the Janitor API to get the mapping information of a given container port.
-function getMappedPort (accessToken, container, port, callback) {
+async function getMappedPort (accessToken, container, port) {
   const parameters = {
     provider: 'janitor',
     accessToken: accessToken,
     path: `/api/hosts/${hostname}/containers/${container}/${port}`
   };
 
-  oauth2.request(parameters).then(({ body, response }) => {
-    const status = response.statusCode;
-    if (status !== 200) {
-      callback(new Error('OAuth2 port request failed: ' + status + ' ' + body));
-      return;
-    }
+  const { body, response } = await oauth2.request(parameters);
+  const { statusCode } = response;
+  if (statusCode !== 200) {
+    throw new Error('OAuth2 port request failed: ' + statusCode + ' ' + body);
+  }
 
-    try {
-      const data = JSON.parse(body);
-      callback(null, data);
-    } catch (error) {
-      callback(error);
-    }
-  }).catch(error => {
-    callback(error);
-  });
+  return JSON.parse(body);
 }
 
 // Get the Janitor OAuth2 provider's authorization URL for scope 'user:ports'.
-function getOAuth2AuthorizationUrl (redirectUrl, state, callback) {
-  if (!redirectUrl || redirectUrl[0] !== '/') {
-    callback(new Error('Invalid redirect URL: ' + redirectUrl));
-    return;
+async function getOAuth2AuthorizationUrl (redirectUrl, state) {
+  if (!redirectUrl || redirectUrl[0] !== '/' || redirectUrl[1] === '/') {
+    throw new Error('Invalid redirect URL: ' + redirectUrl);
   }
 
   const parameters = {
@@ -304,24 +284,16 @@ function getOAuth2AuthorizationUrl (redirectUrl, state, callback) {
     }
   };
 
-  oauth2.getAuthorizationUrl(parameters).then(url => {
-    callback(null, url);
-  }).catch(error => {
-    callback(error);
-  });
+  return oauth2.getAuthorizationUrl(parameters);
 }
 
 // Request an OAuth2 access token in exchange of an authorization code.
-function getOAuth2AccessToken (code, state, callback) {
+async function getOAuth2AccessToken (code, state) {
   const parameters = {
     provider: 'janitor',
     options: { state },
     code
   };
 
-  oauth2.getAccessToken(parameters).then(({ accessToken, refreshToken }) => {
-    callback(null, accessToken, refreshToken);
-  }).catch(error => {
-    callback(error);
-  });
+  return oauth2.getAccessToken(parameters);
 }
