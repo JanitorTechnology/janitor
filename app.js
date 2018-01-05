@@ -213,16 +213,14 @@ boot.executeInParallel([
       return;
     }
 
-    hosts.issueOAuth2AuthorizationCode(request, (error, data) => {
-      if (error) {
-        log('[fail] oauth2 authorize', error);
-        // Note: Such OAuth2 sanity problems should rarely happen, but if they
-        // do become more frequent, we should inform the user about what's
-        // happening here instead of showing a generic 404 page.
-        routes.notFoundPage(response, user);
-        return;
-      }
+    hosts.issueOAuth2AuthorizationCode(request).then(data => {
       routes.redirect(response, data.redirect_url);
+    }).catch(error => {
+      log('[fail] oauth2 authorize', error);
+      // Note: Such OAuth2 sanity problems should rarely happen, but if they
+      // do become more frequent, we should inform the user about what's
+      // happening here instead of showing a generic 404 page.
+      routes.notFoundPage(response, user);
     });
   });
 
@@ -241,12 +239,12 @@ boot.executeInParallel([
       return;
     }
 
-    hosts.issueOAuth2AccessToken(request, (error, data) => {
-      if (error) {
-        log('[fail] oauth2 token', error);
-        response.statusCode = 400; // Bad Request
-      }
-      response.json(data);
+    hosts.issueOAuth2AccessToken(request).then(data => {
+      response.json(data, null, 2);
+    }).catch(error => {
+      log('[fail] oauth2 token', error);
+      response.statusCode = 400; // Bad Request
+      response.json({ error: 'Could not issue OAuth2 access token' }, null, 2);
     });
   });
 
