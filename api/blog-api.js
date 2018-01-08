@@ -11,17 +11,15 @@ const blogAPI = module.exports = selfapi({
   title: 'Blog'
 });
 
-// API sub-resource for the Discourse-Blog synchronization webhook.
-// should show up as https://janitor.technology/api/blog/synchronize
 blogAPI.get('/synchronize', {
   title: 'Synchronize Blog',
   description: 'Pull the blog section from Discourse.',
 
   handler: async (_request, response) => {
     try {
-      const status = await blog.synchronize();
-      log('synchronized blog', status);
-      response.json(status, null, 2);
+      const { count } = await blog.synchronize();
+      log('synchronized blog', { count });
+      response.json({ count }, null, 2);
     } catch (error) {
       log('[fail] synchronized blog', error);
       response.statusCode = 500; // Internal Server Error
@@ -31,7 +29,7 @@ blogAPI.get('/synchronize', {
 
   examples: [{
     response: {
-      body: JSON.stringify({count: 1}, null, 2)
+      body: JSON.stringify({ count: 1 }, null, 2)
     }
   }]
 });

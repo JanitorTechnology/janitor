@@ -117,7 +117,7 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     log('blog-new');
-    routes.blogPageNew(response, {blog, user, topics: blog.getDb().topics});
+    routes.blogPageNew(response, user, blog);
   });
 
   // Public live data page.

@@ -486,7 +486,10 @@ main {
 /* Blog page */
 
 .blog {
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .blog article {
@@ -543,6 +546,11 @@ article.onebox-body {
   float: left;
   margin-right: 10px;
   height: auto;
+}
+
+.onebox .site-icon {
+  width: 16px;
+  height: 16px;
 }
 
 .onebox-body img {
