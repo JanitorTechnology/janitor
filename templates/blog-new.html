@@ -1,0 +1,12 @@
+    <section class="blog">{{
+        for (const post of posts) {
+          const { title, post_body_html, slug, comments_count, comments_url } = post;
+      }}
+      <article>
+        <h1 id="{{= slug in xmlattr}}">{{= title in html}}</h1>
+        {{= post_body_html}}
+      </article>
+      <footer><a class="btn" href="{{= comments_url in xmlattr}}">{{= comments_count in html}} comments</a></footer>{{
+      }
+      }}
+    </section>

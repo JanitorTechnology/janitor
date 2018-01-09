@@ -6,6 +6,7 @@ const nodepath = require('path');
 const selfapi = require('selfapi');
 
 const api = require('./api/');
+const blog = require('./lib/blog');
 const boot = require('./lib/boot');
 const db = require('./lib/db');
 const github = require('./lib/github');
@@ -109,6 +110,14 @@ boot.executeInParallel([
     const { user } = query.req;
     log('blog');
     routes.blogPage(query.res, user);
+  });
+
+  // New public blog page.
+  app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user } = request;
+    log('blog-new');
+    routes.blogPageNew(response, user, blog);
   });
 
   // Public live data page.

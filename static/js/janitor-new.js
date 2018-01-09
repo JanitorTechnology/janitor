@@ -263,6 +263,10 @@ Array.forEach(document.querySelectorAll('h1[id],h2[id]'), element => {
   element.appendChild(small);
 });
 
+Array.forEach(document.querySelectorAll('.blog article p a'), element => {
+  element.target = '_blank';
+});
+
 // If the web browser supports it, register and install a Service Worker.
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
