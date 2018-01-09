@@ -1,6 +1,6 @@
     <section class="blog">{{
-        for (const topic of contents) {
-          const { title, post_body_html, slug, comments_count, comments_url } = topic;
+        for (const post of posts) {
+          const { title, post_body_html, slug, comments_count, comments_url } = post;
       }}
       <article>
         <h1 id="{{= slug in xmlattr}}">{{= title in html}}</h1>
