@@ -11,7 +11,7 @@ const blogAPI = module.exports = selfapi({
   title: 'Blog'
 });
 
-blogAPI.get('/synchronize', {
+blogAPI.post('/synchronize', {
   title: 'Synchronize Blog',
   description: 'Pull the blog section from Discourse.',
 
@@ -29,7 +29,7 @@ blogAPI.get('/synchronize', {
 
   examples: [{
     response: {
-      body: JSON.stringify({ count: 1 }, null, 2)
+      body: JSON.stringify({ count: 13 }, null, 2)
     }
   }]
 });
