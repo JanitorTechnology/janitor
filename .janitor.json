@@ -25,11 +25,11 @@
     }
   },
   "scripts": {
-    "node app": "node app",
-    "npm run watch": "npm run watch",
-    "npm run lint": "npm run lint",
-    "npm run lint-fix": "npm run lint-fix",
-    "npm test": "npm test",
+    "Start server": "node app",
+    "Live-reload server": "npm run watch",
+    "Check coding style": "npm run lint",
+    "Fix coding style": "npm run lint-fix",
+    "Run tests": "npm test",
     "Send to code review": "hub pull-request"
   }
 }
