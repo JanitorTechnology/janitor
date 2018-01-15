@@ -13,9 +13,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  /* The list of system fonts after "Droid Sans" are from github.com */
-  font-family: "Fira Sans", Roboto, "Droid Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 12px;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -156,18 +155,22 @@ main {
 
 .navbar {
   background: #fff;
-  color: #0b0b0d;
+  color: #000000;
   z-index: 999;
-  font-size: 1.1em;
 }
 
-.navbar-sticky {
+.navbar-container {
+  max-width: 900px;
+  margin: auto;
+}
+
+/* .navbar-sticky {
   position: sticky;
   top: 0;
   box-shadow: 0 4px 16px rgba(12,12,13,.1);
-}
+} */
 
-.navbar,
+.navbar-container,
 .navbar div {
   display: flex;
   align-items: center;
@@ -179,14 +182,21 @@ main {
   flex: 1;
   text-decoration: none;
   color: inherit;
-  font-weight: 600;
-  padding: 1em 1em;
+  padding: 2.5em 0;
 }
 
 .navbar-brand img {
-  width: 2em;
-  height: 2em;
+  width: 3em;
+  height: auto;
   margin-right: 1em;
+}
+
+.navbar-brand span {
+  font-size: 1.3em;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-weight: 600;
 }
 
 .navbar .icon.menu,
@@ -212,20 +222,38 @@ main {
 .navbar ul li a {
   text-decoration: none;
   padding: 1.25em 1em;
+  color: #999;
+  text-transform: uppercase;
+  -webkit-transition: color 0.2s ease;
+  -moz-transition: color 0.2s ease;
+  -o-transition: color 0.2s ease;
+  transition: color 0.2s ease;
+  font-weight: 400;
 }
 
 .navbar ul li a:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  color: #000;
 }
 
+.navbar ul li:last-child a {
+  padding-right: 0;
+}
 
-@media (max-width: 768px) {
-  .navbar,
-  .navbar ul {
-    display: block;
-    overflow: auto;
+@media screen and (max-width: 950px) {
+  .navbar-brand {
+    padding-bottom: 20px;
   }
-  
+
+  .navbar-container {
+    flex-direction: column;
+  }
+
+  .navbar-container > div {
+    width: 100%;
+    padding: 0 20px;
+  }
+
   .navbar .menu-toggle:not(:checked) + ul {
     display: none;
   }
@@ -233,26 +261,32 @@ main {
   .navbar .icon.menu {
     display: block;
     cursor: pointer;
-    padding: 0 1em;
+    padding: .5em;
+    margin-right: -.5em;
   }
   
   .navbar ul {
-    margin-bottom: 0.5em;
+    width: 100%;
   }
 
   .navbar ul li {
+    text-align: left;
     display: block;
-    text-align: center;
+  }
+
+  .navbar ul li.active {
+    background: #f8f8f8;
+    font-weight: 600;
   }
 
   .navbar ul li a {
-    display: block;
-    padding: 10px !important;
-  }
-
-  .navbar ul li a:hover {
-    background-color: #ededf0;
-    text-decoration: none;
+    padding: 15px 0 !important;
+    color: #000;
+    border-bottom: solid 1px #eee;
+    width: 100%;
+    font-weight: inherit;
+    padding: 15px 20px !important;    
+    font-size: 14px;    
   }
 
   main {
@@ -427,6 +461,7 @@ main {
   background-position: center;
   background-size: cover;
   opacity: 0.8;
+  vertical-align: middle;
 }
 
 .icon.white::before {

@@ -12,20 +12,22 @@
   </head>
   <body>
     <header class="navbar navbar-sticky" role="navigation">
-      <div>
-        <a class="navbar-brand" href="/">
-          <img src="/img/janitor.svg" alt="Janitor Logo">
-          <span>Janitor</span>
-        </a>
-        <label for="menu-toggle" class="icon menu"></label>
+      <div class="navbar-container">
+        <div>
+          <a class="navbar-brand" href="/">
+            <img src="/img/janitor.svg" alt="Janitor Logo">
+            <span>Janitor</span>
+          </a>
+          <label for="menu-toggle" class="icon menu"></label>
+        </div>
+        <input type="checkbox" class="menu-toggle" id="menu-toggle">
+        <ul>{{if user then {{
+          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/containers/">Containers</a></li>
+          <li><a href="/settings/">Settings</a></li>
+          <li><a href="/logout">Sign out</a></li>}} else {{
+          <li><a href="/login">Login</a></li>}}}}
+        </ul>
       </div>
-      <input type="checkbox" class="menu-toggle" id="menu-toggle">
-      <ul>{{if user then {{
-        <li><a href="/projects/">Projects</a></li>
-        <li><a href="/containers/">Containers</a></li>
-        <li><a href="/settings/">Settings</a></li>
-        <li><a href="/logout">Sign out</a></li>}} else {{
-        <li><a href="/login">Sign in</a></li>}}}}
-      </ul>
     </header>
     <main>
