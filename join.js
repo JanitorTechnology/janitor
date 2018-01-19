@@ -8,6 +8,7 @@ const nodeurl = require('url');
 
 const boot = require('./lib/boot');
 const db = require('./lib/db');
+const events = require('./lib/events');
 const log = require('./lib/log');
 const oauth2 = require('./lib/oauth2');
 const proxyHeuristics = require('./lib/proxy-heuristics');
@@ -79,6 +80,9 @@ boot.executeInParallel([
         });
       });
     });
+
+    // Start regularly scheduling system events, once start-up is complete.
+    events.startScheduling();
   });
 });
 

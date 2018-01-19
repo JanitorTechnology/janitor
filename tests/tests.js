@@ -176,7 +176,7 @@ tests.push({
             var total = results.passed.length + results.failed.length;
             callback(results.passed.length + '/' + total + ' API test' +
               (total === 1 ? '' : 's') + ' passed. Failed tests: ' +
-              JSON.stringify(results.failed, null, 2));
+              jsonStringifyWithFunctions(results.failed));
             return;
           }
 
@@ -184,6 +184,62 @@ tests.push({
         });
       });
     });
+  }
+});
+
+tests.push({
+  title: 'Janitor persistent events',
+
+  test: (port, callback) => {
+    const events = require('../lib/events');
+
+    // Expect to receive a TestEvent at a specified time (approximately).
+    let received = false;
+    const startTime = Date.now();
+    const tooEarlyDelta = 1000 * 2; // Not before 2 seconds.
+    const expectedDelta = 1000 * 5; // In about 5 seconds.
+    const tooLateDelta = 1000 * 8; // Not after 8 seconds.
+    const expectedTime = startTime + expectedDelta;
+
+    // Fail the test if the TestEvent isn't received in time.
+    let tooLate = false;
+    setTimeout(() => {
+      tooLate = true;
+      if (!received) {
+        const timeDelta = Date.now() - expectedTime;
+        const delta = 'T' + (timeDelta < 0 ? '' : '+') + timeDelta + 'ms';
+        callback(new Error('Did not receive TestEvent in time at ' + delta));
+        return;
+      }
+    }, tooLateDelta);
+
+    events.on('TestEvent', payload => {
+      const timeDelta = Date.now() - expectedTime;
+      const delta = 'T' + (timeDelta < 0 ? '' : '+') + timeDelta + 'ms';
+      if (received) {
+        console.error(new Error('Received duplicate TestEvent at ' + delta));
+        return;
+      }
+      received = true;
+      if (tooLate) {
+        console.error(new Error('Received TestEvent too late at ' + delta));
+        return;
+      }
+      if (timeDelta <= tooEarlyDelta - expectedDelta) {
+        callback(new Error('Received TestEvent too early at ' + delta));
+        return;
+      }
+      if (!(payload instanceof Object) || payload.expected !== 'value') {
+        callback(new Error('Expected payload {"expected":"value"} but got ' +
+          JSON.stringify(payload)));
+        return;
+      }
+      console.log('[ok] Received TestEvent at ' + delta);
+      callback();
+    });
+
+    // Request a TestEvent to be emitted at the specified time.
+    events.emitAtTime('TestEvent', expectedTime, { expected: 'value' });
   }
 });
 
@@ -213,6 +269,17 @@ tests.push({
 });
 
 */
+
+function jsonStringifyWithFunctions (value) {
+  function replacer (key, value) {
+    if (typeof value === 'function') {
+      // Stringify this function, and slightly minify it.
+      value = String(value).replace(/\s+/g, ' ');
+    }
+    return value;
+  }
+  return JSON.stringify(value, replacer, 2);
+}
 
 let nextPort = 9000;
 function getPort (callback) {

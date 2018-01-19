@@ -6,6 +6,7 @@ const selfapi = require('selfapi');
 
 const azure = require('../lib/azure');
 const db = require('../lib/db');
+const events = require('../lib/events');
 const log = require('../lib/log');
 const users = require('../lib/users');
 
@@ -85,6 +86,55 @@ azureAPI.get('/virtualmachines', {
   },
 
   examples: [],
+});
+
+// API sub-resource to manage scheduled events.
+const eventsAPI = adminAPI.api('/events');
+
+eventsAPI.get({
+  title: 'List past system events',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user || !users.isAdmin(user)) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    response.json(events.get(), null, 2);
+  },
+
+  examples: [{
+    response: {
+      body: json => {
+        try { return Array.isArray(JSON.parse(json)); } catch (error) { return false; }
+      }
+    }
+  }]
+});
+
+eventsAPI.get('/queue', {
+  title: 'List upcoming system events',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user || !users.isAdmin(user)) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    response.json(events.getQueue(), null, 2);
+  },
+
+  examples: [{
+    response: {
+      body: json => {
+        try { return Array.isArray(JSON.parse(json)); } catch (error) { return false; }
+      }
+    }
+  }]
 });
 
 // API sub-resource to manage OAuth2 providers.

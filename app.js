@@ -8,6 +8,7 @@ const api = require('./api/');
 const blog = require('./lib/blog');
 const boot = require('./lib/boot');
 const db = require('./lib/db');
+const events = require('./lib/events');
 const github = require('./lib/github');
 const hosts = require('./lib/hosts');
 const log = require('./lib/log');
@@ -501,4 +502,7 @@ boot.executeInParallel([
       end({ status: 'started' });
     }, 42000);
   });
+
+  // Start regularly scheduling system events, once start-up is complete.
+  events.startScheduling();
 });
