@@ -20,7 +20,8 @@ const users = require('./lib/users');
 boot.executeInParallel([
   boot.forwardHttp,
   boot.ensureHttpsCertificates,
-  boot.ensureDockerTlsCertificates
+  boot.ensureDockerTlsCertificates,
+  boot.loadTasks,
 ], () => {
   // You can customize these values in './db.json'.
   const hostname = db.get('hostname', 'localhost');
