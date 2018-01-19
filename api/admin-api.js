@@ -91,16 +91,6 @@ azureAPI.get('/virtualmachines', {
 const oauth2providersAPI = adminAPI.api('/oauth2providers', {
   beforeEachTest: next => {
     const providers = db.get('oauth2providers');
-    if (!providers.github) {
-      // FIXME Remove this if block when the GitHub pull request is merged:
-      // https://github.com/JanitorTechnology/janitor/pull/80
-      providers.github = {
-        id: '',
-        secret: '',
-        hostname: 'github.com',
-        api: 'api.github.com'
-      };
-    }
     providers.github.id = '1234';
     providers.github.secret = '123456';
     next();
