@@ -4,27 +4,6 @@
   box-sizing: border-box;
 }
 
-::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  opacity: 1;
-  color: #999;
-  font-family: inherit;
-}
-
-::-moz-placeholder { /* Firefox 19+ */
-  opacity: 1;
-  color: #999;
-}
-
-:-ms-input-placeholder { /* IE 10+ */
-  opacity: 1;
-  color: #999;
-}
-
-:-moz-placeholder { /* Firefox 18- */
-  opacity: 1;
-  color: #999;
-}
-
 html {
   height: 100%;
   background-color: #fff;
@@ -35,7 +14,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -68,13 +47,11 @@ body {
 h1 {
   font-weight: 200;
   font-size: 33px;
-  margin: 30px 0;  
 }
 
 h2 {
-  font-weight: normal;
-  font-size: 24px;
-  margin: 20px 0;
+  font-weight: 300;
+  font-size: 22px;
 }
 
 h3 {
@@ -93,57 +70,7 @@ main {
   flex-grow: 1;
 }
 
-p {
-  font-size: 1em;
-  color: #999;
-  font-weight: 400;
-}
-
-.text-center {
-  text-align: center;
-}
-
-p.description {
-  color: #000;
-}
-
-.disabled {
-  cursor: not-allowed;
-}
-
-button, input {
-  font-family: inherit;
-}
-
-button:focus, input:focus {
-  outline: none;
-}
-
 /* Buttons */
-
-.button {
-  border: 1px solid #000;
-  color: #fff;
-  background: #000;
-  padding: 14px 44px;
-  border-radius: 0;
-  text-transform: uppercase;
-  font-weight: 700;
-  width: 100%;
-  margin-top: 20px;
-  -webkit-transition: opacity 200ms ease-in;
-  -moz-transition: opacity 200ms ease-in;
-  -o-transition: opacity 200ms ease-in;
-  transition: opacity 200ms ease-in;
-}
-
-.button:focus, .button:hover {
-  opacity: .9;
-}
-
-.button:hover {
-  cursor: pointer;
-}
 
 .btn {
   border: none;
@@ -237,15 +164,14 @@ button:focus, input:focus {
   margin: auto;
 }
 
-.navbar-sticky {
-  position: fixed;
-  width: 100%;
+/* .navbar-sticky {
+  position: sticky;
   top: 0;
   -webkit-box-shadow: 0 0 10px rgba(0,0,0,.05);
   -moz-box-shadow: 0 0 10px rgba(0,0,0,.05);
   -o-box-shadow: 0 0 10px rgba(0,0,0,.05);  
   box-shadow: 0 0 10px rgba(0,0,0,.05);
-}
+} */
 
 .navbar-container,
 .navbar .navbar-wrapper {
@@ -263,13 +189,13 @@ button:focus, input:focus {
 }
 
 .navbar-brand img, .logo-wrapper img {
-  width: 40px;
+  width: 3em;
   height: auto;
   margin-right: 1em;
 }
 
 .navbar-brand span, .logo-wrapper span {
-  font-size: 17px;
+  font-size: 1.3em;
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -297,7 +223,6 @@ header.navbar ul:last-child {
 }
 
 .navbar ul li a {
-  font-size: 13px;
   text-decoration: none;
   padding: 1.25em 1em;
   color: #999;
@@ -361,74 +286,10 @@ header.navbar ul li:last-child a {
   color: #999;
 }
 
-main {
-  /* viewport height - 15px extra height(so that footer is visible) */
-  min-height: calc(100vh - 15px);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Login page */
-
-section.login {
-  margin: auto;
-}
-
-.login .description {
-  margin-bottom: 40px;
-}
-
-.login .text-input {
-  font-size: 1em;
-  border: none;
-  border-bottom: 1px solid #ddd;
-  background: transparent;
-  padding: 14px 15px;
-  line-height: 1;
-  border-radius: 0;
-  text-align: center;
-  font-weight: 400;
-  width: 100%;
-  -webkit-transition: border-bottom-color 100ms ease-in,color 100ms ease-in;
-  -moz-transition: border-bottom-color 100ms ease-in,color 100ms ease-in;
-  -o-transition: border-bottom-color 100ms ease-in,color 100ms ease-in;
-  transition: border-bottom-color 100ms ease-in,color 100ms ease-in;
-}
-
-.login .text-input:focus {
-  border-bottom-color: #000;
-}
-
-#login-form input[type="submit"] {
-  display: block;
-  margin-top: 20px;
-  width: 100%;
-}
-
-div.login-with {
-  margin-top: 100px;
-}
-
-div.login-with > * {
-  display: inline-block;
-  color: #000;
-  text-decoration: none;
-  padding-bottom: 7px;
-  border-bottom: solid 1px #ddd;
-  opacity: 1;
-  -webkit-transition: opacity 200ms ease-in;
-  -moz-transition: opacity 200ms ease-in;
-  -o-transition: opacity 200ms ease-in;
-  transition: opacity 200ms ease-in;
-}
-
-
-/* Uncomment after integrating GitHub auth */
-/* div.login-with > *:hover {
-  opacity: .8;
-} */
-
 @media screen and (max-width: 950px) {
+  .navbar-brand {
+    padding-bottom: 20px;
+  }
 
   .navbar-container {
     flex-direction: column;
@@ -446,7 +307,7 @@ div.login-with > * {
   .navbar .icon.menu {
     display: block;
     cursor: pointer;
-    padding: 1.5em .5em .5em;
+    padding: .5em;
     margin-right: -.5em;
   }
   
@@ -457,10 +318,6 @@ div.login-with > * {
   .navbar ul li {
     text-align: left;
     display: block;
-  }
-
-  header.navbar ul li:hover {
-    background: #f8f8f8;    
   }
 
   header.navbar ul li.active {
@@ -479,11 +336,11 @@ div.login-with > * {
   }
 
   main {
-    padding: 20px;
+    padding: 1em;
   }
 
   .footer {
-    padding: 40px 20px;
+    padding: 60px 20px;
   }
 
   .footer .wrapper {
@@ -497,7 +354,7 @@ div.login-with > * {
 
   .footer-links .list-wrapper {
     margin-bottom: 30px;
-    flex: 1 0 150px;
+    flex: 1 0 200px;
   }
 
   .footer-links .list-wrapper ul {
@@ -518,19 +375,6 @@ div.login-with > * {
   }
 }
 
-@media screen and (max-width: 600px) {
-  header .navbar-brand {
-    padding: 20px 0;
-  }
-
-  header .navbar-brand span {
-    display: none;
-  }
-
-  .navbar .icon.menu {
-    padding: .5em;
-  }
-}
 
 /* Tabs */
 
@@ -676,7 +520,6 @@ div.login-with > * {
   padding: 10px;
   margin: 1.5em 0;
   border-radius: 4px;
-  display: none;
 }
 
 .alert.alert-warning {
@@ -690,10 +533,11 @@ div.login-with > * {
 .form-control-feedback::before {
   content: "";
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   background-repeat: no-repeat;
   background-position: center;
+  background-size: cover;
   opacity: 0.8;
   vertical-align: middle;
 }
