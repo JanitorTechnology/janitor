@@ -5,21 +5,19 @@
     <meta name="application-name" content="Janitor">
     <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Janitor{{if title then {{ – }}}}{{= title in html}}</title>
+    <title>{{= title in html}}{{if title then {{ – }}}}Janitor</title>
     <link href="/manifest.json" rel="manifest">
     <link href="/css/janitor-new.css" rel="stylesheet">
     <link href="/img/janitor.svg" rel="icon" sizes="any" type="image/svg+xml">
   </head>
   <body>
-    <header class="navbar navbar-sticky" role="navigation">
-      <div class="navbar-container">
-        <div class="navbar-wrapper">
-          <a class="navbar-brand" href="/">
-            <img src="/img/janitor.svg" alt="Janitor Logo">
-            <span>Janitor</span>
-          </a>
-          <label for="menu-toggle" class="icon menu"></label>
-        </div>
+    <header class="navbar navbar-sticky link-list-wrapper" role="navigation">
+      <div class="navbar-container container">
+        <a class="brand-logo" href="/">
+          <img src="/img/janitor.svg" alt="Janitor Logo">
+          <span>Janitor</span>
+        </a>
+        <label for="menu-toggle" class="icon menu"></label>
         <input type="checkbox" class="menu-toggle" id="menu-toggle">
         <ul>{{if user then {{
           <li><a href="/projects/">Projects</a></li>
@@ -30,4 +28,4 @@
         </ul>
       </div>
     </header>
-    <main>
+    <main class="container">
