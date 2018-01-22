@@ -39,7 +39,7 @@
     "node-forge": "0.7.1",
     "oauth": "0.9.15",
     "oauth2provider": "0.0.2",
-    "selfapi": "0.2.0",
+    "selfapi": "0.3.0",
     "tar-stream": "1.5.5"
   },
   "devDependencies": {
