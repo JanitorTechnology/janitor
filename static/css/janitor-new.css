@@ -13,8 +13,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  /* The list of system fonts after "Droid Sans" are from github.com */
-  font-family: "Fira Sans", Roboto, "Droid Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   font-size: 14px;
   display: flex;
   flex-direction: column;
@@ -33,8 +32,13 @@ body {
   float: right;
 }
 
+.bold {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .gray-text {
-  color: #737373;
+  color: #666;
 }
 
 .grow {
@@ -45,14 +49,21 @@ body {
   padding: 0.75em;
 }
 
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
 h1 {
   font-weight: 200;
   font-size: 33px;
+  margin: 30px 0;  
 }
 
 h2 {
-  font-weight: 300;
-  font-size: 22px;
+  font-weight: normal;
+  font-size: 24px;
+  margin: 20px 0;
 }
 
 h3 {
@@ -66,9 +77,19 @@ h4 {
 }
 
 main {
-  padding: 0 20vw;
   overflow: auto;
   flex-grow: 1;
+  /* viewport height - 15px extra height(so that footer is visible) */
+  min-height: calc(100vh - 15px);
+}
+
+p {
+  color: #666;
+  font-weight: 400;
+}
+
+.disabled {
+  cursor: not-allowed;
 }
 
 /* Buttons */
@@ -98,6 +119,7 @@ main {
 
 .btn:focus {
   box-shadow: inset 0 0 0 2px #0a84ff, 0 0 0 3px rgba(10, 132, 255, 0.3);
+  outline: none;
 }
 
 .btn-primary {
@@ -144,6 +166,7 @@ main {
 .form-control:focus {
   border-color: #0a84ff;
   box-shadow: 0 0 0 1px #0a84ff, 0 0 0 4px rgba(10, 132, 255, 0.3);
+  outline: none;
 }
 
 .form-control.disabled,
@@ -156,9 +179,13 @@ main {
 
 .navbar {
   background: #fff;
-  color: #0b0b0d;
   z-index: 999;
-  font-size: 1.1em;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .navbar-sticky {
@@ -167,26 +194,24 @@ main {
   box-shadow: 0 4px 16px rgba(12,12,13,.1);
 }
 
-.navbar,
-.navbar div {
+.brand-logo {
   display: flex;
   align-items: center;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  flex: 1;
   text-decoration: none;
   color: inherit;
-  font-weight: 600;
-  padding: 1em 1em;
+  padding: 2.5em 0;
 }
 
-.navbar-brand img {
-  width: 2em;
-  height: 2em;
+.brand-logo img {
+  width: 40px;
   margin-right: 1em;
+}
+
+.brand-logo span {
+  font-size: 17px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
 }
 
 .navbar .icon.menu,
@@ -194,14 +219,14 @@ main {
   display: none;
 }
 
-.navbar ul:last-child {
+.navbar ul {
   text-align: right;
   flex: 1;
 }
 
-.navbar ul,
-.navbar ul li,
-.navbar ul li a {
+.link-list-wrapper ul,
+.link-list-wrapper ul li,
+.link-list-wrapper ul li a {
   list-style: none;
   color: inherit;
   display: inline-block;
@@ -209,61 +234,151 @@ main {
   padding: 0;
 }
 
-.navbar ul li a {
+.link-list-wrapper ul li a {
+  font-size: 13px;
   text-decoration: none;
   padding: 1.25em 1em;
+  color: #666;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+  font-weight: 400;
 }
 
-.navbar ul li a:hover {
-  text-decoration: underline;
+.link-list-wrapper ul li a:hover {
+  color: #0b0b0d;
 }
 
-
-@media (max-width: 768px) {
-  .navbar,
-  .navbar ul {
-    display: block;
-    overflow: auto;
-  }
-  
-  .navbar .menu-toggle:not(:checked) + ul {
-    display: none;
-  }
-  
-  .navbar .icon.menu {
-    display: block;
-    cursor: pointer;
-    padding: 0 1em;
-  }
-  
-  .navbar ul {
-    margin-bottom: 0.5em;
-  }
-
-  .navbar ul li {
-    display: block;
-    text-align: center;
-  }
-
-  .navbar ul li a {
-    display: block;
-    padding: 10px !important;
-  }
-
-  .navbar ul li a:hover {
-    background-color: #ededf0;
-    text-decoration: none;
-  }
-
-  main {
-    padding: 1em;
-  }
+.navbar ul li:last-child a {
+  padding-right: 0;
 }
 
 /* Footer */
 
 .footer {
-  border-top: solid 1px #ededf0;
+  border-top: solid 1px #eee;
+  background: #fafafa;
+  padding: 40px 0;
+}
+
+.footer .footer-inner-container {
+  display: flex;
+}
+
+.footer .footer-link-container {
+  flex: 1;
+}
+
+.footer-link-list ul li a {
+  padding-right: 0;
+}
+
+.footer .brand-logo {
+  padding: 1.25em 0;
+}
+
+.footer-logo-container .brand-logo {
+  justify-content: flex-end;
+}
+
+.footer-logo-container .footer-logo-tagline {
+  font-style: italic;
+  text-align: right;
+  line-height: 1.5;
+}
+
+@media screen and (max-width: 992px) {
+
+  .navbar .menu-toggle:not(:checked) + ul {
+    display: none;
+  }
+
+  .navbar .brand-logo {
+    padding-left: 20px;
+  }
+  
+  .navbar .icon.menu {
+    display: block;
+    cursor: pointer;
+    padding: .5em 0 .5em .5em;
+    margin-left: auto;
+    padding-right: 20px;
+  }
+  
+  .link-list-wrapper ul {
+    min-width: 100%;
+  }
+
+  .link-list-wrapper ul li {
+    text-align: left;
+    display: block;
+  }
+
+  .navbar ul li:hover {
+    background: #f8f8f8;    
+  }
+
+  .navbar ul li.active {
+    background: #f8f8f8;
+    font-weight: 600;
+  }
+
+  .navbar ul li a {
+    color: #0b0b0d;
+    border-bottom: solid 1px #eee;
+    display: block;
+    padding: 15px 20px !important;    
+    font-size: 14px;    
+  }
+
+  main {
+    padding: 20px;
+  }
+
+  .footer {
+    padding: 40px 20px;
+  }
+
+  .footer .footer-inner-container {
+    flex-direction: column;
+  } 
+
+  .footer .footer-link-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .footer-link-container .footer-link-list {
+    margin-bottom: 30px;
+    flex: 1 0;
+    min-width: 150px;
+  }
+
+  .footer-link-container .footer-link-list ul {
+    padding-top: 10px;
+  }
+
+  .footer-link-container .footer-link-list li a {
+    padding: 10px 0;
+    display: block;
+  }
+
+  .footer-logo-container .brand-logo {
+    justify-content: flex-start;
+  }
+
+  .footer-logo-container .footer-logo-tagline {
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .navbar .brand-logo {
+    padding: 20px 0 20px 20px;    
+  }
+  
+  .navbar .brand-logo span {
+    display: none;
+  }
 }
 
 /* Tabs */
@@ -290,6 +405,7 @@ main {
   height: 100%;
   vertical-align: bottom;
 }
+
 .tab-nav li a::after {
   content: "";
   transition: transform 1s cubic-bezier(.07,.95,0,1);
@@ -306,6 +422,7 @@ main {
 .tab-nav li.selected a {
   color: #0a84ff;
 }
+
 .tab-nav li.selected a::after {
   transform: none;
 }
@@ -421,12 +538,12 @@ main {
 .form-control-feedback::before {
   content: "";
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover;
   opacity: 0.8;
+  vertical-align: middle;
 }
 
 .icon.white::before {
