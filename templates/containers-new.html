@@ -20,7 +20,7 @@
                 <input class="form-control" data-submit-on="blur" name="/name" placeholder="{{= project.name in xmlattr }} #{{= id in id}}" type="text" value="{{= machine.properties.name in xmlattr }}">
               </form>
               <div class="editable-value">
-                <h4 id={{= machine.docker.container in json}}>{{= name in html}}</h4>
+                <h4 id="{{= machine.docker.container.slice(0,16) in xmlattr}}">{{= name in html}}</h4>
                 <span class="icon edit editable-toggle"></span>
               </div>
             </div>
@@ -47,7 +47,11 @@
           </ul>
           <div class="tab-panels">
             <div class="tab-panel padded" data-tab="info">
-              <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}"></time>.</p>
+              <p class="project-updated">Built {{
+                const machineUpdatedFuzzy = machine.data.updated
+                  ? timeago().format(machine.data.updated)
+                  : 'never';
+              }}<time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}">{{= machineUpdatedFuzzy in html}}</time>.</p>
             </div>
             <div class="tab-panel" data-tab="advanced">
               <div class="padded">
