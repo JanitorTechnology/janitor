@@ -45,11 +45,15 @@ body {
   padding: 0.75em;
 }
 
+.navbar-container,
 .container {
-  max-width: 900px;
+  max-width: 992px;
   margin: auto;
   width: 100%;
-  padding: 0 1rem;
+}
+
+.container {
+  padding: 0 20px;
 }
 
 h1 {
@@ -176,7 +180,6 @@ p {
 /* Header and footer shared code */
 
 .brand-logo {
-  align-items: center;
   text-decoration: none;
   color: inherit;
   display: block;
@@ -230,6 +233,8 @@ p {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  min-height: 80px;
+  line-height: 80px;
 }
 
 .navbar-sticky {
@@ -243,17 +248,18 @@ p {
   display: none;
 }
 
+.navbar .brand-logo {
+  height: 100%;
+  padding-left: 20px;
+}
+
 .navbar ul {
   text-align: right;
   flex: 1;
 }
 
 .navbar ul li a {
-  padding: 2.5em 1em;
-}
-
-.navbar ul li:last-child a {
-  padding-right: 0;
+  padding: 0 20px;
 }
 
 /* Footer */
@@ -295,20 +301,16 @@ p {
     display: none;
   }
 
-  .navbar .brand-logo {
-    padding-left: 20px;
-  }
-
   .navbar .icon.menu {
     display: block;
     cursor: pointer;
-    padding: .5em 0 .5em .5em;
+    padding: 0 20px;
     margin-left: auto;
-    padding-right: 20px;
   }
 
   .link-list-wrapper ul {
     min-width: 100%;
+    line-height: 1;
   }
 
   .link-list-wrapper ul li {
@@ -329,16 +331,8 @@ p {
     color: #0b0b0d;
     border-bottom: solid 1px #eee;
     display: block;
-    padding: 15px 20px !important;
+    line-height: 50px;
     font-size: 14px;
-  }
-
-  main {
-    padding: 20px;
-  }
-
-  .footer {
-    padding: 40px 20px;
   }
 
   .footer .footer-inner-container {
@@ -365,20 +359,12 @@ p {
     display: block;
   }
 
-  .footer-logo-container .brand-logo {
-    justify-content: flex-start;
-  }
-
-  .footer-logo-container .footer-logo-tagline {
+  .footer-logo-container {
     text-align: left;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .navbar .brand-logo {
-    padding: 20px 0 20px 20px;
-  }
-
   .navbar .brand-logo span {
     display: none;
   }
@@ -595,7 +581,7 @@ p {
 /* Projects page */
 
 .panel-project:not(:hover) .editable-toggle:not(:focus) {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .danger-zone {
