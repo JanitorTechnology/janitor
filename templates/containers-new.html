@@ -43,15 +43,11 @@
         <div class="panel-body tabs">
           <ul class="tab-nav">
             <li class="tab" data-tab="info"><a href="#">Info</a></li>
-            <li class="tab" data-tab="terminal"><a href="#">Terminal</a></li>
             <li class="tab" data-tab="advanced"><a href="#">Advanced</a></li>
           </ul>
           <div class="tab-panels">
             <div class="tab-panel padded" data-tab="info">
               <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}"></time>.</p>
-            </div>
-            <div class="tab-panel" data-tab="terminal">
-              <iframe src="https://{{= machine.docker.host in uri}}/{{= machine.docker.container.slice(0,16) in uri}}/8087/terminal"></iframe>
             </div>
             <div class="tab-panel" data-tab="advanced">
               <div class="padded">
