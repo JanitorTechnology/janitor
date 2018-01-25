@@ -1,6 +1,7 @@
     <section>
       <div class="container">
         <h2 class="header">{{= project.name in html}}</h2>
+        <p class="project-description">{{= project.description in html}}</p>
         <p>Built {{
           const projectUpdatedFuzzy = project.data.updated
             ? timeago().format(project.data.updated)

@@ -19,7 +19,6 @@
                 </div>
               </div>
               <div class="panel-body">
-                <p class="project-description">{{= project.description in html}}</p>
                 <p class="project-updated">Built {{
                   const projectUpdatedFuzzy = project.data.updated
                     ? timeago().format(project.data.updated)
