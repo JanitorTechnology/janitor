@@ -572,32 +572,21 @@ boot.executeInParallel([
     }
 
     let key = '';
-    let match;
-    switch (data.name) {
-      case 'cloud9':
-        // Extract a valid SSH public key from the user's input.
-        // Regex adapted from https://gist.github.com/paranoiq/1932126.
-        match = data.key.match(/ssh-rsa [\w+/]+[=]{0,3}/);
-        if (!match) {
-          return end({ status: 'error', message: 'Invalid SSH key' });
-        }
-        key = match[0];
-        log('key', data.name, user._primaryEmail);
-        break;
-
-      case 'cloud9user':
-        // Cloud9 usernames consist of lowercase letters, numbers and '_' only.
-        match = data.key.trim().match(/^[a-z0-9_]+$/);
-        if (!match) {
-          return end({ status: 'error', message: 'Invalid Cloud9 username' });
-        }
-        key = match[0];
-        log('key', data.name, user._primaryEmail, key);
-        break;
-
-      default:
-        end({ status: 'error', message: 'Unknown key name' });
+    if (data.name !== 'cloud9') {
+      end({ status: 'error', message: 'Unknown key name' });
+      return;
     }
+
+    // Extract a valid SSH public key from the user's input.
+    // Regex adapted from https://gist.github.com/paranoiq/1932126.
+    const match = data.key.match(/ssh-rsa [\w+/]+[=]{0,3}/);
+    if (!match) {
+      end({ status: 'error', message: 'Invalid SSH key' });
+      return;
+    }
+
+    key = match[0];
+    log('key', data.name, user._primaryEmail);
 
     user.keys[data.name] = key;
     db.save();
