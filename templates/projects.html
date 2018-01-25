@@ -4,7 +4,7 @@
         <h4>In just a few clicks, enter a fully-functional development environment. Yes, it's that easy.</h4>
         <div class="row">{{
           for (let id in projects) {
-            let project = projects[id];
+            const project = projects[id];
           }}
           <div class="col-sm-12 col-md-6">
             <div class="panel panel-default panel-project">
@@ -20,7 +20,11 @@
               </div>
               <div class="panel-body">
                 <p class="project-description">{{= project.description in html}}</p>
-                <p class="project-updated">Built <time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}"></time>.</p>
+                <p class="project-updated">Built {{
+                  const projectUpdatedFuzzy = project.data.updated
+                    ? timeago().format(project.data.updated)
+                    : 'never';
+                }}<time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}">{{= projectUpdatedFuzzy in html}}</time>.</p>
               </div>
             </div>
           </div>{{
