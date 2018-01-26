@@ -4,6 +4,7 @@
 [![Docker Hub](https://img.shields.io/docker/build/janitortechnology/janitor.svg)](https://hub.docker.com/r/janitortechnology/janitor/)
 [![Greenkeeper](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
 [![NPM version](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
+[![NPM dependencies](https://img.shields.io/david/JanitorTechnology/janitor.svg)](https://david-dm.org/JanitorTechnology/janitor)
 [![IRC channel](https://img.shields.io/badge/%23janitor-on%20freenode-brightgreen.svg)](https://kiwiirc.com/client/irc.freenode.net/?#janitor "irc.freenode.net#janitor")
 
 *Fix bugs, faster*
