@@ -20,10 +20,15 @@ body {
   min-height: 100%;
 }
 
-/* Helper classes */
+.show-on-hover a {
+  color: #aaa;
+  text-decoration: none;
+  transition: color 200ms ease-in;
+  padding: 10px;
+}
 
-*:not(:hover) > .show-on-hover {
-  visibility: hidden;
+*:hover > .show-on-hover a {
+  color: #0b0b0d;
 }
 
 .float-left {
@@ -70,20 +75,21 @@ body {
 /* Typography */
 
 h1 {
-  font-weight: 200;
-  font-size: 33px;
+  font-weight: 400;
+  font-size: 26px;
   margin: 30px 0;
 }
 
 h2 {
-  font-weight: normal;
-  font-size: 24px;
-  margin: 20px 0;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 80px 0 35px 0;
 }
 
 h3 {
-  font-weight: 500;
-  font-size: 17px;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 30px 0;
 }
 
 h4 {
@@ -93,6 +99,23 @@ h4 {
 
 a:not(:hover) {
   text-decoration: none;
+}
+
+h1 + h2 { 
+  margin-top: 40px;
+}
+
+h1:not(:first-child) {
+  margin-top: 80px;
+} 
+
+main {
+  overflow: auto;
+  flex-grow: 1;
+  /* viewport height - header height - 15px extra height(so that footer is visible) */
+  min-height: calc(100vh - 95px);
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -111,6 +134,16 @@ small {
 p {
   color: #666;
   font-weight: 400;
+  line-height: 1.5;
+  margin: 0 0 30px 0;  
+}
+
+pre {
+  border: solid 1px rgb(234, 234, 234);
+  padding: 20px;
+  margin: 0 0 30px 0;
+  overflow: auto;
+  background: #fdfdfd;
 }
 
 p {
@@ -370,6 +403,12 @@ textarea.form-control {
 .footer-logo-container .footer-logo-tagline {
   font-style: italic;
   line-height: 1.5;
+}
+
+/* api reference page */
+
+div.reference {
+  padding-bottom: 60px;
 }
 
 @media screen and (max-width: 992px) {

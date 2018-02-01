@@ -105,6 +105,13 @@ boot.executeInParallel([
     routes.apiPage(query.res, api, user);
   });
 
+  // New Public API reference.
+  app.route(/^\/reference\/api-new\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    log('api reference');
+    routes.apiPageNew(query.res, api, user);
+  });
+
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
     const { user } = query.req;
