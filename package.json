@@ -1,6 +1,6 @@
 {
   "name": "janitor.technology",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "The fastest development system in the world.",
   "homepage": "https://janitor.technology",
   "bugs": {
@@ -44,7 +44,7 @@
     "timeago.js": "3.0.2"
   },
   "devDependencies": {
-    "eslint": "^4.12.1",
+    "eslint": "^4.16.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.0",

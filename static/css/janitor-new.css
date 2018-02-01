@@ -81,8 +81,10 @@ h4 {
 main {
   overflow: auto;
   flex-grow: 1;
-  /* viewport height - 15px extra height(so that footer is visible) */
-  min-height: calc(100vh - 15px);
+  /* viewport height - header height - 15px extra height (so that footer is visible) */
+  min-height: calc(100vh - 95px);
+  display: flex;
+  flex-direction: column;
 }
 
 p {
@@ -90,8 +92,16 @@ p {
   font-weight: 400;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .disabled {
   cursor: not-allowed;
+}
+
+.centered-container {
+  margin: auto;
 }
 
 /* Buttons */

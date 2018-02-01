@@ -448,6 +448,13 @@ boot.executeInParallel([
     });
   });
 
+  // New 404 Not Found page
+  app.route(/^\/404-new\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    log('404-new', match[0]);
+    routes.notFoundPageNew(query.res, user);
+  });
+
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
     const { user } = query.req;
