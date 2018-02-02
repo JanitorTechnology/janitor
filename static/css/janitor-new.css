@@ -20,6 +20,8 @@ body {
   min-height: 100%;
 }
 
+/* Helper classes */
+
 *:not(:hover) > .show-on-hover {
   visibility: hidden;
 }
@@ -45,16 +47,16 @@ body {
   padding: 0.75em;
 }
 
-.navbar-container,
-.container {
-  max-width: 992px;
-  margin: auto;
-  width: 100%;
+.disabled {
+  cursor: not-allowed;
 }
 
-.container {
-  padding: 0 20px;
+.btn.large,
+.form-control.large {
+  padding: 1em;
 }
+
+/* Typography */
 
 h1 {
   font-weight: 200;
@@ -78,26 +80,39 @@ h4 {
   font-size: 1em;
 }
 
-main {
-  overflow: auto;
-  flex-grow: 1;
-  /* viewport height - header height - 15px extra height (so that footer is visible) */
-  min-height: calc(100vh - 95px);
-  display: flex;
-  flex-direction: column;
-}
-
 p {
   color: #666;
   font-weight: 400;
+}
+
+p.description {
+  color: #0b0b0d;
 }
 
 .text-center {
   text-align: center;
 }
 
-.disabled {
-  cursor: not-allowed;
+/* Layout */
+
+.navbar-container,
+.container {
+  max-width: 992px;
+  margin: auto;
+  width: 100%;
+}
+
+.container {
+  padding: 40px 20px;
+}
+
+main {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  /* viewport height - header height - 20px extra height (so that footer is visible) */
+  min-height: calc(100vh - 100px);
 }
 
 .centered-container {
@@ -135,16 +150,16 @@ p {
 }
 
 .btn-primary {
-  background: #0060df;
+  background: #0c0c0d;
   color: #f9f9fa;
 }
 
 .btn-primary:hover {
-  background: #003eaa;
+  background: #38383d;
 }
 
 .btn-primary:hover:active {
-  background: #002275;
+  background: #2a2a2e;
 }
 
 .btn-error {
@@ -161,6 +176,13 @@ p {
 }
 
 /* Inputs */
+
+.form-control-container > .form-control,
+.form-control-container > .btn {
+  width: 100%;
+  margin: 0;
+  margin-top: 0.75em;
+}
 
 .form-control {
   border: 1px solid rgba(12, 12, 13,0.3);
@@ -277,7 +299,6 @@ p {
 .footer {
   border-top: solid 1px #eee;
   background: #fafafa;
-  padding: 40px 0;
 }
 
 .footer .footer-inner-container {
@@ -522,7 +543,7 @@ p {
 
 .alert {
   padding: 10px;
-  margin: 1.5em 0;
+  margin-bottom: 1.5em;
   border-radius: 4px;
 }
 
