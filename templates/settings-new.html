@@ -6,7 +6,7 @@
           <div class="tab-panels">
             <div class="tab-panel" data-tab="account">
               <section>
-                <h3>Basic information</h3>
+                <h2>Basic information</h2>
                 <div class="setting form-control-container">
                   <b>Email</b>
                   <input class="form-control" disabled="true" type="text" value={{= user._primaryEmail in json}}>
@@ -17,7 +17,7 @@
                 </form>
               </section>
               <section>
-                <h3>Communication settings</h3>
+                <h2>Communication settings</h2>
                 <form action="/api/user/notifications/enabled?enabled={{= !user.notifications.enabled in boolean}}" class="row ajax-form has-feedback" data-refresh-after-success="true" id="notifications-form" method="put">
                   <div class="checkbox">
                     <label>
@@ -28,7 +28,7 @@
                 </form>
               </section>
               <section>
-                <h3>Integrations</h3>
+                <h2>Integrations</h2>
                 <div class="panel">
                   <div class="panel-section">
                     <div class="panel-heading padded">
