@@ -310,6 +310,18 @@ boot.executeInParallel([
     routes.settingsPage(request, response, section, user);
   });
 
+  // New settings page.
+  app.route(/^\/settings-new\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user } = request;
+    if (!user) {
+      routes.loginPage(response);
+      return;
+    }
+
+    routes.settingsPageNew(request, response, user);
+  });
+
   // User account (now part of settings).
   app.route(/^\/account\/?$/, (data, match, end, query) => {
     routes.redirect(query.res, '/settings/account/', true);
