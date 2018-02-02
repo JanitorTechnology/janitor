@@ -162,13 +162,6 @@ function setupAsyncForm (form) {
   }
 
   form.addEventListener('submit', function (event) {
-    // Disable all form elements while waiting for the server.
-    Array.forEach(form.elements, function (element) {
-      if (element.classList.contains('form-control-feedback')) {
-        return;
-      }
-      element.classList.add('disabled');
-    });
     // Ensure that submitting the <form> doesn't reload the page.
     event.preventDefault();
   });
@@ -181,6 +174,14 @@ function updateFormStatus (form, status, message) {
   switch (status) {
     case 'pending':
       form.classList.add('pending');
+
+      // Disable all form elements while waiting for the server.
+      Array.forEach(form.elements, function (element) {
+        if (element.classList.contains('form-control-feedback')) {
+          return;
+        }
+        element.classList.add('disabled');
+      });
       break;
     case 'success':
       form.classList.add('success');
@@ -188,13 +189,7 @@ function updateFormStatus (form, status, message) {
     case 'error':
       form.classList.add('error');
       break;
-    default:
-      Array.forEach(form.elements, function (element) {
-        element.classList.remove('disabled');
-      });
-      break;
   }
-
   var feedback = form.querySelector('.form-control-feedback');
 
   // Reset the custom validity message so the element isn't invalid anymore,
@@ -208,6 +203,13 @@ function updateFormStatus (form, status, message) {
     feedback.setCustomValidity(message);
     // Force the display of the custom validity message.
     form.reportValidity();
+  }
+
+  // Re-enable form fields once we receive a server response
+  if (status !== 'pending') {
+    Array.forEach(form.elements, function (element) {
+      element.classList.remove('disabled');
+    });
   }
 
   if (form.dataset.refreshAfterSuccess && status === 'success') {

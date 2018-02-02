@@ -132,6 +132,12 @@ boot.executeInParallel([
     routes.designPage(query.res, user);
   });
 
+  // new login page
+  app.route(/^\/login-new\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    routes.newLoginPage(query.res, user);
+  });
+
   // Public project pages.
   app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
     const { user } = query.req;
@@ -302,6 +308,18 @@ boot.executeInParallel([
     const section = sectionUri ? sectionUri.slice(1) : 'account';
 
     routes.settingsPage(request, response, section, user);
+  });
+
+  // New settings page.
+  app.route(/^\/settings-new\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user } = request;
+    if (!user) {
+      routes.loginPage(response);
+      return;
+    }
+
+    routes.settingsPageNew(request, response, user);
   });
 
   // User account (now part of settings).
