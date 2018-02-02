@@ -132,6 +132,12 @@ boot.executeInParallel([
     routes.designPage(query.res, user);
   });
 
+  // new login page
+  app.route(/^\/login-new\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    routes.newLoginPage(query.res, user);
+  });
+
   // Public project pages.
   app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
     const { user } = query.req;
@@ -449,9 +455,9 @@ boot.executeInParallel([
   });
 
   // New 404 Not Found page
-  app.route(/^\/404-new$/, (data, match, end, query) => {
+  app.route(/^\/404-new\/?$/, (data, match, end, query) => {
     const { user } = query.req;
-    log('404', match[0]);
+    log('404-new', match[0]);
     routes.notFoundPageNew(query.res, user);
   });
 

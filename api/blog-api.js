@@ -27,9 +27,12 @@ blogAPI.post('/synchronize', {
     }
   },
 
-  examples: [{
+  // FIXME: Re-enable this test once syncing with Discourse doesn't cause frequent errors.
+  // This can be achieved by rate-limiting our own sync requests, and/or by using a Discourse token.
+  // See https://github.com/JanitorTechnology/janitor/issues/219
+  examples: [/* {
     response: {
       body: JSON.stringify({ count: 13 }, null, 2)
     }
-  }]
+  } */]
 });
