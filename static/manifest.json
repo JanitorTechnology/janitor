@@ -2,13 +2,21 @@
   "name": "Janitor",
   "short_name": "Janitor",
   "start_url": "/",
-  "icons": [{
-    "src": "img/janitor.svg",
-    "sizes": "any",
-    "type": "image/svg+xml"
-  }],
+  "background_color": "white",
+  "icons": [
+    {
+      "src": "/img/favicons/favicon-196x196.png",
+      "sizes": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/favicons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
   "dir": "ltr",
   "display": "minimal-ui",
   "lang": "en",
-  "theme_color": "#333"
+  "theme_color": "#fff"
 }
