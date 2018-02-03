@@ -257,12 +257,8 @@ if (window.location.search) {
 Array.forEach(document.querySelectorAll('h1[id],h2[id]'), element => {
   const link = document.createElement('a');
   link.href = '#' + element.id;
-  link.textContent = '#';
-  const small = document.createElement('small');
-  small.classList.add('show-on-hover');
-  small.appendChild(link);
-  element.appendChild(document.createTextNode(' '));
-  element.appendChild(small);
+  link.classList.add('icon', 'link', 'icon-button');
+  element.appendChild(link);
 });
 
 Array.forEach(document.querySelectorAll('.blog article p a'), element => {

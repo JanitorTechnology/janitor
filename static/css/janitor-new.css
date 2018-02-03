@@ -22,10 +22,6 @@ body {
 
 /* Helper classes */
 
-*:not(:hover) > .show-on-hover {
-  visibility: hidden;
-}
-
 .float-left {
   float: left;
 }
@@ -69,21 +65,26 @@ body {
 
 /* Typography */
 
+h1, h2, h3, p {
+  line-height: 1.5;
+}
+
 h1 {
-  font-weight: 200;
-  font-size: 33px;
-  margin: 30px 0;
+  font-weight: 400;
+  font-size: 26px;
+  margin: 20px 0;
 }
 
 h2 {
-  font-weight: normal;
-  font-size: 24px;
+  font-weight: 400;
+  font-size: 20px;
   margin: 20px 0;
 }
 
 h3 {
-  font-weight: 500;
-  font-size: 17px;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 20px 0;
 }
 
 h4 {
@@ -111,10 +112,16 @@ small {
 p {
   color: #666;
   font-weight: 400;
+  margin: 20px 0;  
 }
 
-p {
-  line-height: 1.5;
+pre {
+  border: solid 1px rgb(234, 234, 234);
+  padding: 20px;
+  margin: 0 0 15px 0;
+  overflow: auto;
+  background: #fdfdfd;
+  font-family: Menlo, Consolas, monospace;
 }
 
 p.description {
@@ -655,6 +662,19 @@ textarea.form-control {
   background-image: url(../img/icons/menu.svg);
 }
 
+.icon.link::before {
+  background-image: url(../img/icons/link.svg);
+}
+
+.icon-button {
+  padding: 10px;
+  opacity: .4;
+}
+
+.icon-button:hover {
+  opacity: 1;
+}
+
 /* Form control feedback */
 
 .ajax-form {
@@ -782,4 +802,20 @@ article.onebox-body {
 
 .setting:not(:last-child) .form-control {
   margin-bottom: 2em;
+}
+
+/* api page */
+
+.reference h1:not(:first-child) {
+  margin-top: 90px;
+}
+
+.reference h2 {
+  margin-top: 50px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.reference h1 + h2 {
+  margin-top: 30px;
 }

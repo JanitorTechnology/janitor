@@ -57,7 +57,7 @@
               <div class="padded">
                 <b>Connect via SSH</b>
                 <p>Use the following command to connect to your container via SSH:</p>
-                <pre>ssh -p{{= machine.docker.ports['22'].port in integer}} user@{{= machine.docker.host in html}}</pre>
+                <code>ssh -p{{= machine.docker.ports['22'].port in integer}} user@{{= machine.docker.host in html}}</code>
               </div>
               <div class="danger-zone padded">
                 <b>Danger zone!</b>
