@@ -172,6 +172,27 @@ boot.executeInParallel([
     routes.projectPage(query.res, project, user);
   });
 
+  // New public project pages.
+  app.route(/^\/projects-new(\/[\w-]+)?\/?$/, (data, match, end, query) => {
+    const { user } = query.req;
+    const projectUri = match[1];
+    if (!projectUri) {
+      // No particular project was requested, show them all.
+      routes.projectsPageNew(query.res, user);
+      return;
+    }
+
+    const projectId = projectUri.slice(1);
+    const project = db.get('projects')[projectId];
+    if (!project) {
+      // The requested project doesn't exist.
+      routes.notFoundPageNew(query.res, user);
+      return;
+    }
+
+    routes.projectPageNew(query.res, project, user);
+  });
+
   // User logout.
   app.route(/^\/logout\/?$/, (data, match, end, query) => {
     users.logout(query.req, error => {
