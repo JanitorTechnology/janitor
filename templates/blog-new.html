@@ -1,14 +1,17 @@
-    <section class="blog">
-      <h1 class="text-center heading">Blog</h1>{{
+    <section class="blog">{{
         for (const post of posts) {
           const { title, post_body_html, slug, comments_count, comments_url } = post;
       }}
-      <div class="article-wrapper">
-        <article>
-          <h1 id="{{= slug in xmlattr}}">{{= title in html}}</h1>
-          {{= post_body_html}}
-        </article>
-        <footer><a class="btn" href="{{= comments_url in xmlattr}}">{{= comments_count in html}} comments</a></footer>
+      <div class="blog-post">
+        <input type="checkbox" class="blog-toggle" id="{{= slug in xmlattr}}-cb">
+        <label for="{{= slug in xmlattr}}-cb" title="Toggle"></label>
+        <div class="article-wrapper">
+          <article>
+            <h1 id="{{= slug in xmlattr}}">{{= title in html}}</h1>
+            {{= post_body_html}}
+          </article>
+          <footer><a class="btn" href="{{= comments_url in xmlattr}}">{{if comments_count then {{{{= comments_count in html}}}} else {{No}}}} comment{{if {{comments_count !== 1}} then {{s}}}}</a></footer>
+        </div>
       </div>{{
       }
       }}

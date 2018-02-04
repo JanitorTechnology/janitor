@@ -30,15 +30,6 @@ body {
   float: right;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.bold {
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
 .grow {
   flex-grow: 1;
 }
@@ -65,11 +56,6 @@ body {
 .btn.large,
 .form-control.large {
   padding: 1em;
-}
-
-.heading {
-  font-weight: 200;
-  font-size: 32px;
 }
 
 /* Typography */
@@ -99,6 +85,15 @@ h3 {
 h4 {
   font-weight: 500;
   font-size: 1em;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 a:not(:hover) {
@@ -798,14 +793,57 @@ textarea.form-control {
 
 /* Blog page */
 
-.blog  h1.heading {
-  margin-bottom: 60px;
+.blog .blog-post {
+  position: relative;
+}
+
+.blog .blog-post label {
+  display: inline-block;
+  position: absolute;
+  background: transparent;
+  width: 100%;
+  bottom: 0;
+  cursor: pointer;
+  z-index: 10;
+  background: url(../img/icons/arrow-down.svg) 50% 40px no-repeat;
+}
+
+.blog-toggle {
+  display: none;
+}
+
+.blog-toggle:checked + label {
+  background-image: url(../img/icons/arrow-up.svg);
+}
+
+.blog-toggle:checked ~ .article-wrapper {
+  height: auto;
 }
 
 .blog .article-wrapper {
   border-top: solid 1px #ededf0;
   padding: 60px 0 80px 0;  
   overflow: auto;
+  height: 400px;
+  overflow: hidden;
+}
+
+.blog .blog-post:first-child .article-wrapper {
+  border: none;
+  padding-top: 20px;
+}
+
+.blog .article-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  background: linear-gradient(rgba(255, 255, 255, .1), rgba(255, 255, 255, .8), #fff, #fff);
+}
+
+.blog .article-wrapper::after,
+.blog label {
+  padding: 50px 0 30px 0;  
 }
 
 .blog article h1 {
@@ -814,7 +852,6 @@ textarea.form-control {
 
 .blog article p {
   color: #0b0b0d;
-  line-height: 24px;
   margin-top: 0;
 }
 
@@ -824,19 +861,19 @@ textarea.form-control {
 }
 
 .blog article p img {
-  width: 100%;
-  height: 100%;
-  margin: 40px 0;
+  margin: 40px auto;
+  display: block;
 }
 
 .blog blockquote {
-  border-left: solid 3px;
-  background: #f9f9f9;
+  border-left: solid .25em;
+  background: #fafafa;
   padding: 20px;
   margin: 20px 0;
+  font-style: italic;
 }
 
-.blog blockquote > :last-child {
+.blog blockquote > *:last-child {
   margin-bottom: 0;
 }
 
