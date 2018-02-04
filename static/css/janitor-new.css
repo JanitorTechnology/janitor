@@ -30,6 +30,10 @@ body {
   float: right;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .bold {
   font-weight: 600;
   text-transform: uppercase;
@@ -61,6 +65,11 @@ body {
 .btn.large,
 .form-control.large {
   padding: 1em;
+}
+
+.heading {
+  font-weight: 200;
+  font-size: 32px;
 }
 
 /* Typography */
@@ -131,8 +140,21 @@ p.description {
   color: #0b0b0d;
 }
 
-.text-center {
-  text-align: center;
+ul {
+  padding-left: 30px;
+}
+
+li {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+ol {
+  padding-left: 20px;
+}
+
+ol > li {
+  font-weight: 700;
 }
 
 /* Layout */
@@ -776,23 +798,46 @@ textarea.form-control {
 
 /* Blog page */
 
-.blog {
-  font-size: 18px;
-  line-height: 1.6;
+.blog  h1.heading {
+  margin-bottom: 60px;
 }
 
-.blog article {
+.blog .article-wrapper {
   border-top: solid 1px #ededf0;
-  margin: 1.5em 0;
+  padding: 60px 0 80px 0;  
+  overflow: auto;
 }
 
-.blog article:first-child {
-  border: none;
-  padding-top: 0;
+.blog article h1 {
+  margin-bottom: 40px;
 }
 
-.blog footer {
-  margin: 1.5em 0;
+.blog article p {
+  color: #0b0b0d;
+  line-height: 24px;
+  margin-top: 0;
+}
+
+.blog article h2 {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.blog article p img {
+  width: 100%;
+  height: 100%;
+  margin: 40px 0;
+}
+
+.blog blockquote {
+  border-left: solid 3px;
+  background: #f9f9f9;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.blog blockquote > :last-child {
+  margin-bottom: 0;
 }
 
 .onebox {
@@ -800,11 +845,6 @@ textarea.form-control {
   padding: 0.75em;
   margin: 20px 0;
   font-size: 14px;
-}
-
-article a:focus {
-  box-shadow: 0 0 0 1px #0a84ff, 0 0 0 4px rgba(10, 132, 255, 0.2);
-  border-radius: 2px;
 }
 
 article.onebox-body {
