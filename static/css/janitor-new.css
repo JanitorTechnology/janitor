@@ -191,6 +191,7 @@ section:not(:last-child) {
   font: inherit;
   display: inline-block;
   cursor: pointer;
+  line-height: initial;
 }
 
 .btn:not(:first-child) {
