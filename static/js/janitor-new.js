@@ -254,14 +254,14 @@ if (window.location.search) {
 }
 
 // Add helpful anchor links to title elements with an 'id' attribute.
-Array.forEach(document.querySelectorAll('h1[id],h2[id]'), element => {
+Array.forEach(document.querySelectorAll('h1[id],h2[id]'), function (element) {
   const link = document.createElement('a');
   link.href = '#' + element.id;
   link.classList.add('icon', 'link', 'icon-button');
   element.appendChild(link);
 });
 
-Array.forEach(document.querySelectorAll('.blog article p a'), element => {
+Array.forEach(document.querySelectorAll('.blog article p a'), function (element) {
   element.target = '_blank';
 });
 
