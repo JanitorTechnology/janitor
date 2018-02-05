@@ -236,7 +236,7 @@ function addFormFeedback (form) {
 
 // Setup editable labels.
 Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
-  const toggle = label.querySelector('.editable-toggle');
+  var toggle = label.querySelector('.editable-toggle');
   if (!toggle) {
     console.error('Editable label', label, 'has no ".editable-toggle" element!');
     return;
@@ -254,8 +254,8 @@ if (window.location.search) {
 }
 
 // Add helpful anchor links to title elements with an 'id' attribute.
-Array.forEach(document.querySelectorAll('h1[id],h2[id]'), element => {
-  const link = document.createElement('a');
+Array.forEach(document.querySelectorAll('h1[id],h2[id]'), function (element) {
+  var link = document.createElement('a');
   link.href = '#' + element.id;
   link.classList.add('icon', 'link', 'icon-button');
   element.appendChild(link);
