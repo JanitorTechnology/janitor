@@ -30,11 +30,6 @@ body {
   float: right;
 }
 
-.bold {
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
 .grow {
   flex-grow: 1;
 }
@@ -92,6 +87,15 @@ h4 {
   font-size: 1em;
 }
 
+.text-center {
+  text-align: center;
+}
+
+.bold {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 a:not(:hover) {
   text-decoration: none;
 }
@@ -131,8 +135,21 @@ p.description {
   color: #0b0b0d;
 }
 
-.text-center {
-  text-align: center;
+ul {
+  padding-left: 30px;
+}
+
+li {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+ol {
+  padding-left: 20px;
+}
+
+ol > li {
+  font-weight: 700;
 }
 
 /* Layout */
@@ -776,23 +793,88 @@ textarea.form-control {
 
 /* Blog page */
 
-.blog {
-  font-size: 18px;
-  line-height: 1.6;
+.blog .blog-post {
+  position: relative;
 }
 
-.blog article {
+.blog .blog-post label {
+  display: inline-block;
+  position: absolute;
+  background: transparent;
+  width: 100%;
+  bottom: 0;
+  cursor: pointer;
+  z-index: 10;
+  background: url(../img/icons/arrow-down.svg) 50% 40px no-repeat;
+}
+
+.blog-toggle {
+  display: none;
+}
+
+.blog-toggle:checked + label {
+  background-image: url(../img/icons/arrow-up.svg);
+}
+
+.blog-toggle:checked ~ .article-wrapper {
+  height: auto;
+}
+
+.blog .article-wrapper {
   border-top: solid 1px #ededf0;
-  margin: 1.5em 0;
+  padding: 60px 0 80px 0;  
+  overflow: auto;
+  height: 400px;
+  overflow: hidden;
 }
 
-.blog article:first-child {
+.blog .blog-post:first-child .article-wrapper {
   border: none;
-  padding-top: 0;
+  padding-top: 20px;
 }
 
-.blog footer {
-  margin: 1.5em 0;
+.blog .article-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  background: linear-gradient(rgba(255, 255, 255, .1), rgba(255, 255, 255, .8), #fff, #fff);
+}
+
+.blog .article-wrapper::after,
+.blog label {
+  padding: 50px 0 30px 0;  
+}
+
+.blog article h1 {
+  margin-bottom: 40px;
+}
+
+.blog article p {
+  color: #0b0b0d;
+  margin-top: 0;
+}
+
+.blog article h2 {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.blog article p img {
+  margin: 40px auto;
+  display: block;
+}
+
+.blog blockquote {
+  border-left: solid .25em;
+  background: #fafafa;
+  padding: 20px;
+  margin: 20px 0;
+  font-style: italic;
+}
+
+.blog blockquote > *:last-child {
+  margin-bottom: 0;
 }
 
 .onebox {
@@ -800,11 +882,6 @@ textarea.form-control {
   padding: 0.75em;
   margin: 20px 0;
   font-size: 14px;
-}
-
-article a:focus {
-  box-shadow: 0 0 0 1px #0a84ff, 0 0 0 4px rgba(10, 132, 255, 0.2);
-  border-radius: 2px;
 }
 
 article.onebox-body {

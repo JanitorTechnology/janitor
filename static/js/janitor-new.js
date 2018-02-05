@@ -261,10 +261,6 @@ Array.forEach(document.querySelectorAll('h1[id],h2[id]'), function (element) {
   element.appendChild(link);
 });
 
-Array.forEach(document.querySelectorAll('.blog article p a'), function (element) {
-  element.target = '_blank';
-});
-
 // If the web browser supports it, register and install a Service Worker.
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
