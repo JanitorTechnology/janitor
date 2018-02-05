@@ -1,0 +1,19 @@
+
+    <h1>{{= project.name in html}}</h1>
+    <p class="description">{{= project.description in html}}</p>
+    <p>Built {{
+      const projectUpdatedFuzzy = project.data.updated
+        ? timeago().format(project.data.updated)
+        : 'never';
+    }}<time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}">{{= projectUpdatedFuzzy in html}}</time>.</p>
+    <div class="grid">
+      <div class="graph">
+        <div data-data="{{= project.data['pull-time'] in json}}" data-title="Image pull"></div>
+      </div>
+      <div class="graph">
+        <div data-data="{{= project.data['update-time'] in json}}" data-title="Image update"></div>
+      </div>
+      <div class="graph">
+        <div data-data="{{= project.data['spawn-time'] in json}}" data-title="Container spawn"></div>
+      </div>
+    </div>
