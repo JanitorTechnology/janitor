@@ -1,4 +1,3 @@
-    <section class="contributions">
       <h2 class="header">Containers</h2>{{
         for (let projectId in user.machines) {
           const machines = user.machines[projectId];
@@ -10,7 +9,7 @@
             }
             const name = machine.properties.name || `${project.name} #${id}`;
       }}
-      <div class="panel panel-default panel-project">
+      <div class="panel">
         <div class="panel-heading padded">
           <span class="status-icon" data-status="{{= machine.status in xmlattr}}"></span>
           <img class="panel-icon" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
@@ -73,4 +72,3 @@
           }
         }
       }}
-    </section>

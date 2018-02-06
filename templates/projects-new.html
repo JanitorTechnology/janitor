@@ -1,4 +1,3 @@
-
         <h1>Contribute to incredible software</h1>
         <p>In just a few clicks, enter a fully-functional development environment. Yes, it's that easy.</p>
         <div class="grid">{{
@@ -19,16 +18,12 @@
                       ? timeago().format(project.data.updated)
                       : 'never';
                   }}<time class="project-timestamp" data-timestamp="{{= project.data.updated in integer}}">{{= projectUpdatedFuzzy in html}}</time>.
-                </div>
-                {{if user then {{
+                </div>{{if user then {{
                 <form action="/api/hosts/{{= project.docker.host in uri}}/containers?project={{= id in id}}" class="ajax-form has-feedback is-submit" data-redirect-after-success="/containers/" method="put">
                   <button class="btn btn-primary" title="Create a new container for this project" type="submit">New Container</button>
                 </form>}} else {{
                 <div><a class="btn btn-primary" href="/login">New Container</a></div>}}}}
               </div>
             </div>
-          </div>
-          {{
-            }
-          }}
+          </div>{{ } }}
         </div>

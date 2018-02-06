@@ -1,0 +1,15 @@
+/* API page */
+
+.reference h1:not(:first-child) {
+  margin-top: 90px;
+}
+
+.reference h2 {
+  margin-top: 50px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.reference h1 + h2 {
+  margin-top: 30px;
+}

@@ -1,0 +1,10 @@
+/* Projects page */
+
+.panel:not(:hover) .editable-toggle:not(:focus) {
+  visibility: hidden;
+}
+
+.danger-zone {
+  color: #3e0200;
+  background: rgba(255, 0, 57, 0.1);
+}
