@@ -356,6 +356,7 @@ textarea.form-control {
 }
 
 .navbar-sticky {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   box-shadow: 0 4px 16px rgba(12,12,13,.1);
