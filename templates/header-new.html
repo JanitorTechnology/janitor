@@ -13,7 +13,8 @@
     <link href="/img/favicons/favicon-16x16.png" rel="icon" type="image/png" sizes="16x16">
     <link href="/img/favicons/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32">
     <link href="/img/favicons/favicon.svg" rel="icon" sizes="any" type="image/svg+xml">
-    <link href="/css/janitor-new.css" rel="stylesheet">
+    <link href="/css/janitor-new.css" rel="stylesheet">{{ for (let sheet of stylesheets) { }}
+    <link href={{= sheet in json}} rel="stylesheet">{{ } }}
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/img/favicons/favicon-196x196.png">
   </head>

@@ -1,0 +1,5 @@
+/* Settings page */
+
+.setting:not(:last-child) .form-control {
+  margin-bottom: 2em;
+}
