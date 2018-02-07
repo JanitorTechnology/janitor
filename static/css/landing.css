@@ -1,0 +1,88 @@
+/* Landing page */
+
+.heading {
+  font-size: 32px;
+  font-weight: 300;
+}
+
+.secondary-heading {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+#intro-video {
+  max-width: 992px;
+  padding-bottom: 56.25%;
+  width: 100%;
+  margin: 50px auto;
+  display: block;
+  position: relative;
+}
+
+#intro-video iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0 20px;
+}
+
+#quotes {
+  background: #fafafa;
+  border-top: solid 1px #eaeaea;
+  border-bottom: solid 1px #eaeaea;  
+  padding: 40px 20px 80px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 300px));
+  grid-gap: 40px;
+  justify-content: space-around;
+}
+
+#quotes > h2 {
+  grid-column: 1 / -1;
+}
+
+.quote {
+  overflow: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+#quotes blockquote {
+  font-style: italic;
+  text-align: justify;
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+  color: #666;
+  padding: 0 5px 20px 0;
+}
+ 
+#quotes blockquote::before, #quotes blockquote::after {
+  content: '"';
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#quotes span {
+  font-weight: 700;
+}
+
+.page {
+  width: 100%;
+  overflow: auto;
+}
+
+.page.split {
+  display: flex;
+}
+
+@media screen and (max-width: 768px) {
+  #quotes {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+}

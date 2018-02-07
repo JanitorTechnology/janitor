@@ -1,4 +1,46 @@
-        {{
-          const tagline = taglines[Math.floor(Math.random() * taglines.length)] + ' faster';
-        }}<h1>{{= tagline in html}}</h1>
-        <p>The fastest development system in the world.</p>
+        <div class="page">
+          <div class="text-center">
+            {{
+              const tagline = taglines[Math.floor(Math.random() * taglines.length)] + ' faster';
+            }}<h1 class="heading">{{= tagline in html}}</h1>
+            <h2 class="grey-text description">The fastest development system in the world.</h2>
+          </div>
+          <div id="intro-video">
+            <iframe src="https://www.youtube.com/embed/5sNDMIh-iVw" allowfullscreen></iframe>
+          </div>
+          <div id="quotes">
+            <h2 class="text-center secondary-heading">Happy Janitor Quotes</h2>
+            <div class="quote grow">
+              <blockquote>This will change the lives of a lot of contributors.</blockquote>
+              <span>― Michael Kohler</span>
+            </div>
+            <div class="quote grow">
+              <blockquote>Just wanted to say thanks for making Janitor. It just saved me a ton of time debugging a crash.</blockquote>
+              <span>― Brian Grinstead</span>
+            </div>
+            <div class="quote grow">
+              <blockquote>Mind blown! This would have literally saved months of my life years ago when I hacked on Firefox.</blockquote>
+              <span>― Brian King</span>
+            </div>
+          </div>
+        </div>
+        <div class="page split">
+          <div class="grow">
+            <h1>Why is it awesome ?</h1>
+            <ul>
+              <li><strike>Complicated setup</strike></li>
+              <li><strike>Long build times</strike></li>
+              <li><strike>Requires high-end hardware</strike></li>
+              <li>Cloud-based</li>
+            </ul>
+          </div>
+          <div class="grow">
+            <h1>Some of our awesome features</h1>
+            <ul>
+              <li>Online IDE with review comments sidebar</li>
+              <li>???</li>
+              <li>???</li>
+              <li>???</li>
+            </ul>
+          </div>
+        </div>
