@@ -444,7 +444,7 @@ const containerAPI = containersAPI.api('/:container');
 
 containerAPI.patch({
   title: 'Update a container',
-  description: 'Update the properties of a given Docker container.',
+  description: 'Update the properties of a Docker container (with JSON Patch).',
 
   handler: (request, response) => {
     const { user } = request;
