@@ -4,6 +4,7 @@
 const jsonpatch = require('fast-json-patch');
 const selfapi = require('selfapi');
 
+const azure = require('../lib/azure');
 const db = require('../lib/db');
 const log = require('../lib/log');
 const users = require('../lib/users');
@@ -11,6 +12,80 @@ const users = require('../lib/users');
 // API resource to manage the Janitor instance itself.
 const adminAPI = module.exports = selfapi({
   title: 'Admin'
+});
+
+// API sub-resource to manage Azure hosting.
+const azureAPI = adminAPI.api('/azure');
+
+azureAPI.patch('/credentials', {
+  title: 'Update Azure credentials',
+  description: 'Update Azure Active Directory application credentials (with JSON Patch).',
+
+  handler: (request, response) => {
+    const { user } = request;
+    if (!user || !users.isAdmin(user)) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    const { credentials } = db.get('azure');
+
+    let json = '';
+    request.on('data', chunk => {
+      json += String(chunk);
+    });
+    request.on('end', () => {
+      try {
+        const operations = JSON.parse(json);
+        jsonpatch.applyPatch(credentials, operations, true);
+      } catch (error) {
+        log('[fail] patching azure credentials', error);
+        response.statusCode = 400; // Bad Request
+        response.json({ error: 'Invalid JSON Patch' }, null, 2);
+        return;
+      }
+
+      db.save();
+      response.json({ message: 'JSON Patch applied' }, null, 2);
+    });
+  },
+
+  examples: [{
+    request: {
+      body: JSON.stringify([
+        { op: 'replace', path: '/tenantId', value: '1234-5678' }
+      ], null, 2)
+    },
+    response: {
+      body: JSON.stringify({ message: 'JSON Patch applied' }, null, 2)
+    }
+  }],
+});
+
+azureAPI.get('/virtualmachines', {
+  title: 'List all virtual machines',
+  description: 'List all virtual machines in Azure.',
+
+  handler: async (request, response) => {
+    const { user } = request;
+    if (!user || !users.isAdmin(user)) {
+      response.statusCode = 403; // Forbidden
+      response.json({ error: 'Unauthorized' }, null, 2);
+      return;
+    }
+
+    try {
+      const virtualMachines = await azure.getAllVirtualMachines();
+      response.json(virtualMachines, null, 2);
+    } catch (error) {
+      log('[fail] fetching azure virtual machines', error);
+      response.statusCode = 500; // Internal Server Error
+      response.json({ error: 'Could not fetch virtual machines' }, null, 2);
+    }
+  },
+
+  examples: [],
 });
 
 // API sub-resource to manage OAuth2 providers.

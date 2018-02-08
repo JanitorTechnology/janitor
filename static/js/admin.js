@@ -70,6 +70,23 @@ Array.map(document.querySelectorAll('button[data-action]'), function (button) {
   }));
 });
 
+// Azure Virtual Machines button.
+Array.forEach(document.querySelectorAll('.azure-virtual-machines'), function (div) {
+  var button = div.querySelector('button');
+  var pre = div.querySelector('pre');
+  button.addEventListener('click', function (event) {
+    var url = '/api/admin/azure/virtualmachines';
+    pre.textContent = 'Fetching virtual machines…';
+    window.fetchAPI('GET', url, null, function (error, virtualMachines) {
+      if (error) {
+        pre.textContent = error;
+        return;
+      }
+      pre.textContent = JSON.stringify(virtualMachines, null, 2);
+    });
+  });
+});
+
 // Docker version button.
 Array.forEach(document.querySelectorAll('.docker-version'), function (div) {
   var button = div.querySelector('button');

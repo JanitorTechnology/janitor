@@ -4,6 +4,40 @@
           <div class="col-sm-12 col-md-6">
             <div class="panel panel-default">
               <div class="panel-heading">
+                <h4 class="project-title">Azure</h4>
+              </div>
+              <div class="panel-body">
+                <form action="/api/admin/azure/credentials" class="ajax-form has-feedback has-submit" method="patch">
+                  <label class="control-label">Application ID</label>
+                  <input class="form-control" name="/clientId" type="text" value={{= azure.credentials.clientId in json}}>
+                  <br>
+                  <label class="control-label">Application Secret</label>
+                  <input class="form-control" name="/clientSecret" type="text" value={{= azure.credentials.clientSecret in json}}>
+                  <br>
+                  <label class="control-label">Tenant ID</label>
+                  <input class="form-control" name="/tenantId" type="text" value={{= azure.credentials.tenantId in json}}>
+                  <br>
+                  <label class="control-label">Subscription ID</label>
+                  <input class="form-control" name="/subscriptionId" type="text" value={{= azure.credentials.subscriptionId in json}}>
+                  <br>
+                  <input type="submit" class="btn btn-default" value="Update">
+                </form>
+                <br>
+                <div class="azure-virtual-machines row">
+                  <div class="col-sm-12 top-right-controls">
+                    <button class="btn btn-default btn-xs">Refresh</button>
+                  </div>
+                  <div class="col-sm-12">
+                    <label>Virtual Machines</label>
+                    <pre></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
                 <h4 class="project-title">GitHub</h4>
               </div>
               <div class="panel-body">
