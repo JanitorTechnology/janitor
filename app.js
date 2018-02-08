@@ -361,15 +361,6 @@ boot.executeInParallel([
     routes.redirect(query.res, '/settings/account/', true);
   });
 
-  // These are not the droids you're looking for.
-  app.route(/^\/favicon\.ico$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/img/janitor.svg', true);
-  });
-
-  app.route(/^\/apple-touch-icon[\w-]*\.png$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/img/janitor.svg', true);
-  });
-
   app.route(/^\/[.,;)]$/, (data, match, end, query) => {
     routes.redirect(query.res, '/', true);
   });
