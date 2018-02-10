@@ -1,83 +1,85 @@
-        <div class="tabs">
-          <ul class="tab-nav global-tab-nav">
-            <li class="tab" data-tab="account"><a href="#">Account</a></li>
-            <li class="tab" data-tab="configurations"><a href="#">Configurations</a></li>
-          </ul>
-          <div class="tab-panels">
-            <div class="tab-panel" data-tab="account">
-              <section>
-                <h2>Basic information</h2>
-                <div class="setting form-control-container">
-                  <b>Email</b>
-                  <input class="form-control" disabled="true" type="text" value={{= user._primaryEmail in json}}>
+    <main class="container">
+      <div class="tabs">
+        <ul class="tab-nav global-tab-nav">
+          <li class="tab" data-tab="account"><a href="#">Account</a></li>
+          <li class="tab" data-tab="configurations"><a href="#">Configurations</a></li>
+        </ul>
+        <div class="tab-panels">
+          <div class="tab-panel" data-tab="account">
+            <section>
+              <h2>Basic information</h2>
+              <div class="setting form-control-container">
+                <b>Email</b>
+                <input class="form-control" disabled="true" type="text" value={{= user._primaryEmail in json}}>
+              </div>
+              <form action="/api/user" class="ajax-form has-feedback setting form-control-container" method="patch">
+                <b>Name</b>
+                <input class="form-control" data-submit-on="blur" name="/name" placeholder="Real name" type="text" value={{= user.profile.name in json}}>
+              </form>
+            </section>
+            <section>
+              <h2>Communication settings</h2>
+              <form action="/api/user/notifications/enabled?enabled={{= !user.notifications.enabled in boolean}}" class="row ajax-form has-feedback" data-refresh-after-success="true" id="notifications-form" method="put">
+                <div class="checkbox">
+                  <label>
+                    <input autocomplete="off" {{if user.notifications.enabled then {{ checked="checked" }}}} data-submit-on="change" name="enabled" type="checkbox">
+                    Enable notifications
+                  </label>
                 </div>
-                <form action="/api/user" class="ajax-form has-feedback setting form-control-container" method="patch">
-                  <b>Name</b>
-                  <input class="form-control" data-submit-on="blur" name="/name" placeholder="Real name" type="text" value={{= user.profile.name in json}}>
-                </form>
-              </section>
-              <section>
-                <h2>Communication settings</h2>
-                <form action="/api/user/notifications/enabled?enabled={{= !user.notifications.enabled in boolean}}" class="row ajax-form has-feedback" data-refresh-after-success="true" id="notifications-form" method="put">
-                  <div class="checkbox">
-                    <label>
-                      <input autocomplete="off" {{if user.notifications.enabled then {{ checked="checked" }}}} data-submit-on="change" name="enabled" type="checkbox">
-                      Enable notifications
-                    </label>
-                  </div>
-                </form>
-              </section>
-              <section>
-                <h2>Integrations</h2>
-                <div class="panel">
-                  <div class="panel-section">
-                    <div class="panel-heading padded">
-                      <img alt="GitHub Logo" class="panel-icon" src="/img/github.svg">
-                      <div class="grow">
-                        <b><a href="https://github.com">GitHub</a></b><br/>
-                        <small class="grey-text">Import basic information from your GitHub profile</small>
-                      </div>{{if {{github.username}} then {{
-                      <form action="/api/user/credentials/github" class="ajax-form has-feedback is-submit" data-refresh-after-success="true" method="delete">
-                        <button class="btn" type="submit">Disconnect</button>
-                      </form>}} else {{
-                      <div><a class="btn" href={{= github.authorizeUrl in json}}>Connect</a></div>}}}}
-                    </div>
-                  </div>
-                  <div class="panel-section">
-                    <div class="panel-heading padded">
-                      <img alt="BMO Logo" class="panel-icon" src="/img/bmo.svg">
-                      <div class="grow">
-                        <b><a href="https://bugzilla.mozilla.org">Bugzilla</a></b><br/>
-                        <small class="grey-text">Easily send Firefox patches to code review</small>
-                      </div>
-                      <div><button class="btn disabled" disabled="true">Coming Soon&trade;</button></div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-            <div class="tab-panel" data-tab="configurations">
-              <p>
-                Configure your containers from a single location, by editing and deploying these configuration files.
-              </p>{{ for (let file of Object.keys(user.configurations).sort()) { }}
+              </form>
+            </section>
+            <section>
+              <h2>Integrations</h2>
               <div class="panel">
-                <div class="panel-heading padded">
-                  <b class="grow">~/{{= file in html}}</b>{{ if (defaultConfigurations.includes(file)) { }}
-                  <form action="/api/user/configurations/{{= file in uri}}" class="ajax-form has-feedback" data-refresh-after-success="true" method="delete">
-                    <button class="btn btn-error" type="submit">Reset to Default</button>
-                  </form>
-                {{ } }}</div>
-                <div class="panel-body padded">
-                  <form action="/api/user/configurations" class="ajax-form has-feedback" method="patch">
-                    <textarea class="form-control" data-submit-on="blur" name="/{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
-                      user.configurations[file] in html
-                    }}</textarea>
-                  </form>
-                  <form action="/api/user/configurations/{{= file in uri}}" class="account-form ajax-form has-feedback" method="put">
-                    <p><strong>Note:</strong> This configuration will only apply to new containers. Overwrite <strong>~/{{= file in html}}</strong> in all existing containers by clicking <a data-submit-on="click" href="javascript:void(0)">here</a>.</p>
-                  </form>
+                <div class="panel-section">
+                  <div class="panel-heading padded">
+                    <img alt="GitHub Logo" class="panel-icon" src="/img/github.svg">
+                    <div class="grow">
+                      <b><a href="https://github.com">GitHub</a></b><br/>
+                      <small class="grey-text">Import basic information from your GitHub profile</small>
+                    </div>{{if {{github.username}} then {{
+                    <form action="/api/user/credentials/github" class="ajax-form has-feedback is-submit" data-refresh-after-success="true" method="delete">
+                      <button class="btn" type="submit">Disconnect</button>
+                    </form>}} else {{
+                    <div><a class="btn" href={{= github.authorizeUrl in json}}>Connect</a></div>}}}}
+                  </div>
                 </div>
-              </div>{{ } }}
-            </div>
+                <div class="panel-section">
+                  <div class="panel-heading padded">
+                    <img alt="BMO Logo" class="panel-icon" src="/img/bmo.svg">
+                    <div class="grow">
+                      <b><a href="https://bugzilla.mozilla.org">Bugzilla</a></b><br/>
+                      <small class="grey-text">Easily send Firefox patches to code review</small>
+                    </div>
+                    <div><button class="btn disabled" disabled="true">Coming Soon&trade;</button></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="tab-panel" data-tab="configurations">
+            <p>
+              Configure your containers from a single location, by editing and deploying these configuration files.
+            </p>{{ for (let file of Object.keys(user.configurations).sort()) { }}
+            <div class="panel">
+              <div class="panel-heading padded">
+                <b class="grow">~/{{= file in html}}</b>{{ if (defaultConfigurations.includes(file)) { }}
+                <form action="/api/user/configurations/{{= file in uri}}" class="ajax-form has-feedback" data-refresh-after-success="true" method="delete">
+                  <button class="btn btn-error" type="submit">Reset to Default</button>
+                </form>
+              {{ } }}</div>
+              <div class="panel-body padded">
+                <form action="/api/user/configurations" class="ajax-form has-feedback" method="patch">
+                  <textarea class="form-control" data-submit-on="blur" name="/{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
+                    user.configurations[file] in html
+                  }}</textarea>
+                </form>
+                <form action="/api/user/configurations/{{= file in uri}}" class="account-form ajax-form has-feedback" method="put">
+                  <p><strong>Note:</strong> This configuration will only apply to new containers. Overwrite <strong>~/{{= file in html}}</strong> in all existing containers by clicking <a data-submit-on="click" href="javascript:void(0)">here</a>.</p>
+                </form>
+              </div>
+            </div>{{ } }}
           </div>
         </div>
+      </div>
+    </main>

@@ -1,34 +1,36 @@
-    <div class="data text-center centered-container">
-      <h1>Data</h1>
-      <div class="data-container">
-        <div class="data-topic">
-          <h3>Users</h3>
-          <p class="numbers">
-            <span class="number">{{= data.users.users.length in integer}}</span>
-            <span class="unit">confirmed</span>
-            <span class="number">{{= data.users.waitlist.length in integer}}</span>
-            <span class="unit">waitlist</span>
-          </p>
-        </div>
-        <div class="data-topic">
-          <h3>Containers</h3>
-          <p class="numbers">
-            <span class="number">{{= data.contributions.started in integer}}</span>
-            <span class="unit">started</span>
-          </p>
-        </div>
-        <div class="data-topic">
-          <h3>Projects</h3>
-          <p class="numbers">
-            <span class="number">{{= data.projects.length in integer}}</span>
-          </p>
-        </div>
-        <div class="data-topic">
-          <h3>Cluster</h3>
-          <p class="numbers">
-            <span class="number">{{= data.hosts.docker.length in integer}}</span>
-            <span class="unit">Docker host{{if {{data.hosts.docker.length !== 1}} then s}}</span>
-          </p>
+    <main class="container">
+      <div class="data text-center centered-container">
+        <h1>Data</h1>
+        <div class="data-container">
+          <div class="data-topic">
+            <h3>Users</h3>
+            <p class="numbers">
+              <span class="number">{{= data.users.users.length in integer}}</span>
+              <span class="unit">confirmed</span>
+              <span class="number">{{= data.users.waitlist.length in integer}}</span>
+              <span class="unit">waitlist</span>
+            </p>
+          </div>
+          <div class="data-topic">
+            <h3>Containers</h3>
+            <p class="numbers">
+              <span class="number">{{= data.contributions.started in integer}}</span>
+              <span class="unit">started</span>
+            </p>
+          </div>
+          <div class="data-topic">
+            <h3>Projects</h3>
+            <p class="numbers">
+              <span class="number">{{= data.projects.length in integer}}</span>
+            </p>
+          </div>
+          <div class="data-topic">
+            <h3>Cluster</h3>
+            <p class="numbers">
+              <span class="number">{{= data.hosts.docker.length in integer}}</span>
+              <span class="unit">Docker host{{if {{data.hosts.docker.length !== 1}} then s}}</span>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
