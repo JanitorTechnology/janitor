@@ -170,8 +170,14 @@ main {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  z-index: 0;
   /* viewport height - header height - 20px extra height (so that footer is visible) */
   min-height: calc(100vh - 100px);
+}
+
+.global-alert + main {
+  /* viewport height - header height - 20px extra height (so that footer is visible) */
+  min-height: calc(100vh - 155px);
 }
 
 .centered-container {
@@ -344,7 +350,7 @@ textarea.form-control {
 
 .navbar {
   background: #fff;
-  z-index: 999;
+  z-index: 1;
 }
 
 .navbar-container {
@@ -386,6 +392,7 @@ textarea.form-control {
 .footer {
   border-top: solid 1px #eee;
   background: #fafafa;
+  z-index: 0;
 }
 
 .footer .footer-inner-container {
@@ -698,15 +705,28 @@ textarea.form-control {
 
 /* Alerts */
 
+.global-alert {
+  order: -1;
+  z-index: 2;
+}
+
 .alert {
-  margin-bottom: 1.5em;
-  padding: 10px;
-  border-radius: 4px;
+  padding: 15px;
+}
+
+.alert > span {
+  vertical-align: middle;
+}
+
+.alert > .icon::before {
+  width: 1em;
+  height: 1em;
+  margin-right: .5em;
 }
 
 .alert.alert-warning {
-  background: #ffe900;
-  color: #3e2800;
+  background: #fff8b2;
+  color: #715100;
 }
 
 /* Icons */
@@ -737,6 +757,10 @@ textarea.form-control {
 
 .icon.link::before {
   background-image: url(../img/icons/link.svg);
+}
+
+.icon.warning::before {
+  background-image: url(../img/icons/warning.svg);
 }
 
 /* Icon buttons */
