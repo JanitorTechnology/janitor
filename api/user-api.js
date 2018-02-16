@@ -54,12 +54,11 @@ userAPI.patch({
       return;
     }
 
-    let json = '';
-    request.on('data', chunk => {
-      json += String(chunk);
-    });
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
     request.on('end', () => {
       try {
+        const json = Buffer.concat(chunks).toString();
         const operations = JSON.parse(json);
         jsonpatch.applyPatch(user.profile, operations, true);
       } catch (error) {
@@ -151,12 +150,11 @@ configurationsAPI.patch({
       return;
     }
 
-    let json = '';
-    request.on('data', chunk => {
-      json += String(chunk);
-    });
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
     request.on('end', () => {
       try {
+        const json = Buffer.concat(chunks).toString();
         const operations = JSON.parse(json);
         const changedFiles = operations
           .map(operation => operation.path.replace(/^\//, ''));
@@ -391,12 +389,11 @@ notificationsEnabledAPI.put({
       return;
     }
 
-    let json = '';
-    request.on('data', chunk => {
-      json += String(chunk);
-    });
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
     request.on('end', () => {
       try {
+        const json = Buffer.concat(chunks).toString();
         const { enabled } = JSON.parse(json);
         if (typeof (enabled) !== 'boolean') {
           throw new Error('Invalid type for \'enabled\': ' + typeof (enabled));

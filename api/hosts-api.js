@@ -177,13 +177,12 @@ hostAPI.post({
         callback(request.query);
         return;
       }
-      let json = '';
-      request.on('data', chunk => {
-        json += String(chunk);
-      });
+      const chunks = [];
+      request.on('data', chunk => chunks.push(chunk));
       request.on('end', () => {
         let parameters = null;
         try {
+          const json = Buffer.concat(chunks).toString();
           parameters = JSON.parse(json);
         } catch (error) {
           response.statusCode = 400; // Bad Request
@@ -469,12 +468,11 @@ containerAPI.patch({
       return;
     }
 
-    let json = '';
-    request.on('data', chunk => {
-      json += String(chunk);
-    });
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
     request.on('end', () => {
       try {
+        const json = Buffer.concat(chunks).toString();
         const operations = JSON.parse(json);
         jsonpatch.applyPatch(machine.properties, operations, true);
       } catch (error) {

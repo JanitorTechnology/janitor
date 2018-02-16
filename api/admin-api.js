@@ -31,12 +31,11 @@ azureAPI.patch('/credentials', {
 
     const { credentials } = db.get('azure');
 
-    let json = '';
-    request.on('data', chunk => {
-      json += String(chunk);
-    });
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
     request.on('end', () => {
       try {
+        const json = Buffer.concat(chunks).toString();
         const operations = JSON.parse(json);
         jsonpatch.applyPatch(credentials, operations, true);
       } catch (error) {
@@ -162,12 +161,11 @@ oauth2providerAPI.patch({
       return;
     }
 
-    let json = '';
-    request.on('data', chunk => {
-      json += String(chunk);
-    });
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
     request.on('end', () => {
       try {
+        const json = Buffer.concat(chunks).toString();
         const operations = JSON.parse(json);
         jsonpatch.applyPatch(provider, operations, true);
       } catch (error) {
