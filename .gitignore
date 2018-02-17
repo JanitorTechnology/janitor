@@ -3,6 +3,7 @@
 Thumbs.db
 npm-debug.log
 node_modules
+package-lock.json
 
 db.json
 docker.ca
