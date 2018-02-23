@@ -83,13 +83,18 @@ boot.executeInParallel([
     next();
   });
 
+  // Compute canonical resource URLs with a server middleware.
+  app.handle((request, response, next) => {
+    request.canonicalUrl = 'https://' + hostnames[0] + request.url;
+    next();
+  });
+
   // Mount the Janitor API.
   selfapi(app, '/api', api);
 
   // Public landing page.
   app.route(/^\/$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.landingPage(query.res, user);
+    routes.landingPage(query.req, query.res);
   });
 
   // Public landing page (legacy).
@@ -104,9 +109,8 @@ boot.executeInParallel([
 
   // Public API reference.
   app.route(/^\/reference\/api\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
     log('api reference');
-    routes.apiPage(query.res, api, user);
+    routes.apiPage(query.req, query.res, api);
   });
 
   // Public API reference page (legacy).
@@ -119,7 +123,7 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     log('blog');
-    routes.blogPage(response, user, blog);
+    routes.blogPage(request, response, blog);
   });
 
   // Public blog page (legacy).
@@ -129,8 +133,7 @@ boot.executeInParallel([
 
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.dataPage(query.res, user);
+    routes.dataPage(query.req, query.res);
   });
 
   // Public live data page (legacy).
@@ -140,17 +143,17 @@ boot.executeInParallel([
 
   // Public design page
   app.route(/^\/design\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.designPage(query.res, user);
+    routes.designPage(query.req, query.res);
   });
+
 
   // Public project pages.
   app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
     const projectUri = match[1];
     if (!projectUri) {
       // No particular project was requested, show them all.
-      routes.projectsPage(query.res, user);
+      routes.projectsPage(request, response);
       return;
     }
 
@@ -158,11 +161,11 @@ boot.executeInParallel([
     const project = db.get('projects')[projectId];
     if (!project) {
       // The requested project doesn't exist.
-      routes.notFoundPage(query.res, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
-    routes.projectPage(query.res, project, user);
+    routes.projectPage(request, response, project);
   });
 
   // Public projects page (legacy).
@@ -183,9 +186,10 @@ boot.executeInParallel([
 
   // User login page.
   app.route(/^\/login\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.loginPage(query.res);
+      routes.loginPage(request, response);
       return;
     }
 
@@ -239,7 +243,7 @@ boot.executeInParallel([
     const { user } = request;
     if (!user) {
       // Don't allow signing in only with GitHub just yet.
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -249,7 +253,7 @@ boot.executeInParallel([
       ({ accessToken, refreshToken } = await github.authenticate(request));
     } catch (error) {
       log('[fail] github authentication', error);
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -267,7 +271,7 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -278,7 +282,7 @@ boot.executeInParallel([
       // Note: Such OAuth2 sanity problems should rarely happen, but if they
       // do become more frequent, we should inform the user about what's
       // happening here instead of showing a generic 404 page.
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
     });
   });
 
@@ -286,7 +290,7 @@ boot.executeInParallel([
   app.route(/^\/login\/oauth\/access_token\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
     if (request.method !== 'POST') {
-      routes.notFoundPage(response, request.user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -316,11 +320,11 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.containersPage(response, user);
+    routes.containersPage(request, response);
   });
 
   // User containers list (legacy).
@@ -330,13 +334,14 @@ boot.executeInParallel([
 
   // User notifications.
   app.route(/^\/notifications\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.loginPage(query.res);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.notificationsPage(query.res, user);
+    routes.notificationsPage(request, response);
   });
 
   // Old user settings.
@@ -344,7 +349,7 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
@@ -352,7 +357,7 @@ boot.executeInParallel([
     const sectionUri = match[1];
     const section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    routes.settingsPageOld(request, response, section, user);
+    routes.settingsPageOld(request, response, section);
   });
 
   // User settings page.
@@ -360,11 +365,11 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.settingsPage(request, response, user);
+    routes.settingsPage(request, response);
   });
 
   // User settings page (legacy).
@@ -378,9 +383,10 @@ boot.executeInParallel([
 
   // Admin sections.
   app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!users.isAdmin(user)) {
-      routes.notFoundPage(query.res, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -390,14 +396,14 @@ boot.executeInParallel([
 
     log('admin', section, '(' + user._primaryEmail + ')');
 
-    routes.adminPage(query.res, section, user);
+    routes.adminPage(request, response, section);
   });
+
 
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
-    const { user } = query.req;
     log('404', match[0]);
-    routes.notFoundPage(query.res, user);
+    routes.notFoundPage(query.req, query.res);
   });
 
   // Alpha version sign-up.
