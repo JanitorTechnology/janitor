@@ -38,6 +38,11 @@
                 <input class="form-control" data-submit-on="blur" name="/docker/path" value={{= project.docker.path in json}}>
               </form>
             </div>
+            <form id="{{= id in xmlattr}}-description" data-action="projectdb" class="ajax-form has-feedback">
+              <input type="hidden" name="id" value={{= id in json}}>
+              <label class="control-label">Description</label>
+              <textarea class="form-control" data-submit-on="blur" name="/description" rows="5">{{= project.description in html}}</textarea>
+            </form>
             <form id="{{= id in xmlattr}}-update" data-action="projectdb" class="ajax-form has-feedback">
               <input type="hidden" name="id" value={{= id in json}}>
               <label class="control-label">Update</label>
