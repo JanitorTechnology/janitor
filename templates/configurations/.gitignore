@@ -95,7 +95,6 @@ capybara-*.html
 .rspec
 .rvmrc
 /.bundle
-**.orig
 rerun.txt
 pickle-email-*.html
 *.gem
