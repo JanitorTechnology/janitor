@@ -46,7 +46,7 @@ docker: docker.ca docker.crt docker.key
 	printf "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd\n" | sudo tee /etc/systemd/system/docker.service.d/simple_dockerd.conf # work around "-H fd://" conflict
 	sudo systemctl daemon-reload
 	sudo cp /etc/docker/daemon.json /etc/docker/daemon.json.old 2>/dev/null; true # backup any prior daemon.json, but ignore errors
-	printf "{\n  \"tls\": true,\n  \"tlscacert\": \"$$(pwd)/docker.ca\",\n  \"tlscert\": \"$$(pwd)/docker.crt\",\n  \"tlskey\": \"$$(pwd)/docker.key\",\n  \"icc\": false,\n  \"hosts\": [\"tcp://0.0.0.0:2376\", \"unix:///var/run/docker.sock\"]\n}\n" | sudo tee /etc/docker/daemon.json
+	printf "{\n  \"tls\": true,\n  \"tlsverify\": true,\n  \"tlscacert\": \"$$(pwd)/docker.ca\",\n  \"tlscert\": \"$$(pwd)/docker.crt\",\n  \"tlskey\": \"$$(pwd)/docker.key\",\n  \"icc\": false,\n  \"hosts\": [\"tcp://0.0.0.0:2376\", \"unix:///var/run/docker.sock\"]\n}\n" | sudo tee /etc/docker/daemon.json
 	sudo service docker restart && sleep 1
 
 # Delete all the installed certificates.
