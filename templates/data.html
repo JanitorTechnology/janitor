@@ -27,6 +27,7 @@
             <div class="numbers">
               <span class="number">{{= data.projects.length in integer}}</span>
             </div>
+            <a class="btn btn-primary" href="https://p.datadoghq.com/sb/9548ef20d-803ca9ccc697ada769fcf5ef9ebcaa9c">Running Containers</a>
           </div>
           <div class="data-topic col-sm-6">
             <div>Cluster</div>
@@ -34,15 +35,7 @@
               <span class="number">{{= data.hosts.docker.length in integer}}</span>
               <span class="unit">Docker host{{if {{data.hosts.docker.length !== 1}} then s}}</span>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="data-topic col-sm-6">
-            <div>Metrics</div>
-            <div class="dashboard">
-              <a class="btn btn-primary" href="https://p.datadoghq.com/sb/9548ef20d-803ca9ccc697ada769fcf5ef9ebcaa9c">Running Containers</a>
-              <a class="btn btn-primary" href="https://p.datadoghq.com/sb/9548ef20d-cb545bf38f71c88d07ceec6372fd0fd9">Server Metrics</a>
-            </div>
+            <a class="btn btn-primary" href="https://p.datadoghq.com/sb/9548ef20d-cb545bf38f71c88d07ceec6372fd0fd9">Server Metrics</a>
           </div>
         </div>
       </div>
