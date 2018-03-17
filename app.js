@@ -21,7 +21,7 @@ boot.executeInParallel([
   boot.ensureDockerTlsCertificates
 ], () => {
   // You can customize these values in './db.json'.
-  const hostname = db.get('hostname', 'localhost');
+  const hostnames = db.get('hostnames', [ 'localhost' ]);
   const https = db.get('https');
   const ports = db.get('ports');
   const security = db.get('security');
@@ -38,13 +38,13 @@ boot.executeInParallel([
   });
 
   log('[ok] Janitor → http' + (security.forceHttp ? '' : 's') + '://' +
-    hostname + ':' + ports.https);
+    hostnames[0] + ':' + ports.https);
 
   // Protect the server and its users with a security policies middleware.
   const enforceSecurityPolicies = (request, response, next) => {
-    // Only accept requests addressed to our actual hostname.
+    // Only accept requests addressed to our actual hostnames.
     const requestedHostname = request.headers.host;
-    if (requestedHostname !== hostname) {
+    if (!requestedHostname || hostnames.indexOf(requestedHostname) < 0) {
       routes.drop(response, 'invalid hostname: ' + requestedHostname);
       return;
     }
@@ -82,13 +82,18 @@ boot.executeInParallel([
     next();
   });
 
+  // Compute canonical resource URLs with a server middleware.
+  app.handle((request, response, next) => {
+    request.canonicalUrl = 'https://' + hostnames[0] + request.url;
+    next();
+  });
+
   // Mount the Janitor API.
   selfapi(app, '/api', api);
 
   // Public landing page.
   app.route(/^\/$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.landingPage(query.res, user);
+    routes.landingPage(query.req, query.res);
   });
 
   // Public API (when wrongly used with a trailing '/').
@@ -98,64 +103,55 @@ boot.executeInParallel([
 
   // Public API reference.
   app.route(/^\/reference\/api\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
     log('api reference');
-    routes.apiPage(query.res, api, user);
+    routes.apiPage(query.req, query.res, api);
   });
 
   // New Public API reference.
   app.route(/^\/reference\/api-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
     log('api reference');
-    routes.apiPageNew(query.res, api, user);
+    routes.apiPageNew(query.req, query.res, api);
   });
 
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
     log('blog');
-    routes.blogPage(query.res, user);
+    routes.blogPage(query.req, query.res);
   });
 
   // New public blog page.
   app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
-    const { req: request, res: response } = query;
-    const { user } = request;
     log('blog-new');
-    routes.blogPageNew(response, user, blog);
+    routes.blogPageNew(query.req, query.res, blog);
   });
 
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.dataPage(query.res, user);
+    routes.dataPage(query.req, query.res);
   });
 
   // Public live data page.
   app.route(/^\/data-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.dataPageNew(query.res, user);
+    routes.dataPageNew(query.req, query.res);
   });
 
   // Public design page
   app.route(/^\/design\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.designPage(query.res, user);
+    routes.designPage(query.req, query.res);
   });
 
   // new login page
   app.route(/^\/login-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.newLoginPage(query.res, user);
+    routes.newLoginPage(query.req, query.res);
   });
 
   // Public project pages.
   app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
     const projectUri = match[1];
     if (!projectUri) {
       // No particular project was requested, show them all.
-      routes.projectsPage(query.res, user);
+      routes.projectsPage(request, response);
       return;
     }
 
@@ -163,20 +159,20 @@ boot.executeInParallel([
     const project = db.get('projects')[projectId];
     if (!project) {
       // The requested project doesn't exist.
-      routes.notFoundPage(query.res, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
-    routes.projectPage(query.res, project, user);
+    routes.projectPage(request, response, project);
   });
 
   // New public project pages.
   app.route(/^\/projects-new(\/[\w-]+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
     const projectUri = match[1];
     if (!projectUri) {
       // No particular project was requested, show them all.
-      routes.projectsPageNew(query.res, user);
+      routes.projectsPageNew(request, response);
       return;
     }
 
@@ -184,11 +180,11 @@ boot.executeInParallel([
     const project = db.get('projects')[projectId];
     if (!project) {
       // The requested project doesn't exist.
-      routes.notFoundPageNew(query.res, user);
+      routes.notFoundPageNew(request, response);
       return;
     }
 
-    routes.projectPageNew(query.res, project, user);
+    routes.projectPageNew(request, response, project);
   });
 
   // User logout.
@@ -204,13 +200,14 @@ boot.executeInParallel([
 
   // User login page.
   app.route(/^\/login\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.loginPage(query.res);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.redirect(query.res, '/');
+    routes.redirect(response, '/');
   });
 
   // User login via GitHub.
@@ -219,7 +216,7 @@ boot.executeInParallel([
     const { user } = request;
     if (!user) {
       // Don't allow signing in only with GitHub just yet.
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -229,7 +226,7 @@ boot.executeInParallel([
       ({ accessToken, refreshToken } = await github.authenticate(request));
     } catch (error) {
       log('[fail] github authentication', error);
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -247,7 +244,7 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -258,7 +255,7 @@ boot.executeInParallel([
       // Note: Such OAuth2 sanity problems should rarely happen, but if they
       // do become more frequent, we should inform the user about what's
       // happening here instead of showing a generic 404 page.
-      routes.notFoundPage(response, user);
+      routes.notFoundPage(request, response);
     });
   });
 
@@ -266,7 +263,7 @@ boot.executeInParallel([
   app.route(/^\/login\/oauth\/access_token\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
     if (request.method !== 'POST') {
-      routes.notFoundPage(response, request.user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -296,11 +293,11 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.containersPage(response, user);
+    routes.containersPage(request, response);
   });
 
   // User new containers list.
@@ -308,22 +305,23 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.containersPageNew(response, user);
+    routes.containersPageNew(request, response);
   });
 
   // User notifications.
   app.route(/^\/notifications\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!user) {
-      routes.loginPage(query.res);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.notificationsPage(query.res, user);
+    routes.notificationsPage(request, response);
   });
 
   // User settings.
@@ -331,7 +329,7 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
@@ -339,7 +337,7 @@ boot.executeInParallel([
     const sectionUri = match[1];
     const section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    routes.settingsPage(request, response, section, user);
+    routes.settingsPage(request, response, section);
   });
 
   // New settings page.
@@ -347,11 +345,11 @@ boot.executeInParallel([
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
-      routes.loginPage(response);
+      routes.loginPage(request, response);
       return;
     }
 
-    routes.settingsPageNew(request, response, user);
+    routes.settingsPageNew(request, response);
   });
 
   // User account (now part of settings).
@@ -365,9 +363,10 @@ boot.executeInParallel([
 
   // Admin sections.
   app.route(/^\/admin(\/\w+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
+    const { req: request, res: response } = query;
+    const { user } = request;
     if (!users.isAdmin(user)) {
-      routes.notFoundPage(query.res, user);
+      routes.notFoundPage(request, response);
       return;
     }
 
@@ -377,21 +376,19 @@ boot.executeInParallel([
 
     log('admin', section, '(' + user._primaryEmail + ')');
 
-    routes.adminPage(query.res, section, user);
+    routes.adminPage(request, response, section);
   });
 
   // New 404 Not Found page
   app.route(/^\/404-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
     log('404-new', match[0]);
-    routes.notFoundPageNew(query.res, user);
+    routes.notFoundPageNew(query.req, query.res);
   });
 
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
-    const { user } = query.req;
     log('404', match[0]);
-    routes.notFoundPage(query.res, user);
+    routes.notFoundPage(query.req, query.res);
   });
 
   // Alpha version sign-up.

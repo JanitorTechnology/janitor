@@ -42,7 +42,7 @@ tests.push({
   test: (port, callback) => {
     const db = require('../lib/db');
     // Tell our fake Janitor app that it runs on the fake host "example.com":
-    db.get('hostname', 'example.com');
+    db.get('hostnames', [ 'example.com' ]);
     // Disable sending any emails (for invites or signing in):
     db.get('mailer').block = true;
     // Disable Let's Encrypt HTTPS certificate generation and verification:
