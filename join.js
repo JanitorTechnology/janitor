@@ -3,7 +3,6 @@
 
 const camp = require('camp');
 const http = require('http');
-const nodepath = require('path');
 const nodeurl = require('url');
 
 const boot = require('./lib/boot');
@@ -187,7 +186,7 @@ async function ensureOAuth2Access (request, response, next) {
 }
 
 // Proxy a request to a local Docker container.
-async function proxyRequest (request, response) {
+async function proxyRequest (request, response, head) {
   const { session } = request;
   let { container, port } = request.query;
   if (!container || !port) {
@@ -216,7 +215,7 @@ async function proxyRequest (request, response) {
     // container port is mapped to. This also ensures that the container exists
     // on this host, and that the authenticated user is allowed to access it.
     const data = await getMappedPort(oauth2Tokens[session.id], container, port);
-    routeRequest({ port: data.port, proxy: data.proxy }, request, response);
+    routeRequest({ port: data.port, proxy: data.proxy }, request, response, head);
   } catch (error) {
     log('[fail] getting mapped port', error);
     response.statusCode = 404; // Not Found
@@ -225,10 +224,9 @@ async function proxyRequest (request, response) {
 }
 
 // Route a request to the given port, using the given proxy type.
-function routeRequest (proxyParameters, request, response) {
-  const path = nodepath.normalize(request.url);
-  if (path[0] !== '/') {
-    log('[fail] invalid proxy path:', path);
+function routeRequest (proxyParameters, request, response, head) {
+  if (request.url[0] !== '/') {
+    log('[fail] invalid proxy path:', request.url);
     response.statusCode = 500; // Internal Server Error
     response.end();
     return;
@@ -237,11 +235,17 @@ function routeRequest (proxyParameters, request, response) {
   const { port, proxy } = proxyParameters;
   switch (proxy) {
     case 'https':
-      routes.webProxy(request, response, { port, path });
+      routes.webProxy(request, response, head, { port });
       break;
 
     case 'none':
-      routes.redirect(response, 'https://' + hostname + ':' + port + path);
+      if (!(response instanceof http.ServerResponse)) {
+        const error = new Error('Unsupported response type (e.g. WebSocket)');
+        log('[fail] proxy=none redirect', error);
+        response.end();
+        return;
+      }
+      routes.redirect(response, 'https://' + hostname + ':' + port + request.url);
       break;
 
     default:
