@@ -271,7 +271,7 @@ credentialsAPI.delete({
       return;
     }
 
-    hosts.resetOAuth2ClientSecret(host, (error) => {
+    hosts.resetOAuth2ClientSecret(host, error => {
       if (error) {
         response.statusCode = 500; // Internal Server Error
         response.json({ error: 'Could not reset host credentials' }, null, 2);

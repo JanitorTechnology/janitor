@@ -31,6 +31,7 @@ Promise.all([
   boot.verifyJanitorOAuth2Access()
 ])
   .then(() => boot.registerDockerClient())
+  .catch(err => log('[fail] could not join cluster', err))
   .then(() => {
     log('[ok] joined cluster as [hostname = ' + hostname + ']');
 
