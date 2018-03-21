@@ -1,4 +1,4 @@
-        <div class="page">
+        <div class="container">
           <div class="text-center">
             {{
               const tagline = taglines[Math.floor(Math.random() * taglines.length)] + ' faster';
@@ -8,39 +8,63 @@
           <div id="intro-video">
             <iframe src="https://www.youtube.com/embed/5sNDMIh-iVw" allowfullscreen></iframe>
           </div>
-          <div id="quotes">
-            <h2 class="text-center secondary-heading">Happy Janitor Quotes</h2>
-            <div class="quote grow">
-              <blockquote>This will change the lives of a lot of contributors.</blockquote>
-              <span>― Michael Kohler</span>
-            </div>
-            <div class="quote grow">
-              <blockquote>Just wanted to say thanks for making Janitor. It just saved me a ton of time debugging a crash.</blockquote>
-              <span>― Brian Grinstead</span>
-            </div>
-            <div class="quote grow">
-              <blockquote>Mind blown! This would have literally saved months of my life years ago when I hacked on Firefox.</blockquote>
-              <span>― Brian King</span>
-            </div>
+        </div>
+        <div id="quotes" class="landing-section">
+          <div class="quote grow">
+            <blockquote>Just wanted to say thanks for making Janitor. It just saved me a ton of time debugging a crash.</blockquote>
+            <span>― Brian Grinstead</span>
+          </div>
+          <div class="quote grow">
+            <blockquote>This will change the lives of a lot of contributors.</blockquote>
+            <span>― Michael Kohler</span>
+          </div>
+          <div class="quote grow">
+            <blockquote>Mind blown! This would have literally saved months of my life years ago when I hacked on Firefox.</blockquote>
+            <span>― Brian King</span>
           </div>
         </div>
-        <div class="page split">
-          <div class="grow">
-            <h1>Why is it awesome ?</h1>
-            <ul>
-              <li><strike>Complicated setup</strike></li>
-              <li><strike>Long build times</strike></li>
-              <li><strike>Requires high-end hardware</strike></li>
-              <li>Cloud-based</li>
-            </ul>
+        <div class="container">
+          <h2>In one click, spin up complete development environments:</h2>
+          <ul>
+            <li>Ships with all the project's dependencies pre-installed.</li>
+            <li>Has the source code you need already downloaded and compiled.</li>
+            <li>Is fast, and connected to a powerful backbone internet connection.</li>
+            <li>Can be accessed anywhere you have an internet connection and a web browser; even a library computer or a Chromebook.</li>
+            <li>Runs Linux.</li>
+            <li>Comes with convenience scripts and utilities that the maintainers themselves use to improve their productivity.</li>
+            <li>Gets completely isolated from your own computer, and from your other containers.</li>
+            <li>Starts in a few seconds.</li>
+          </ul>
+        </div>
+        <div class="container">
+          <h2>Mind-blowing projects you can contribute to</h2>
+          <div class="grid">{{
+            for (let id in projects) {
+              const project = projects[id];
+            }}
+            <div class="card">
+              <img class="card-image" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
+              <div class="card-content">
+                <div class="grow">
+                  <h2>{{= project.name in html}}</h2>
+                </div>
+              </div>
+            </div>{{ } }}
           </div>
-          <div class="grow">
-            <h1>Some of our awesome features</h1>
-            <ul>
-              <li>Online IDE with review comments sidebar</li>
-              <li>???</li>
-              <li>???</li>
-              <li>???</li>
-            </ul>
+        </div>
+        <div class="container">
+          <h2>Get started now:</h2>
+          <div class="form-control-container">
+            <input class="form-control large" name="email" placeholder="you@yourdomain.com" spellcheck="false" autocapitalize="off" type="email" autocomplete="off" required>
+            <button class="btn btn-primary large">Log In</button>
+          </div>
+        </div>
+        <div class="container">
+          <h2>Our awesome partners</h2>
+          <div class="partners">
+            <a href="https://mozilla.org" class="partner-logo"><img src="/img/partners/mozilla.svg"></a>
+            <a href="https://www.irill.org" class="partner-logo"><img src="/img/partners/irill.png"></a>
+            <a href="https://aws.amazon.com/cloud9/" class="partner-logo"><img src="/img/c9.svg"></a>
+            <a href="https://www.datadoghq.com" class="partner-logo"><img src="/img/partners/datadog.svg"></a>
           </div>
         </div>

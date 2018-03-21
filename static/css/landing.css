@@ -5,43 +5,31 @@
   font-weight: 300;
 }
 
-.secondary-heading {
-  font-size: 22px;
-  margin-bottom: 10px;
+.landing-section {
+  padding: 80px;
 }
 
 #intro-video {
   max-width: 992px;
-  padding-bottom: 56.25%;
   width: 100%;
+  height: 50vh;
   margin: 50px auto;
   display: block;
   position: relative;
 }
 
 #intro-video iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   border: none;
-  padding: 0 20px;
 }
 
 #quotes {
   background: #fafafa;
   border-top: solid 1px #eaeaea;
   border-bottom: solid 1px #eaeaea;  
-  padding: 40px 20px 80px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(200px, 300px));
-  grid-gap: 40px;
+  display: flex;
   justify-content: space-around;
-}
-
-#quotes > h2 {
-  grid-column: 1 / -1;
 }
 
 .quote {
@@ -49,35 +37,45 @@
   text-align: right;
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 0;
 }
 
-#quotes blockquote {
+.quote:not(:last-child) {
+  margin-right: 10%;
+}
+
+.quote blockquote {
   font-style: italic;
   text-align: justify;
   line-height: 1.5;
   margin: 0;
-  flex: 1;
   color: #666;
   padding: 0 5px 20px 0;
 }
  
-#quotes blockquote::before, #quotes blockquote::after {
+.quote blockquote::before, .quote blockquote::after {
   content: '"';
   font-size: 18px;
   font-weight: 700;
 }
 
-#quotes span {
+.quote span {
   font-weight: 700;
 }
 
-.page {
-  width: 100%;
-  overflow: auto;
+.partners {
+  display: flex;
 }
 
-.page.split {
-  display: flex;
+.partner-logo {
+  height: 50px;
+  display: inline-block;
+  flex: 1;
+}
+
+.partner-logo img {
+  height: 100%;
 }
 
 @media screen and (max-width: 768px) {
