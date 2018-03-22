@@ -15,11 +15,11 @@ const machines = require('./lib/machines');
 const routes = require('./lib/routes');
 const users = require('./lib/users');
 
-boot.executeInParallel([
-  boot.forwardHttp,
-  boot.ensureHttpsCertificates,
-  boot.ensureDockerTlsCertificates
-], () => {
+Promise.all([
+  boot.forwardHttp(),
+  boot.ensureHttpsCertificates(),
+  boot.ensureDockerTlsCertificates()
+]).then(() => {
   // You can customize these values in './db.json'.
   const hostname = db.get('hostname', 'localhost');
   const https = db.get('https');
