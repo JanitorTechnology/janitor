@@ -501,35 +501,4 @@ boot.executeInParallel([
       end({ status: 'started' });
     }, 42000);
   });
-
-  // Save a new user key, or update an existing one.
-  app.ajax.on('key', (data, end, query) => {
-    const { user } = query.req;
-    if (!user || !data.name || !data.key) {
-      end();
-      return;
-    }
-
-    let key = '';
-    if (data.name !== 'cloud9') {
-      end({ status: 'error', message: 'Unknown key name' });
-      return;
-    }
-
-    // Extract a valid SSH public key from the user's input.
-    // Regex adapted from https://gist.github.com/paranoiq/1932126.
-    const match = data.key.match(/ssh-rsa [\w+/]+[=]{0,3}/);
-    if (!match) {
-      end({ status: 'error', message: 'Invalid SSH key' });
-      return;
-    }
-
-    key = match[0];
-    log('key', data.name, user._primaryEmail);
-
-    user.keys[data.name] = key;
-    db.save();
-
-    end({ status: 'key-saved' });
-  });
 });
