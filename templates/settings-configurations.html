@@ -13,7 +13,7 @@
           </div>{{ } }}
           <form action="/api/user/configurations" class="account-form ajax-form has-feedback col-sm-12" method="patch">
             <label class="control-label">~/{{= file in html}}</label>
-            <textarea class="form-control" data-submit-on="blur" name="/{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
+            <textarea class="form-control" data-submit-on="blur" name="{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
               user.configurations[file] in html
             }}</textarea>
           </form>
