@@ -156,8 +156,9 @@ configurationsAPI.patch({
       try {
         const json = Buffer.concat(chunks).toString();
         const operations = JSON.parse(json);
-        const changedFiles = operations
-          .map(operation => operation.path.replace(/^\//, ''));
+        // Compute file names by un-escaping the JSON Pointer tokens (RFC 6901).
+        const changedFiles = operations.map(operation =>
+          jsonpatch.unescapePathComponent(operation.path.replace(/^\//, '')));
 
         for (const file of changedFiles) {
           if (!configurations.allowed.includes(file)) {

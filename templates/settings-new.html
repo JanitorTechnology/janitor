@@ -70,7 +70,7 @@
               {{ } }}</div>
               <div class="panel-body padded">
                 <form action="/api/user/configurations" class="ajax-form has-feedback" method="patch">
-                  <textarea class="form-control" data-submit-on="blur" name="/{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
+                  <textarea class="form-control" data-submit-on="blur" name="{{= file in jsonpointertoken in xmlattr}}" placeholder="{{= file in xmlattr}} file" rows="7">{{=
                     user.configurations[file] in html
                   }}</textarea>
                 </form>
