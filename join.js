@@ -73,9 +73,9 @@ boot.executeInParallel([
       request.query = {};
       ensureSession(request, socket, () => {
         ensureOAuth2Access(request, socket, () => {
-          // Note: We don't handle proxy URLs here, because they don't work with
-          // WebSockets (no 'referer' HTTP header in WebSocket requests).
-          proxyRequest(request, socket);
+          proxyHeuristics.handleProxyUrls(request, socket, () => {
+            proxyRequest(request, socket);
+          });
         });
       });
     });
