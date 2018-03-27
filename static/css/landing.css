@@ -5,8 +5,12 @@
   font-weight: 300;
 }
 
+.container, .landing-section {
+  font-size: 16px;
+}
+
 .landing-section {
-  padding: 80px;
+  padding: 50px 10vw;
 }
 
 #intro-video {
@@ -30,6 +34,20 @@
   border-bottom: solid 1px #eaeaea;  
   display: flex;
   justify-content: space-around;
+}
+
+@media screen and (max-width: 768px) {
+  #quotes {
+    display: block;
+  }
+
+  .quote {
+    width: 100%;
+  }
+
+  .quote:not(:last-child) {
+    margin-bottom: 50px;
+  }
 }
 
 .quote {
@@ -66,21 +84,17 @@
 
 .partners {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .partner-logo {
   height: 50px;
+  margin: 10px;
   display: inline-block;
   flex: 1;
 }
 
 .partner-logo img {
   height: 100%;
-}
-
-@media screen and (max-width: 768px) {
-  #quotes {
-    grid-template-columns: 1fr;
-    justify-items: stretch;
-  }
 }
