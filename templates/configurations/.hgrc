@@ -13,6 +13,7 @@ pager =
 histedit = 
 rebase = 
 blackbox = 
+fsmonitor =
 firefoxtree = /home/user/.mozbuild/version-control-tools/hgext/firefoxtree
 reviewboard = /home/user/.mozbuild/version-control-tools/hgext/reviewboard/client.py
 bzexport = /home/user/.mozbuild/version-control-tools/hgext/bzexport
