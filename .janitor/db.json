@@ -1,0 +1,39 @@
+{
+  "hostname": "localhost",
+  "ports": {
+    "http": 8081,
+    "https": 8080
+  },
+  "security": {
+    "forceHttp": true,
+    "forceInsecure": true
+  },
+  "mailer": {
+    "block": true,
+    "from": "",
+    "host": "",
+    "auth": {
+      "user": "",
+      "pass": ""
+    }
+  },
+  "hosts": {
+    "localhost": {
+      "properties": {
+        "port": "2376",
+        "ca": "",
+        "crt": "",
+        "key": ""
+      },
+      "oauth2client": {
+        "id": "",
+        "secret": ""
+      }
+    }
+  },
+  "projects": {},
+  "users": {},
+  "admins": {
+    "admin@localhost": true
+  }
+}
