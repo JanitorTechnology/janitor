@@ -3,7 +3,7 @@
   "description": "The fastest development system in the world.",
   "icon": "https://janitor.technology/img/janitor.svg",
   "docker": {
-    "image": "janx/janitor"
+    "image": "janitortechnology/janitor"
   },
   "ports": {
     "22": {
@@ -22,6 +22,10 @@
     "8089": {
       "label": "Cloud9",
       "proxy": "https"
+    },
+    "8090": {
+      "label": "Theia",
+      "proxy": "https"
     }
   },
   "scripts": {
@@ -30,6 +34,7 @@
     "Check coding style": "npm run lint",
     "Fix coding style": "npm run lint-fix",
     "Run tests": "npm test",
+    "Update source code": "git pull --rebase origin master",
     "Send to code review": "hub pull-request"
   }
 }
