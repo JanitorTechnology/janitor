@@ -21,6 +21,8 @@ push-to-try = /home/user/.mozbuild/version-control-tools/hgext/push-to-try
 [defaults]
 qnew = -D -U
 qrefresh = -D
+qseries = -s
+qunapplied = -s
 [pager]
 pager = LESS=FRSXQ less
 attend-help = true
