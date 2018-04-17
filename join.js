@@ -24,13 +24,15 @@ if (!hostname || hostname === 'localhost') {
 
 log('[ok] will try to join cluster as [hostname = ' + hostname + ']');
 
-boot.executeInParallel([
-  boot.forwardHttp,
-  boot.ensureHttpsCertificates,
-  boot.ensureDockerTlsCertificates,
-  boot.verifyJanitorOAuth2Access
-], () => {
-  boot.registerDockerClient(() => {
+Promise.all([
+  boot.forwardHttp(),
+  boot.ensureHttpsCertificates(),
+  boot.ensureDockerTlsCertificates(),
+  boot.verifyJanitorOAuth2Access()
+])
+  .then(() => boot.registerDockerClient())
+  .catch(err => log('[fail] could not join cluster', err))
+  .then(() => {
     log('[ok] joined cluster as [hostname = ' + hostname + ']');
 
     const https = db.get('https');
@@ -80,7 +82,6 @@ boot.executeInParallel([
       });
     });
   });
-});
 
 // Associate some non-persistent data to sessions.
 const oauth2States = {};

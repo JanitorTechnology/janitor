@@ -271,7 +271,7 @@ credentialsAPI.delete({
       return;
     }
 
-    hosts.resetOAuth2ClientSecret(host, (error) => {
+    hosts.resetOAuth2ClientSecret(host, error => {
       if (error) {
         response.statusCode = 500; // Internal Server Error
         response.json({ error: 'Could not reset host credentials' }, null, 2);
@@ -292,7 +292,7 @@ hostAPI.get('/images', {
   title: 'List host images',
   description: 'List the Docker images available on this host.',
 
-  handler: (request, response) => {
+  handler: async (request, response) => {
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404; // Not Found
@@ -307,15 +307,15 @@ hostAPI.get('/images', {
       return;
     }
 
-    docker.listImages({ host: hostname }, (error, images) => {
-      if (error) {
-        log('[fail] host images', error);
-        response.statusCode = 503; // Service Unavailable
-        response.json({ error: 'Host unreachable' }, null, 2);
-        return;
-      }
+    try {
+      const images = await docker.listImages({ host: hostname });
+
       response.json(images, null, 2);
-    });
+    } catch (error) {
+      log('[fail] host images', error);
+      response.statusCode = 503; // Service Unavailable
+      response.json({ error: 'Host unreachable' }, null, 2);
+    }
   },
 
   examples: [],
@@ -324,7 +324,7 @@ hostAPI.get('/images', {
 hostAPI.get('/version', {
   title: 'Show host version',
 
-  handler: (request, response) => {
+  handler: async (request, response) => {
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404; // Not Found
@@ -339,15 +339,14 @@ hostAPI.get('/version', {
       return;
     }
 
-    docker.version({ host: hostname }, (error, version) => {
-      if (error) {
-        log('[fail] host version', error);
-        response.statusCode = 503; // Service Unavailable
-        response.json({ error: 'Host unreachable' }, null, 2);
-        return;
-      }
+    try {
+      const version = await docker.version({ host: hostname });
       response.json({ docker: version }, null, 2);
-    });
+    } catch (error) {
+      log('[fail] host version', error);
+      response.statusCode = 503; // Service Unavailable
+      response.json({ error: 'Host unreachable' }, null, 2);
+    }
   },
 
   examples: [{
@@ -375,7 +374,7 @@ containersAPI.get({
   title: 'List containers',
   description: 'List all Docker containers on this host.',
 
-  handler: (request, response) => {
+  handler: async (request, response) => {
     const { user } = request;
     if (!users.isAdmin(user)) {
       response.statusCode = 404; // Not Found
@@ -390,15 +389,14 @@ containersAPI.get({
       return;
     }
 
-    docker.listContainers({ host: hostname }, (error, containers) => {
-      if (error) {
-        log('[fail] host containers', error);
-        response.statusCode = 503; // Service Unavailable
-        response.json({ error: 'Host unreachable' }, null, 2);
-        return;
-      }
+    try {
+      const containers = await docker.listContainers({ host: hostname });
       response.json(containers, null, 2);
-    });
+    } catch (error) {
+      log('[fail] host containers', error);
+      response.statusCode = 503; // Service Unavailable
+      response.json({ error: 'Host unreachable' }, null, 2);
+    }
   },
 
   examples: [],
@@ -407,7 +405,7 @@ containersAPI.get({
 containersAPI.put({
   title: 'Create a container',
 
-  handler (request, response) {
+  async handler (request, response) {
     const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
@@ -422,17 +420,15 @@ containersAPI.put({
       return;
     }
 
-    machines.spawn(user, projectId, (error, machine) => {
-      if (error) {
-        log('[fail] could not spawn machine', error);
-        response.statusCode = 500; // Internal Server Error
-        response.json({ error: 'Could not create new container' }, null, 2);
-        return;
-      }
-
+    try {
+      const machine = await machines.spawn(user, projectId);
       response.statusCode = 201; // Created
       response.json({ container: machine.docker.container }, null, 2);
-    });
+    } catch (error) {
+      log('[fail] could not spawn machine', error);
+      response.statusCode = 500; // Internal Server Error
+      response.json({ error: 'Could not create new container' }, null, 2);
+    }
   },
 
   examples: []
@@ -581,10 +577,10 @@ containerAPI.delete({
 containerAPI.get('/changes', {
   title: 'List changed files in a container',
   description:
-    'List all files that were modified (Kind: 0), added (1) or deleted (2) ' +
-    'in a given Docker container.',
+  'List all files that were modified (Kind: 0), added (1) or deleted (2) ' +
+  'in a given Docker container.',
 
-  handler: (request, response) => {
+  handler: async (request, response) => {
     const { user } = request;
     if (!user) {
       response.statusCode = 403; // Forbidden
@@ -609,16 +605,14 @@ containerAPI.get('/changes', {
     }
 
     const parameters = { host: hostname, container };
-    docker.listChangedFilesInContainer(parameters, (error, changedFiles) => {
-      if (error) {
-        log('[fail] container changes', error);
-        response.statusCode = 503; // Service Unavailable
-        response.json({ error: 'Host unreachable' }, null, 2);
-        return;
-      }
-
+    try {
+      const changedFiles = await docker.listChangedFilesInContainer(parameters);
       response.json(changedFiles, null, 2);
-    });
+    } catch (error) {
+      log('[fail] container changes', error);
+      response.statusCode = 503; // Service Unavailable
+      response.json({ error: 'Host unreachable' }, null, 2);
+    }
   },
 
   examples: [{
