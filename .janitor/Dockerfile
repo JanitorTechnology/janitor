@@ -7,7 +7,8 @@ RUN git clone --recursive https://github.com/JanitorTechnology/janitor /home/use
 WORKDIR /home/user/janitor
 
 # Add Janitor database with default values for local development.
-COPY --chown=user:user db.json /home/user/janitor/
+COPY db.json /home/user/janitor/
+RUN sudo chown user:user /home/user/janitor/db.json
 
 # Configure the IDEs to use Janitor's source directory as workspace.
 ENV WORKSPACE /home/user/janitor/
