@@ -3,7 +3,6 @@
             {{
               const tagline = taglines[Math.floor(Math.random() * taglines.length)] + ' faster';
             }}<h1 class="heading">{{= tagline in html}}</h1>
-            <h2 class="grey-text description">The fastest development system in the world.</h2>
           </div>
           <div id="intro-video">
             <iframe title="Intro video" src="https://www.youtube.com/embed/5sNDMIh-iVw" allowfullscreen></iframe>
@@ -24,20 +23,19 @@
           </div>
         </div>
         <div class="container">
-          <h2>In one click, spin up a complete development environment that:</h2>
+          <h2>In one click, spin up a development environment that:</h2>
           <ul>
-            <li>Ships with all the project's dependencies pre-installed.</li>
-            <li>Has the source code you need already downloaded and compiled.</li>
-            <li>Is fast, and connected to a powerful backbone internet connection.</li>
-            <li>Can be accessed anywhere you have an internet connection and a web browser; even a library computer or a Chromebook.</li>
-            <li>Runs Linux.</li>
-            <li>Comes with convenience scripts and utilities that the maintainers themselves use to improve their productivity.</li>
-            <li>Gets completely isolated from your own computer, and from your other containers.</li>
-            <li>Starts in a few seconds.</li>
+            <li>Runs Ubuntu</li>
+            <li>Starts in 2.1 seconds</li>
+            <li>Has all project dependencies pre-installed</li>
+            <li>Has the project source code already pre-compiled</li>
+            <li>Lives on a powerful dedicated server with a fast internet connection</li>
+            <li>Is accessible anywhere with a web browser; even on a library computer or a Chromebook</li>
+            <li>Saves your laptop from slow builds and overheating</li>
           </ul>
         </div>
         <div class="container">
-          <h2>Mind-blowing projects you can contribute to</h2>
+          <h2>Contribute to the coolest projects:</h2>
           <div class="grid">{{
             for (let id in projects) {
               const project = projects[id];
@@ -53,14 +51,14 @@
           </div>
         </div>
         <div class="container">
-          <h2>Get started now:</h2>
+          <h2>Get started:</h2>
           <div class="form-control-container">
             <input class="form-control large" name="email" placeholder="you@yourdomain.com" spellcheck="false" autocapitalize="off" type="email" autocomplete="off" required>
             <button class="btn btn-primary large">Log In</button>
           </div>
         </div>
         <div class="container">
-          <h2>Our awesome partners</h2>
+          <h2>Our awesome partners:</h2>
           <div class="partners">
             <a href="https://mozilla.org" class="partner-logo"><img alt="Mozilla" src="/img/partners/mozilla.svg"></a>
             <a href="https://www.irill.org" class="partner-logo"><img alt="IRILL" src="/img/partners/irill.png"></a>
