@@ -1,0 +1,100 @@
+/* Landing page */
+
+.heading {
+  font-size: 40px;
+  font-weight: 300;
+}
+
+.container, .landing-section {
+  font-size: 16px;
+}
+
+.landing-section {
+  padding: 50px 10vw;
+}
+
+#intro-video {
+  max-width: 992px;
+  width: 100%;
+  height: 50vh;
+  margin: 50px auto;
+  display: block;
+  position: relative;
+}
+
+#intro-video iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#quotes {
+  background: #fafafa;
+  border-top: solid 1px #eaeaea;
+  border-bottom: solid 1px #eaeaea;  
+  display: flex;
+  justify-content: space-around;
+}
+
+@media screen and (max-width: 768px) {
+  #quotes {
+    display: block;
+  }
+
+  .quote {
+    width: 100%;
+  }
+
+  .quote:not(:last-child) {
+    margin-bottom: 50px;
+  }
+}
+
+.quote {
+  overflow: auto;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-basis: 0;
+}
+
+.quote:not(:last-child) {
+  margin-right: 10%;
+}
+
+.quote blockquote {
+  font-style: italic;
+  text-align: justify;
+  line-height: 1.5;
+  margin: 0;
+  color: #666;
+  padding: 0 5px 20px 0;
+}
+ 
+.quote blockquote::before, .quote blockquote::after {
+  content: '"';
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.quote span {
+  font-weight: 700;
+}
+
+.partners {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.partner-logo {
+  height: 50px;
+  margin: 10px;
+  display: inline-block;
+  flex: 1;
+}
+
+.partner-logo img {
+  height: 100%;
+}

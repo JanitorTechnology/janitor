@@ -1,0 +1,68 @@
+        <div class="container">
+          <div class="text-center">
+            {{
+              const tagline = taglines[Math.floor(Math.random() * taglines.length)] + ' faster';
+            }}<h1 class="heading">{{= tagline in html}}</h1>
+          </div>
+          <div id="intro-video">
+            <iframe title="Intro video" src="https://www.youtube.com/embed/5sNDMIh-iVw" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div id="quotes" class="landing-section">
+          <div class="quote grow">
+            <blockquote>Just wanted to say thanks for making Janitor. It just saved me a ton of time debugging a crash.</blockquote>
+            <span>― Brian Grinstead</span>
+          </div>
+          <div class="quote grow">
+            <blockquote>This will change the lives of a lot of contributors.</blockquote>
+            <span>― Michael Kohler</span>
+          </div>
+          <div class="quote grow">
+            <blockquote>Mind blown! This would have literally saved months of my life years ago when I hacked on Firefox.</blockquote>
+            <span>― Brian King</span>
+          </div>
+        </div>
+        <div class="container">
+          <h2>In one click, spin up a development environment that</h2>
+          <ul>
+            <li>Runs Ubuntu</li>
+            <li>Starts in 2.1 seconds</li>
+            <li>Has all project dependencies pre-installed</li>
+            <li>Has the project source code already pre-compiled</li>
+            <li>Lives on a powerful dedicated server with a fast internet connection</li>
+            <li>Is accessible anywhere with a web browser; even on a library computer or a Chromebook</li>
+            <li>Saves your laptop from slow builds and overheating</li>
+          </ul>
+        </div>
+        <div class="container">
+          <h2>Contribute to the coolest projects</h2>
+          <div class="grid">{{
+            for (let id in projects) {
+              const project = projects[id];
+            }}
+            <div class="card">
+              <img class="card-image" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
+              <div class="card-content">
+                <div class="grow">
+                  <h2>{{= project.name in html}}</h2>
+                </div>
+              </div>
+            </div>{{ } }}
+          </div>
+        </div>
+        <div class="container">
+          <h2>Get started</h2>
+          <div class="form-control-container">
+            <input class="form-control large" name="email" placeholder="you@yourdomain.com" spellcheck="false" autocapitalize="off" type="email" autocomplete="off" required>
+            <button class="btn btn-primary large">Log In</button>
+          </div>
+        </div>
+        <div class="container">
+          <h2>Our awesome partners</h2>
+          <div class="partners">
+            <a href="https://mozilla.org" class="partner-logo"><img alt="Mozilla" src="/img/partners/mozilla.svg"></a>
+            <a href="https://www.irill.org" class="partner-logo"><img alt="IRILL" src="/img/partners/irill.png"></a>
+            <a href="https://aws.amazon.com/cloud9/" class="partner-logo"><img alt="Cloud9" src="/img/c9.svg"></a>
+            <a href="https://www.datadoghq.com" class="partner-logo"><img alt="Datadog" src="/img/partners/datadog.svg"></a>
+          </div>
+        </div>
