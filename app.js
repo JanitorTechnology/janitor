@@ -92,12 +92,6 @@ boot.executeInParallel([
     routes.landingPage(query.res, user);
   });
 
-  // New public landing page.
-  app.route(/^\/landing-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.landingPageNew(query.res, user);
-  });
-
   // Public API (when wrongly used with a trailing '/').
   app.route(/^\/api\/(.+)\/$/, (data, match, end, query) => {
     routes.redirect(query.res, '/api/' + match[1]);
@@ -110,26 +104,12 @@ boot.executeInParallel([
     routes.apiPage(query.res, api, user);
   });
 
-  // New Public API reference.
-  app.route(/^\/reference\/api-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    log('api reference');
-    routes.apiPageNew(query.res, api, user);
-  });
-
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    log('blog');
-    routes.blogPage(query.res, user);
-  });
-
-  // New public blog page.
-  app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
     const { user } = request;
-    log('blog-new');
-    routes.blogPageNew(response, user, blog);
+    log('blog');
+    routes.blogPage(response, user, blog);
   });
 
   // Public live data page.
@@ -138,22 +118,10 @@ boot.executeInParallel([
     routes.dataPage(query.res, user);
   });
 
-  // Public live data page.
-  app.route(/^\/data-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.dataPageNew(query.res, user);
-  });
-
   // Public design page
   app.route(/^\/design\/?$/, (data, match, end, query) => {
     const { user } = query.req;
     routes.designPage(query.res, user);
-  });
-
-  // new login page
-  app.route(/^\/login-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    routes.newLoginPage(query.res, user);
   });
 
   // Public project pages.
@@ -177,27 +145,6 @@ boot.executeInParallel([
     routes.projectPage(query.res, project, user);
   });
 
-  // New public project pages.
-  app.route(/^\/projects-new(\/[\w-]+)?\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    const projectUri = match[1];
-    if (!projectUri) {
-      // No particular project was requested, show them all.
-      routes.projectsPageNew(query.res, user);
-      return;
-    }
-
-    const projectId = projectUri.slice(1);
-    const project = db.get('projects')[projectId];
-    if (!project) {
-      // The requested project doesn't exist.
-      routes.notFoundPageNew(query.res, user);
-      return;
-    }
-
-    routes.projectPageNew(query.res, project, user);
-  });
-
   // User logout.
   app.route(/^\/logout\/?$/, (data, match, end, query) => {
     users.logout(query.req, error => {
@@ -217,7 +164,48 @@ boot.executeInParallel([
       return;
     }
 
-    routes.redirect(query.res, '/');
+    routes.redirect(query.res, '/containers/');
+  });
+
+  // Request a log-in key via email.
+  app.route(/^\/login\/email\/?$/, async (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user, method } = request;
+
+    if (method !== 'POST') {
+      response.statusCode = 404;
+      response.end();
+      return;
+    }
+
+    if (user) {
+      response.statusCode = 400;
+      response.json({ error: 'Already logged in, refresh the page.' }, null, 2);
+      return;
+    }
+
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
+    request.on('end', () => {
+      try {
+        const json = Buffer.concat(chunks).toString();
+        const {email} = JSON.parse(json);
+        users.sendLoginEmail(email, query.req, error => {
+          if (error) {
+            const message = String(error);
+            log(message, '(while emailing ' + email + ')');
+            response.statusCode = 500;
+            response.json({ error: 'Failed to email you' }, null, 2);
+            return;
+          }
+          response.json({ message: 'You should receive an email shortly' }, null, 2);
+        });
+      } catch (error) {
+        log('[fail] login', error);
+        response.statusCode = 400; // Bad Request
+        response.json({ error: 'Invalid request' }, null, 2);
+      }
+    });
   });
 
   // User login via GitHub.
@@ -310,18 +298,6 @@ boot.executeInParallel([
     routes.containersPage(response, user);
   });
 
-  // User new containers list.
-  app.route(/^\/containers-new\/?$/, (data, match, end, query) => {
-    const { req: request, res: response } = query;
-    const { user } = request;
-    if (!user) {
-      routes.loginPage(response);
-      return;
-    }
-
-    routes.containersPageNew(response, user);
-  });
-
   // User notifications.
   app.route(/^\/notifications\/?$/, (data, match, end, query) => {
     const { user } = query.req;
@@ -333,8 +309,8 @@ boot.executeInParallel([
     routes.notificationsPage(query.res, user);
   });
 
-  // User settings.
-  app.route(/^\/settings(\/\w+)?\/?$/, (data, match, end, query) => {
+  // Old user settings.
+  app.route(/^\/settings-old(\/\w+)?\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
@@ -346,11 +322,11 @@ boot.executeInParallel([
     const sectionUri = match[1];
     const section = sectionUri ? sectionUri.slice(1) : 'account';
 
-    routes.settingsPage(request, response, section, user);
+    routes.settingsPageOld(request, response, section, user);
   });
 
-  // New settings page.
-  app.route(/^\/settings-new\/?$/, (data, match, end, query) => {
+  // User settings page.
+  app.route(/^\/settings\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
     const { user } = request;
     if (!user) {
@@ -358,12 +334,7 @@ boot.executeInParallel([
       return;
     }
 
-    routes.settingsPageNew(request, response, user);
-  });
-
-  // User account (now part of settings).
-  app.route(/^\/account\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/settings/account/', true);
+    routes.settingsPage(request, response, user);
   });
 
   app.route(/^\/[.,;)]$/, (data, match, end, query) => {
@@ -387,13 +358,6 @@ boot.executeInParallel([
     routes.adminPage(query.res, section, user);
   });
 
-  // New 404 Not Found page
-  app.route(/^\/404-new\/?$/, (data, match, end, query) => {
-    const { user } = query.req;
-    log('404-new', match[0]);
-    routes.notFoundPageNew(query.res, user);
-  });
-
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {
     const { user } = query.req;
@@ -402,27 +366,53 @@ boot.executeInParallel([
   });
 
   // Alpha version sign-up.
-  app.ajax.on('signup', (data, end) => {
-    const email = data.email;
-    const users = db.get('users');
-    const waitlist = db.get('waitlist');
+  app.route(/^\/signup\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    const { user, method } = request;
 
-    log('signup', email);
-
-    if (waitlist[email]) {
-      end({ status: 'already-added' });
+    if (method !== 'POST') {
+      response.statusCode = 404;
+      response.end();
       return;
     }
 
-    if (users[email]) {
-      end({ status: 'already-invited' });
+    if (user) {
+      response.statusCode = 400;
+      response.json({ error: 'Already logged in, log out to sign up.' }, null, 2);
       return;
     }
 
-    waitlist[email] = Date.now();
-    db.save();
+    const chunks = [];
+    request.on('data', chunk => chunks.push(chunk));
+    request.on('end', () => {
+      try {
+        const json = Buffer.concat(chunks).toString();
+        const {email} = JSON.parse(json);
+        const users = db.get('users');
+        const waitlist = db.get('waitlist');
 
-    end({ status: 'added' });
+        log('signup', email);
+
+        if (waitlist[email]) {
+          response.json({ message: 'Already in the waitlist.' });
+          return;
+        }
+
+        if (users[email]) {
+          response.statusCode = 400;
+          response.json({ error: 'Already signed up.' });
+          return;
+        }
+
+        waitlist[email] = Date.now();
+        db.save();
+
+        response.json({ message: 'Added to waitlist.' });
+      } catch (e) {
+        response.statusCode = 400;
+        response.json({ message: 'Oh noes, your request went wrong.' });
+      }
+    });
   });
 
   // Alpha version invite.
@@ -447,26 +437,6 @@ boot.executeInParallel([
         return;
       }
       end({ status: 'invited' });
-    });
-  });
-
-  // Request a log-in key via email.
-  app.ajax.on('login', (data, end, query) => {
-    const { user } = query.req;
-    if (user) {
-      end({ status: 'logged-in' });
-      return;
-    }
-
-    const email = data.email;
-    users.sendLoginEmail(email, query.req, error => {
-      if (error) {
-        const message = String(error);
-        log(message, '(while emailing ' + email + ')');
-        end({ status: 'error', message: message });
-        return;
-      }
-      end({ status: 'email-sent' });
     });
   });
 

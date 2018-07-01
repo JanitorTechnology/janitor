@@ -1,65 +1,68 @@
-    <section class="jumbotron">
-      <div class="container">
-        <h1>Fix bugs faster</h1>
-        <h3>The fastest development system in the world.</h3>
-      </div>
-    </section>
-    <section class="signup">
-      <div class="container">
-        <div class="signup-text">
-          <h3>Join the Alpha!</h3>
-          <p>Stay tuned and get invited as soon as possible.</p>
-        </div>
-        <form id="signup-form" class="col-md-4 col-sm-6 ajax-form has-feedback has-button">
-          <div class="input-group input-group-lg">
-            <input class="form-control" name="email" placeholder="Email address" type="email">
-            <span class="input-group-btn">
-              <input type="submit" class="btn btn-primary" value="Send">
-            </span>
+        <div class="container">
+          <div class="text-center">
+            {{
+              const tagline = taglines[Math.floor(Math.random() * taglines.length)] + ' faster';
+            }}<h1 class="heading">{{= tagline in html}}</h1>
           </div>
-        </form>
-      </div>
-    </section>
-    <section>
-      <div class="container">
-        <h1>A new way to write software</h1>
-        <h4>Never download or install anything, ever again. Working in the cloud is going to save you a lot of time.</h4>
-        <div class="row">
-          <div class="janitor-story col-md-4">
-            <h2><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> Code faster</h2>
-            <p>Janitor was designed to take you from idea to code, as fast as possible.</p>
-          </div>
-          <div class="janitor-story col-md-4 disabled">
-            <h2><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Review faster</h2>
-            <p>Do people ask you to review their code? Track your requests from GitHub, Bugzilla and more.</p>
-          </div>
-          <div class="janitor-story col-md-4">
-            <h2><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span> Access faster</h2>
-            <p>Janitor is completely web-based, so your code is always there for you, on any device.</p>
+          <div id="intro-video">
+            <iframe title="Intro video" src="https://www.youtube.com/embed/5sNDMIh-iVw" allowfullscreen></iframe>
           </div>
         </div>
-        <!--
-        <div class="row">
-          <div class="col-md-4">
-            <h2>AI-powered development</h2>
-            <p>Combine your intuition with the horsepower of computers.</p>
+        <div id="quotes" class="landing-section">
+          <div class="quote grow">
+            <blockquote>Just wanted to say thanks for making Janitor. It just saved me a ton of time debugging a crash.</blockquote>
+            <span>― Brian Grinstead</span>
           </div>
-          <div class="col-md-4">
-            <h2>Automated maintenance</h2>
-            <p>With automatically suggested fixes.</p>
+          <div class="quote grow">
+            <blockquote>This will change the lives of a lot of contributors.</blockquote>
+            <span>― Michael Kohler</span>
           </div>
-          <div class="col-md-4">
-            <h2>Building and testing Firefox with Cloud9</h2>
-            <p>[video]</p>
+          <div class="quote grow">
+            <blockquote>Mind blown! This would have literally saved months of my life years ago when I hacked on Firefox.</blockquote>
+            <span>― Brian King</span>
           </div>
         </div>
-        -->
-      </div>
-    </section>
-    <section class="video">
-      <div class="container">
-        <div class="embed-responsive embed-responsive-16by9">
-          <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/5sNDMIh-iVw" allowfullscreen></iframe>
+        <div class="container">
+          <h1>In one click, spin up a complete development environment</h1>
+          <ul id="feature-list">
+            <li>Runs Ubuntu 16.04</li>
+            <li>Starts in 2.1 seconds</li>
+            <li>Pre-configured tools &amp; dependencies</li>
+            <li>Pre-compiled source tree</li>
+            <li>On powerful servers with fast Internet</li>
+            <li>Login from anywhere (home; work; the library; a bus…)</li>
+            <li>Save your laptop from overheating</li>
+          </ul>
         </div>
-      </div>
-    </section>
+        <div class="container">
+          <h1>Hack on the coolest projects</h1>
+          <div class="grid">{{
+            for (let id in projects) {
+              const project = projects[id];
+            }}
+            <div class="card">
+              <img class="card-image" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
+              <div class="card-content">
+                <div class="grow">
+                  <h2>{{= project.name in html}}</h2>
+                </div>
+              </div>
+            </div>{{ } }}
+          </div>
+        </div>
+        <div class="container">
+          <h1>Get started</h1>
+          <form class="ajax-form form-control-container has-feedback" action="/signup" method="post">
+            <input class="form-control large" name="email" placeholder="you@yourdomain.com" spellcheck="false" autocapitalize="off" type="email" autocomplete="off" required>
+            <input class="btn btn-primary large" type="submit" value="Sign up!"/>
+          </form>
+        </div>
+        <div class="container">
+          <h1>Brought to you by</h1>
+          <div class="partners">
+            <a href="https://aws.amazon.com/cloud9/" class="partner-logo"><img alt="Cloud9" src="/img/c9.svg"></a>
+            <a href="https://www.irill.org" class="partner-logo"><img alt="IRILL" src="/img/partners/irill.png"></a>
+            <a href="https://mozilla.org" class="partner-logo"><img alt="Mozilla" src="/img/partners/mozilla.svg"></a>
+            <a href="https://www.datadoghq.com" class="partner-logo"><img alt="Datadog" src="/img/partners/datadog.svg"></a>
+          </div>
+        </div>

@@ -1,0 +1,30 @@
+    <footer class="navbar-inverse">
+      <div class="container">
+        <ul class="nav navbar-nav">
+          <li><a href="https://github.com/janitortechnology/janitor/blob/master/LICENSE">&copy; Janitor</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/reference/api">API</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="https://discourse.janitor.technology/">Community</a></li>
+          <li><a href="/data/">Data</a></li>
+          <li><a href="https://github.com/janitortechnology/janitor">GitHub</a></li>
+          <li><a href="https://github.com/janitortechnology/janitor/issues/new">Report Bug</a></li>
+          <li><a href="https://kiwiirc.com/client/irc.freenode.net/?#janitor">#janitor (IRC)</a></li>
+        </ul>
+      </div>
+    </footer>
+    <script defer src="/js/promise-6.0.2.min.js"></script>
+    <script defer src="/js/fetch-2.0.3.min.js"></script>
+    <script defer src="/js/jquery-3.2.1.min.js"></script>
+    <script defer src="/js/bootstrap-3.3.7.min.js"></script>
+    <script defer src="/js/scout.min.js"></script>
+    <script defer src="/js/janitor.js"></script>{{ for (let src of scripts) { }}
+    <script defer src={{= src in json}}></script>{{ } }}
+    <script async defer>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-62373597-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

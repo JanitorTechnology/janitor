@@ -3,34 +3,36 @@
   <head>
     <meta charset="utf-8">
     <meta name="application-name" content="Janitor">
-    <meta name="theme-color" content="#333">
+    <meta name="description" content="The fastest development system in the world.">
+    <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> {{= title in html}}{{if title then {{ • }}}}Janitor </title>
+    <title>{{= title in html}}{{if title then {{ – }}}}Janitor</title>
     <link href="/manifest.json" rel="manifest">
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/janitor.css" rel="stylesheet">
-    <link href="/img/janitor.svg" rel="icon" sizes="any" type="image/svg+xml">
+    <link href="/img/favicons/favicon-196x196.png" rel="apple-touch-icon">
+    <link href="/img/favicons/favicon-196x196.png" rel="icon" type="image/png">    
+    <link href="/img/favicons/favicon-16x16.png" rel="icon" type="image/png" sizes="16x16">
+    <link href="/img/favicons/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32">
+    <link href="/img/favicons/favicon.svg" rel="icon" sizes="any" type="image/svg+xml">
+    <link href="/css/janitor-new.css" rel="stylesheet">{{ for (let sheet of stylesheets) { }}
+    <link href={{= sheet in json}} rel="stylesheet">{{ } }}
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/img/favicons/favicon-196x196.png">
   </head>
   <body>
-    <header class="navbar navbar-inverse navbar-static-top" role="navigation">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" href="javascript:void(0)">
-            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-          </a>
-          <a class="navbar-brand" href="/">
-            <img src="/img/janitor.svg" alt="Janitor Logo">
-            <span>Janitor</span>
-          </a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">{{if user then {{
-            <li><a href="/projects/">Projects</a></li>
-            <li><a href="/containers/">Containers</a></li>
-            <li><a href="/settings/">Settings</a></li>
-            <li><a href="/logout">Sign out</a></li>}} else {{
-            <li><a href="/login">Sign in</a></li>}}}}
-          </ul>
-        </div>
+    <header class="navbar navbar-sticky link-list-wrapper" role="navigation">
+      <div class="navbar-container">
+        <a class="brand-logo" href="/">
+          <img src="/img/janitor.svg" alt="Janitor Logo">
+          <span>Janitor</span>
+        </a>
+        <label for="menu-toggle" class="icon menu"></label>
+        <input type="checkbox" class="menu-toggle" id="menu-toggle">
+        <ul>{{if user then {{
+          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/containers/">Containers</a></li>
+          <li><a href="/settings/">Settings</a></li>
+          <li><a href="/logout">Log Out</a></li>}} else {{
+          <li><a href="/login">Log In</a></li>}}}}
+        </ul>
       </div>
     </header>

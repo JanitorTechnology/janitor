@@ -1,21 +1,16 @@
-    <section class="login">
-      <div class="container">
-        <h2 class="header">Sign in</h2>
-        <div class="row">
-          <div class="col-md-5">
-            <div class="login-with">
-              <a class="btn btn-lg btn-default disabled" href="#" title="Coming soon">GitHub</a>
-              <a class="btn btn-lg btn-default disabled" href="#" title="Coming soon">Cloud9</a>
-            </div>
-            <form class="ajax-form has-feedback has-button" id="login-form">
-              <div class="input-group input-group-lg">
-                <input class="form-control" name="email" placeholder="Email address" type="email">
-                <span class="input-group-btn">
-                  <input class="btn btn-primary" type="submit" value="Send">
-                </span>
-              </div>
-            </form>
+    <main class="container">
+      <div class="text-center centered-container">
+        <h1>Authenticate</h1>
+        <p class="description">
+          To log in, please fill in your email address below:
+        </p>
+        <form class="ajax-form has-feedback" id="login-form" method="post" action="/login/email">
+          <div class="form-control-container">
+            <input class="form-control large text-center" name="email" placeholder="you@yourdomain.com" spellcheck="false" autocorrect="off" autocapitalize="off" type="email" autocomplete="off" required>
           </div>
-        </div>
+          <div class="form-control-container">
+            <input class="btn btn-primary large" type="submit" value="Log In"/>
+          </div>
+        </form>
       </div>
-    </section>
+    </main>
