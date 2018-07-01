@@ -1,42 +1,38 @@
-    <section class="data">
-      <div class="container">
-        <h2 class="header">Data</h2>
-        <div class="row">
-          <div class="data-topic col-sm-6">
-            <div>Users</div>
-            <div class="numbers">
+    <main class="container">
+      <div class="data text-center centered-container">
+        <h1>Data</h1>
+        <div class="data-container">
+          <div class="data-topic">
+            <h3>Users</h3>
+            <p class="numbers">
               <span class="number">{{= data.users.users.length in integer}}</span>
               <span class="unit">confirmed</span>
               <span class="number">{{= data.users.waitlist.length in integer}}</span>
               <span class="unit">waitlist</span>
-            </div>
+            </p>
           </div>
-          <div class="data-topic col-sm-6">
-            <div>Contributions</div>
-            <div class="numbers">
+          <div class="data-topic">
+            <h3>Containers</h3>
+            <p class="numbers">
               <span class="number">{{= data.contributions.started in integer}}</span>
               <span class="unit">started</span>
-              <span class="number">{{= data.contributions.merged in integer}}</span>
-              <span class="unit">merged</span>
-            </div>
+            </p>
+            <a class="btn btn-primary" href="https://p.datadoghq.com/sb/9548ef20d-803ca9ccc697ada769fcf5ef9ebcaa9c">View Running Containers</a>
           </div>
-        </div>
-        <div class="row">
-          <div class="data-topic col-sm-6">
-            <div>Projects</div>
-            <div class="numbers">
+          <div class="data-topic">
+            <h3>Projects</h3>
+            <p class="numbers">
               <span class="number">{{= data.projects.length in integer}}</span>
-            </div>
-            <a class="btn btn-link" href="https://p.datadoghq.com/sb/9548ef20d-803ca9ccc697ada769fcf5ef9ebcaa9c">View Running Containers</a>
+            </p>
           </div>
-          <div class="data-topic col-sm-6">
-            <div>Cluster</div>
-            <div class="numbers">
+          <div class="data-topic">
+            <h3>Cluster</h3>
+            <p class="numbers">
               <span class="number">{{= data.hosts.docker.length in integer}}</span>
               <span class="unit">Docker host{{if {{data.hosts.docker.length !== 1}} then s}}</span>
-            </div>
-            <a class="btn btn-link" href="https://p.datadoghq.com/sb/9548ef20d-cb545bf38f71c88d07ceec6372fd0fd9">View Server Metrics</a>
+            </p>
+            <a class="btn btn-primary" href="https://p.datadoghq.com/sb/9548ef20d-cb545bf38f71c88d07ceec6372fd0fd9">View Server Metrics</a>
           </div>
         </div>
       </div>
-    </section>
+    </main>

@@ -355,7 +355,7 @@ textarea.form-control {
 
 .navbar-container {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex-wrap: wrap;
   min-height: 80px;
   line-height: 80px;
@@ -379,12 +379,20 @@ textarea.form-control {
 }
 
 .navbar ul {
-  text-align: right;
+  display: flex;
   flex: 1;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.navbar ul li{
+  display: flex;
 }
 
 .navbar ul li a {
   padding: 0 20px;
+  display: flex;
+  align-items: center;
 }
 
 /* Footer */

@@ -82,6 +82,12 @@
   font-weight: 700;
 }
 
+#feature-list {
+  column-count: 2;
+  column-width: 384px; /* 768px / 2 */
+  list-style-image: url(../img/icons/check.svg);
+}
+
 .partners {
   display: flex;
   flex-wrap: wrap;
@@ -92,6 +98,7 @@
   height: 50px;
   margin: 10px;
   display: inline-block;
+  text-align: center;
   flex: 1;
 }
 
