@@ -273,14 +273,13 @@ Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
         var paths = change.Path.slice(1).split('/');
         for (var i in paths) {
           var path = paths[i];
-          var child = node.Children[path];
           // Create any missing branches along the way.
-          if (!child) {
-            child = node.Children[path] = { Children: {}, TotalNodes: 0 };
+          if (!node.Children.hasOwnProperty(path)) {
+            node.Children[path] = { Children: {}, TotalNodes: 0 };
           }
           // Keep track of how many nodes this sub-tree contains.
           node.TotalNodes++;
-          node = child;
+          node = node.Children[path];
         }
         // Import the change into the tree and create an HTML element for it.
         node.Hidden = diffHiddenPaths[change.Path] || false;
