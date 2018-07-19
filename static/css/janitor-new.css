@@ -449,6 +449,11 @@ textarea.form-control {
     text-align: left;
     display: block;
   }
+  
+  .navbar .menu-toggle:checked + ul,
+  .navbar ul li {
+    display: block;
+  }
 
   .navbar ul li:hover {
     background: #f8f8f8;
