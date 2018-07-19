@@ -36,6 +36,11 @@
   justify-content: space-around;
 }
 
+.dark-theme #quotes {
+  background: #38383d;
+  border-color: rgba(255,255,255,0.05);
+}
+
 @media screen and (max-width: 768px) {
   #quotes {
     display: block;
@@ -68,7 +73,6 @@
   text-align: justify;
   line-height: 1.5;
   margin: 0;
-  color: #666;
   padding: 0 5px 20px 0;
 }
  
@@ -86,6 +90,14 @@
   column-count: 2;
   column-width: 384px; /* 768px / 2 */
   list-style-image: url(../img/icons/check.svg);
+}
+
+#feature-list li::-moz-list-bullet {
+  filter: invert(1);
+}
+
+#feature-list li::marker {
+  filter: invert(1);
 }
 
 .partners {
