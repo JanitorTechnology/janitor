@@ -85,7 +85,14 @@
 #feature-list {
   column-count: 2;
   column-width: 384px; /* 768px / 2 */
-  list-style-image: url(../img/icons/check.svg);
+  list-style: none;
+  padding: 0;
+}
+
+#feature-list li::before {
+  content: url(../img/icons/check.svg);
+  margin-right: 8px;
+  vertical-align: middle;
 }
 
 .partners {
