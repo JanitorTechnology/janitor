@@ -25,6 +25,7 @@
 
 .blog-toggle:checked ~ .article-wrapper {
   height: auto;
+  overflow: visible;
 }
 
 .blog .article-wrapper {
