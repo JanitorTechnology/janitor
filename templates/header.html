@@ -27,8 +27,8 @@
         </a>
         <label for="menu-toggle" class="icon menu"></label>
         <input type="checkbox" class="menu-toggle" id="menu-toggle">
-        <ul>{{if user then {{
-          <li><a href="/projects/">Projects</a></li>
+        <ul>
+          <li><a href="/projects/">Projects</a></li>{{if user then {{
           <li><a href="/containers/">Containers</a></li>
           <li><a href="/settings/">Settings</a></li>
           <li><a href="/logout">Log Out</a></li>}} else {{

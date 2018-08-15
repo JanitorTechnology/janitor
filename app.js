@@ -92,6 +92,11 @@ boot.executeInParallel([
     routes.landingPage(query.res, user);
   });
 
+  // Public landing page (legacy).
+  app.route(/^\/landing-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/');
+  });
+
   // Public API (when wrongly used with a trailing '/').
   app.route(/^\/api\/(.+)\/$/, (data, match, end, query) => {
     routes.redirect(query.res, '/api/' + match[1]);
@@ -104,6 +109,11 @@ boot.executeInParallel([
     routes.apiPage(query.res, api, user);
   });
 
+  // Public API reference page (legacy).
+  app.route(/^\/reference\/api-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/reference/api/');
+  });
+
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
@@ -112,10 +122,20 @@ boot.executeInParallel([
     routes.blogPage(response, user, blog);
   });
 
+  // Public blog page (legacy).
+  app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/blog/');
+  });
+
   // Public live data page.
   app.route(/^\/data\/?$/, (data, match, end, query) => {
     const { user } = query.req;
     routes.dataPage(query.res, user);
+  });
+
+  // Public live data page (legacy).
+  app.route(/^\/data-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/data/');
   });
 
   // Public design page
@@ -143,6 +163,11 @@ boot.executeInParallel([
     }
 
     routes.projectPage(query.res, project, user);
+  });
+
+  // Public projects page (legacy).
+  app.route(/^\/projects-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/projects/');
   });
 
   // User logout.
@@ -298,6 +323,11 @@ boot.executeInParallel([
     routes.containersPage(response, user);
   });
 
+  // User containers list (legacy).
+  app.route(/^\/containers-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/containers/');
+  });
+
   // User notifications.
   app.route(/^\/notifications\/?$/, (data, match, end, query) => {
     const { user } = query.req;
@@ -335,6 +365,11 @@ boot.executeInParallel([
     }
 
     routes.settingsPage(request, response, user);
+  });
+
+  // User settings page (legacy).
+  app.route(/^\/settings-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/settings/');
   });
 
   app.route(/^\/[.,;)]$/, (data, match, end, query) => {
