@@ -69,4 +69,5 @@ Run the server in the background (use `tail -f janitor.log` to check on it):
 ## Thanks
 
 - [IRILL](http://www.irill.org/) and [Mozilla](https://www.mozilla.org/) for hosting this project.
+- [DataDog](https://www.datadoghq.com/) for monitoring the health and performance of our servers.
 - [Cloud9](https://c9.io/) for sponsoring alpha accounts.
