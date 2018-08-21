@@ -45,7 +45,7 @@ boot.executeInParallel([
   const enforceSecurityPolicies = (request, response, next) => {
     // Only accept requests addressed to our actual hostnames.
     const requestedHostname = request.headers.host;
-    if (!requestedHostname || hostnames.indexOf(requestedHostname) < 0) {
+    if (!requestedHostname || !hostnames.includes(requestedHostname)) {
       routes.drop(response, 'invalid hostname: ' + requestedHostname);
       return;
     }
@@ -121,7 +121,6 @@ boot.executeInParallel([
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
-    const { user } = request;
     log('blog');
     routes.blogPage(request, response, blog);
   });
@@ -145,7 +144,6 @@ boot.executeInParallel([
   app.route(/^\/design\/?$/, (data, match, end, query) => {
     routes.designPage(query.req, query.res);
   });
-
 
   // Public project pages.
   app.route(/^\/projects(\/[\w-]+)?\/?$/, (data, match, end, query) => {
@@ -398,7 +396,6 @@ boot.executeInParallel([
 
     routes.adminPage(request, response, section);
   });
-
 
   // 404 Not Found.
   app.notfound(/.*/, (data, match, end, query) => {

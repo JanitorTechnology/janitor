@@ -19,11 +19,11 @@ const sessions = require('./lib/sessions');
 const hostnames = db.get('hostnames', [ 'localhost' ]);
 
 if (!hostnames || hostnames[0] === 'localhost') {
-  throw new Error('Cannot join cluster as [hostname = ' + hostnames[0] + ']: ' +
-    'please fix the hostname in ./db.json and try again');
+  throw new Error(`Cannot join cluster as [hostname = ${hostnames[0]}: ` +
+    `please fix the first hostname in ./db.json and try again`);
 }
 
-log('[ok] will try to join cluster as [hostname = ' + hostnames[0] + ']');
+log(`[ok] will try to join cluster as [hostname = ${hostnames[0]}]`);
 
 boot.executeInParallel([
   boot.forwardHttp,
