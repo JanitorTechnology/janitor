@@ -99,12 +99,12 @@ boot.executeInParallel([
 
   // Public landing page (legacy).
   app.route(/^\/landing-new\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/');
+    routes.redirect(query.res, '/', true);
   });
 
   // Public API (when wrongly used with a trailing '/').
   app.route(/^\/api\/(.+)\/$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/api/' + match[1]);
+    routes.redirect(query.res, '/api/' + match[1], true);
   });
 
   // Public API reference.
@@ -115,7 +115,7 @@ boot.executeInParallel([
 
   // Public API reference page (legacy).
   app.route(/^\/reference\/api-new\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/reference/api/');
+    routes.redirect(query.res, '/reference/api/', true);
   });
 
   // Public blog page.
@@ -127,7 +127,7 @@ boot.executeInParallel([
 
   // Public blog page (legacy).
   app.route(/^\/blog-new\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/blog/');
+    routes.redirect(query.res, '/blog/', true);
   });
 
   // Public live data page.
@@ -137,7 +137,7 @@ boot.executeInParallel([
 
   // Public live data page (legacy).
   app.route(/^\/data-new\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/data/');
+    routes.redirect(query.res, '/data/', true);
   });
 
   // Public design page
@@ -168,7 +168,7 @@ boot.executeInParallel([
 
   // Public projects page (legacy).
   app.route(/^\/projects-new\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/projects/');
+    routes.redirect(query.res, '/projects/', true);
   });
 
   // User logout.
@@ -261,7 +261,7 @@ boot.executeInParallel([
       log('[fail] could not refresh github account', error);
     }
 
-    routes.redirect(response, '/settings/integrations/');
+    routes.redirect(response, '/settings/');
   });
 
   // User OAuth2 authorization.
@@ -327,7 +327,7 @@ boot.executeInParallel([
 
   // User containers list (legacy).
   app.route(/^\/containers-new\/?$/, (data, match, end, query) => {
-    routes.redirect(query.res, '/containers/');
+    routes.redirect(query.res, '/containers/', true);
   });
 
   // User notifications.
@@ -372,6 +372,22 @@ boot.executeInParallel([
 
   // User settings page (legacy).
   app.route(/^\/settings-new\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/settings/');
+  });
+
+  app.route(/^\/settings\/account\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/settings/');
+  });
+
+  app.route(/^\/settings\/configurations\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/settings/');
+  });
+
+  app.route(/^\/settings\/integrations\/?$/, (data, match, end, query) => {
+    routes.redirect(query.res, '/settings/');
+  });
+
+  app.route(/^\/settings\/preferences\/?$/, (data, match, end, query) => {
     routes.redirect(query.res, '/settings/');
   });
 
