@@ -17,7 +17,7 @@ var $$ = function (selector, target) {
 };
 
 // Polyfill a few basic things.
-['filter', 'forEach', 'map', 'reduce'].forEach(function (name) {
+['filter', 'forEach', 'map', 'reduce', 'some'].forEach(function (name) {
   Array[name] = function (array, callback, init) {
     return [][name].call(array, callback, init);
   };
