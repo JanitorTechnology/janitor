@@ -118,6 +118,13 @@ boot.executeInParallel([
     routes.redirect(query.res, '/reference/api/', true);
   });
 
+  // Public about page.
+  app.route(/^\/about\/?$/, (data, match, end, query) => {
+    const { req: request, res: response } = query;
+    log('about');
+    routes.aboutPage(request, response);
+  });
+
   // Public blog page.
   app.route(/^\/blog\/?$/, (data, match, end, query) => {
     const { req: request, res: response } = query;
