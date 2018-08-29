@@ -223,7 +223,7 @@ boot.executeInParallel([
     request.on('end', () => {
       try {
         const json = Buffer.concat(chunks).toString();
-        const {email} = JSON.parse(json);
+        const { email } = JSON.parse(json);
         users.sendLoginEmail(email, query.req, error => {
           if (error) {
             const message = String(error);
@@ -448,7 +448,7 @@ boot.executeInParallel([
     request.on('end', () => {
       try {
         const json = Buffer.concat(chunks).toString();
-        const {email} = JSON.parse(json);
+        const { email } = JSON.parse(json);
         const users = db.get('users');
         const waitlist = db.get('waitlist');
 
