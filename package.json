@@ -41,7 +41,7 @@
     "node-forge": "0.7.6",
     "oauth": "0.9.15",
     "oauth2provider": "0.0.2",
-    "selfapi": "0.3.1",
+    "selfapi": "1.0.0",
     "tar-stream": "1.6.2",
     "timeago.js": "3.0.2"
   },
