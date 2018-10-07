@@ -449,7 +449,7 @@ textarea.form-control {
     text-align: left;
     display: block;
   }
-  
+
   .navbar .menu-toggle:checked + ul,
   .navbar ul li {
     display: block;

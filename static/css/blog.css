@@ -30,7 +30,7 @@
 
 .blog .article-wrapper {
   border-top: solid 1px #ededf0;
-  padding: 60px 0 80px 0;  
+  padding: 60px 0 80px 0;
   overflow: auto;
   height: 400px;
   overflow: hidden;
@@ -51,7 +51,7 @@
 
 .blog .article-wrapper::after,
 .blog label {
-  padding: 50px 0 30px 0;  
+  padding: 50px 0 30px 0;
 }
 
 .blog article h1 {
