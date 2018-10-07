@@ -19,7 +19,7 @@ module.exports = {
     "camelcase": "off",
     "no-var": "error",
     "prefer-const": "error",
-    
+
     // Override some eslint base rules because we're using node.
     "no-console": "off",
   }

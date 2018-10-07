@@ -31,7 +31,7 @@
 #quotes {
   background: #fafafa;
   border-top: solid 1px #eaeaea;
-  border-bottom: solid 1px #eaeaea;  
+  border-bottom: solid 1px #eaeaea;
   display: flex;
   justify-content: space-around;
 }
@@ -71,7 +71,7 @@
   color: #666;
   padding: 0 5px 20px 0;
 }
- 
+
 .quote blockquote::before, .quote blockquote::after {
   content: '"';
   font-size: 18px;
