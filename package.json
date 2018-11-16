@@ -30,7 +30,7 @@
     "watch": "watch-run --initial --pattern 'app.js,package.json,api/**,lib/**,templates/**' --stop-on-error npm run app & tail -f janitor.log -n 0"
   },
   "dependencies": {
-    "azure-arm-compute": "7.0.0",
+    "azure-arm-compute": "7.1.0",
     "camp": "17.2.2",
     "dockerode": "2.5.7",
     "email-login": "1.3.1",
