@@ -4,7 +4,6 @@
 const camp = require('camp');
 const http = require('http');
 const nodepath = require('path');
-const nodeurl = require('url');
 
 const boot = require('./lib/boot');
 const db = require('./lib/db');
@@ -136,7 +135,7 @@ async function handleOAuth2Code (request, response, next) {
     return;
   }
 
-  const requestUrl = nodeurl.parse(request.url);
+  const requestUrl = new URL(request.url);
   if (!requestUrl.search) {
     // There are no URL parameters to remove, proceed without redirection.
     next();
@@ -144,16 +143,11 @@ async function handleOAuth2Code (request, response, next) {
   }
 
   // Remove the used OAuth2 code and state parameters from the requested URL.
-  const oldUrlParameters = requestUrl.search.slice(1).split('&');
-  const newUrlParameters = oldUrlParameters.filter(parameter => {
-    return !parameter.startsWith('code=') && !parameter.startsWith('state=');
-  });
-  requestUrl.search = newUrlParameters.length > 0
-    ? '?' + newUrlParameters.join('&')
-    : null;
+  requestUrl.searchParams.delete('code');
+  requestUrl.searchParams.delete('state');
 
   // Redirect the request to a safer URL (which can be revisited without 403).
-  routes.redirect(response, nodeurl.format(requestUrl), true);
+  routes.redirect(response, requestUrl.href, true);
 }
 
 // Ensure that all requests are authenticated via OAuth2.
