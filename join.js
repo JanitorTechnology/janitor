@@ -143,8 +143,8 @@ async function handleOAuth2Code (request, response, next) {
   }
 
   // Remove the used OAuth2 code and state parameters from the requested URL.
-  requestUrl.searchParams.delete("code");
-  requestUrl.searchParams.delete("state");
+  requestUrl.searchParams.delete('code');
+  requestUrl.searchParams.delete('state');
 
   // Redirect the request to a safer URL (which can be revisited without 403).
   routes.redirect(response, requestUrl.href, true);
