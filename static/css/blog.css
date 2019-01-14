@@ -73,6 +73,10 @@
   display: block;
 }
 
+.blog .emoji {
+  height: 1em;
+}
+
 .blog blockquote {
   border-left: solid .25em;
   background: #fafafa;
