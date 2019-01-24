@@ -37,7 +37,7 @@
     "fast-json-patch": "2.0.7",
     "fleau": "16.2.0",
     "le-acme-core": "2.1.4",
-    "ms-rest-azure": "2.5.9",
+    "ms-rest-azure": "2.6.0",
     "node-forge": "0.7.6",
     "oauth": "0.9.15",
     "oauth2provider": "0.0.2",
@@ -48,7 +48,7 @@
   "devDependencies": {
     "eslint": "5.12.1",
     "eslint-config-standard": "12.0.0",
-    "eslint-plugin-import": "2.14.0",
+    "eslint-plugin-import": "2.15.0",
     "eslint-plugin-node": "8.0.1",
     "eslint-plugin-promise": "4.0.1",
     "eslint-plugin-standard": "4.0.0",
