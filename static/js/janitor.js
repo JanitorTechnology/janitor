@@ -240,7 +240,7 @@ function getFormData (form) {
   }, {});
 }
 
-// Setup editable labels.
+// Setup editable container labels.
 Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
   const toggle = label.querySelector('.editable-toggle');
   if (!toggle) {

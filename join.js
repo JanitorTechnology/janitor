@@ -125,9 +125,11 @@ async function handleOAuth2Code (request, response, next) {
   // If they match, use the code to request an OAuth2 access token.
   try {
     // Associate the new OAuth2 access token to the current session.
-    // TODO: Also save the `refreshToken` when it's fully supported.
-    const { accessToken } = await getOAuth2AccessToken(code, state);
-    oauth2Tokens[session.id] = accessToken;
+    oauth2Tokens[session.id] = await getOAuth2AccessToken(code, state);
+
+    // Consider that this OAuth2 access token expires at some point.
+    //const created = Date.now();
+    //const expires = created + 1000 * 3600 * 30; // 30 hours from now.
   } catch (error) {
     log('[fail] oauth2 access token', error);
     response.statusCode = 403; // Forbidden
@@ -154,10 +156,15 @@ async function handleOAuth2Code (request, response, next) {
 async function ensureOAuth2Access (request, response, next) {
   const { session } = request;
   if (oauth2Tokens[session.id]) {
-    // This session has an OAuth2 access token, so it's authenticated.
-    // TODO: Also verify that the token is still valid, or renew it if not.
-    next();
-    return;
+    const expires = oauth2Tokens[session.id].expires;
+    if (expires && expires > Date.now()) {
+      // This session has a valid OAuth2 access token, so it's authenticated.
+      next();
+      return;
+    }
+
+    // This sessions's OAuth2 access token has expired.
+    delete oauth2Tokens[session.id];
   }
 
   // We can only use `http.ServerResponse`s to initiate OAuth2 authentication,
@@ -254,7 +261,7 @@ function routeRequest (proxyParameters, request, response) {
 }
 
 // Use the Janitor API to get the mapping information of a given container port.
-async function getMappedPort (accessToken, container, port) {
+async function getMappedPort ({ accessToken }, container, port) {
   const parameters = {
     provider: 'janitor',
     accessToken: accessToken,

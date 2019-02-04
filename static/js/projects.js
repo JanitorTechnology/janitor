@@ -1,8 +1,27 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-// Add status badges to elements with a 'data-status' attribute.
+// Spawn a project-specific machine when one of its links is clicked.
+Array.forEach(document.querySelectorAll('.new-container'), function (form) {
+  window.setupAsyncForm(form);
+  form.addEventListener('submit', function (event) {
+    var url = '/api/hosts/' + form.dataset.host +
+      '/containers?project=' + form.dataset.project;
+    window.fetchAPI('PUT', url, null, function(error, data) {
+      if (error) {
+        window.updateFormStatus(form, 'error', String(error));
+        return;
+      }
+      window.updateFormStatus(form, 'success', null);
+      setTimeout(function () {
+        document.location.href =
+          '/containers/#' + data.container.slice(0, 16);
+      }, 400);
+    });
+  });
+});
 
+// Add status badges to elements with a 'data-status' attribute.
 Array.map(document.querySelectorAll('*[data-status]'), function (element) {
   var status = element.dataset.status;
 
@@ -23,9 +42,8 @@ Array.map(document.querySelectorAll('*[data-status]'), function (element) {
 });
 
 // Add fuzzy timestamps to elements with a 'data-timestamp' attribute.
-var timestampElements = document.querySelectorAll('[data-timestamp]');
-Array.forEach(timestampElements, function (element) {
-  var date = new Date(parseInt(element.dataset.timestamp));
+Array.forEach(document.querySelectorAll('*[data-timestamp]'), function (element) {
+  var date = new Date(parseInt(element.dataset.timestamp, 10));
 
   // GMT is deprecated (see https://en.wikipedia.org/wiki/UTC).
   element.title = date.toUTCString().replace('GMT', 'UTC');
