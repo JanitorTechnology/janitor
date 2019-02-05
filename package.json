@@ -38,7 +38,7 @@
     "fleau": "16.2.0",
     "le-acme-core": "2.1.4",
     "ms-rest-azure": "2.6.0",
-    "node-forge": "0.7.6",
+    "node-forge": "0.8.0",
     "oauth": "0.9.15",
     "oauth2provider": "0.0.2",
     "selfapi": "1.0.0",
