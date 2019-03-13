@@ -1,4 +1,4 @@
-// Copyright © 2016 Jan Keromnes. All rights reserved.
+// Copyright © 2016 Team Janitor. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
 // Add status badges to elements with a 'data-status' attribute.
