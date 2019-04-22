@@ -101,12 +101,10 @@
   vertical-align: middle;
 }
 
-#feature-list li::-moz-list-bullet {
-  filter: invert(1);
-}
-
-#feature-list li::marker {
-  filter: invert(1);
+@media (prefers-color-scheme: dark) {
+  #feature-list li::before {
+    filter: invert(1);
+  }
 }
 
 .partners {
