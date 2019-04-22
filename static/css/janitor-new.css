@@ -20,50 +20,6 @@ body {
   min-height: 100%;
 }
 
-/* Dark theme */
-
-.dark-theme {
-  background: #2a2a2e;
-  color: #ededf0;
-}
-
-.dark-theme header,
-.dark-theme .card,
-.dark-theme .panel,
-.dark-theme .panel-body,
-.dark-theme footer {
-  background: #38383d;
-}
-
-.dark-theme .form-control {
-  background: #0c0c0d;
-  color: #ededf0;
-}
-
-.dark-theme .danger-zone {
-  color: #d70022;
-}
-
-.dark-theme section:not(:last-child),
-.dark-theme .global-tab-nav,
-.dark-theme .panel > .panel-heading,
-.dark-theme .panel > .panel-section,
-.dark-theme footer {
-  border-color: rgba(255,255,255,0.1);
-}
-
-.dark-theme .grey-text,
-.dark-theme p,
-.dark-theme .link-list-wrapper ul li a:not(:hover) {
-  color: #b1b1b3;
-}
-
-.dark-theme .icon::before,
-.dark-theme .form-control-feedback::before,
-.dark-theme .brand-logo img {
-  filter: invert(1);
-}
-
 /* Helper classes */
 
 .float-left {
@@ -144,11 +100,11 @@ a:not(:hover) {
   text-decoration: none;
 }
 
-a:not(.btn) {
+a {
   color: #0a84ff;
 }
 
-a:not(.btn):active {
+a:active {
   color: #0060df;
 }
 
@@ -500,17 +456,17 @@ textarea.form-control {
   }
 
   .navbar ul li:hover {
-    background: #f8f8f8;
+    background: rgba(128,128,128,0.15);
   }
 
   .navbar ul li.active {
-    background: #f8f8f8;
+    background: rgba(128,128,128,0.2);
     font-weight: 600;
   }
 
   .navbar ul li a {
     color: #0b0b0d;
-    border-bottom: solid 1px #eee;
+    border-bottom: solid 1px rgba(128,128,128,0.2);
     display: block;
     line-height: 50px;
     font-size: 14px;
@@ -860,4 +816,50 @@ textarea.form-control {
 
 .ajax-form.error .form-control-feedback::before {
   background-image: url(../img/icons/error.svg);
+}
+
+/* Dark theme */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #2a2a2e;
+    color: #ededf0;
+  }
+
+  .navbar,
+  .card,
+  .panel,
+  .panel-body,
+  .footer {
+    background: #38383d;
+  }
+
+  .form-control {
+    background: #0c0c0d;
+    color: #ededf0;
+  }
+
+  .danger-zone {
+    color: #d70022;
+  }
+
+  section:not(:last-child),
+  .global-tab-nav,
+  .panel > .panel-heading,
+  .panel > .panel-section,
+  .footer {
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .grey-text,
+  p,
+  .link-list-wrapper ul li a:not(:hover) {
+    color: #b1b1b3;
+  }
+
+  .icon::before,
+  .form-control-feedback::before,
+  .brand-logo img {
+    filter: invert(1);
+  }
 }
