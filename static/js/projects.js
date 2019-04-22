@@ -1,20 +1,6 @@
 // Copyright © 2016 Jan Keromnes. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
-// Spawn a project-specific machine when one of its links is clicked.
-
-Array.map(document.querySelectorAll('a[data-action="spawn"]'), function (link) {
-  link.addEventListener('click', Scout.send(function (query) {
-    query.action = link.dataset.action;
-    query.data = {
-      project: link.dataset.project
-    };
-    query.resp = function (data) {
-      document.location = '/containers/';
-    };
-  }));
-});
-
 // Add status badges to elements with a 'data-status' attribute.
 
 Array.map(document.querySelectorAll('*[data-status]'), function (element) {
@@ -47,4 +33,17 @@ Array.forEach(timestampElements, function (element) {
 
   // Use live-updating timeago plugin.
   timeago().render(element);
+});
+
+var cardSearchBox = document.querySelector('[data-search-cards]');
+cardSearchBox.addEventListener('input', function () {
+  var words = cardSearchBox.value.toLowerCase().split(/\s+/);
+  var cardsContainerId = cardSearchBox.getAttribute('data-search-cards');
+  var cards = document.getElementById(cardsContainerId).querySelectorAll('.card');
+  Array.forEach(cards, function (element) {
+    var cardText = element.getAttribute('data-search-text');
+    element.hidden = Array.some(words, function (word) {
+      return cardText.indexOf(word) < 0;
+    });
+  });
 });

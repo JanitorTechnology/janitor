@@ -449,7 +449,7 @@ textarea.form-control {
     text-align: left;
     display: block;
   }
-  
+
   .navbar .menu-toggle:checked + ul,
   .navbar ul li {
     display: block;
@@ -657,9 +657,18 @@ textarea.form-control {
 }
 
 @media screen and (max-width: 992px) {
-  .card-actions {
-    flex-direction: column;
-    align-items: flex-start;
+  .card {
+    display: block;
+  }
+  .card-content {
+    display: block;
+  }
+  .card-image {
+    float: left;
+    margin-right: 20px;
+  }
+  .card p {
+    clear: left;
   }
 }
 

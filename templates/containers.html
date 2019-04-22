@@ -46,11 +46,22 @@
           </ul>
           <div class="tab-panels">
             <div class="tab-panel padded" data-tab="info">
-              <p class="project-updated">Built {{
-                const machineUpdatedFuzzy = machine.data.updated
-                  ? timeago().format(machine.data.updated)
-                  : 'never';
-              }}<time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}">{{= machineUpdatedFuzzy in html}}</time>.</p>
+              <p class="project-updated">{{
+              // FIXME: Stop using `machine.data.updated` here once all containers have an expiration date.
+              const machineExpires = machine.data.expires || (machine.data.updated + 1000 * 3600 * 24 * 30 * 6);
+
+              // Show image build time until about 2 months before the container expires, then show expiration time.
+              if (machineExpires - Date.now() > 1000 * 3600 * 24 * 30 * 2) {
+                const machineUpdatedFuzzy = timeago().format(machine.data.updated); }}
+                <span>Image built</span>
+                <time class="project-timestamp" data-timestamp="{{= machine.data.updated in integer}}">{{= machineUpdatedFuzzy in html}}</time>.{{
+              } else {
+                const machineExpiresPrefix = 'Expire' + (machineExpires < Date.now() ? 'd' : 's');
+                const machineExpiresFuzzy = timeago().format(machineExpires); }}
+                <span>{{= machineExpiresPrefix in html}}</span>
+                <time class="project-timestamp" data-timestamp="{{= machineExpires in integer}}">{{= machineExpiresFuzzy in html}}</time>.{{
+              } }}
+              </p>
             </div>
             <div class="tab-panel" data-tab="advanced">
               <div class="padded">
@@ -62,7 +73,7 @@
                 <b>Danger zone!</b>
                 <p>This action can't be undone, please make sure you've backed up everything valuable.</p>
                 <form class="ajax-form has-feedback" data-refresh-after-success="true" method="delete" action="/api/hosts/{{= machine.docker.host in xmlattr}}/containers/{{= machine.docker.container in xmlattr}}">
-                  <button type="submit" class="btn btn-error">Delete {{= name in html}}</button>
+                  <button type="submit" class="btn btn-error">Delete container</button>
                 </form>
               </div>
             </div>

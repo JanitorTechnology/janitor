@@ -6,10 +6,11 @@
     <meta name="description" content="The fastest development system in the world.">
     <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{= title in html}}{{if title then {{ – }}}}Janitor</title>
+    <title> {{= title in html}}{{if title then {{ - }}}}Janitor </title>
+    <link href="{{= canonicalUrl in xmlattr}}" rel="canonical">
     <link href="/manifest.json" rel="manifest">
     <link href="/img/favicons/favicon-196x196.png" rel="apple-touch-icon">
-    <link href="/img/favicons/favicon-196x196.png" rel="icon" type="image/png">    
+    <link href="/img/favicons/favicon-196x196.png" rel="icon" type="image/png">
     <link href="/img/favicons/favicon-16x16.png" rel="icon" type="image/png" sizes="16x16">
     <link href="/img/favicons/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32">
     <link href="/img/favicons/favicon.svg" rel="icon" sizes="any" type="image/svg+xml">
@@ -27,8 +28,8 @@
         </a>
         <label for="menu-toggle" class="icon menu"></label>
         <input type="checkbox" class="menu-toggle" id="menu-toggle">
-        <ul>{{if user then {{
-          <li><a href="/projects/">Projects</a></li>
+        <ul>
+          <li><a href="/projects/">Projects</a></li>{{if user then {{
           <li><a href="/containers/">Containers</a></li>
           <li><a href="/settings/">Settings</a></li>
           <li><a href="/logout">Log Out</a></li>}} else {{

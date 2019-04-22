@@ -1,9 +1,13 @@
       <main class="container">
-        <div class="grid">{{
+        <section class="search-section" aria-label="Search">
+          <input type="search" class="form-control" data-search-cards="projects-grid" placeholder="Filter projects">
+        </section>
+        <div class="grid" id="projects-grid">{{
           for (let id in projects) {
             const project = projects[id];
+            const searchText = (project.name + ' ' + project.description).toLowerCase();
           }}
-          <div class="card">
+          <div class="card" data-search-text="{{= searchText in xmlattr}}">
             <img class="card-image" src="{{= project.icon in xmlattr}}" alt="{{= project.name in xmlattr}} Logo">
             <div class="card-content">
               <div class="grow">

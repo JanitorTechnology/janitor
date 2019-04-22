@@ -1,0 +1,12 @@
+.search-section {
+  text-align: right;
+}
+
+.search-section input {
+  padding-left: 32px; /* 8px padding + 16px image*/
+  background: #fff url(/img/icons/search.svg) no-repeat 8px center;
+}
+
+.card[hidden] {
+  display: none;
+}

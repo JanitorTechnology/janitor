@@ -8,11 +8,11 @@ git = true
 showfunc = true
 [extensions]
 mq =
-color = 
-pager = 
-histedit = 
-rebase = 
-blackbox = 
+color =
+pager =
+histedit =
+rebase =
+blackbox =
 fsmonitor =
 firefoxtree = /home/user/.mozbuild/version-control-tools/hgext/firefoxtree
 reviewboard = /home/user/.mozbuild/version-control-tools/hgext/reviewboard/client.py

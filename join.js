@@ -4,7 +4,6 @@
 const camp = require('camp');
 const http = require('http');
 const nodepath = require('path');
-const nodeurl = require('url');
 
 const boot = require('./lib/boot');
 const db = require('./lib/db');
@@ -15,15 +14,15 @@ const proxyHeuristics = require('./lib/proxy-heuristics');
 const routes = require('./lib/routes');
 const sessions = require('./lib/sessions');
 
-// Change this to your actual hostname in './db.json':
-const hostname = db.get('hostname', 'localhost');
+// Add your actual server hostnames in './db.json':
+const hostnames = db.get('hostnames', [ 'localhost' ]);
 
-if (!hostname || hostname === 'localhost') {
-  throw new Error('Cannot join cluster as [hostname = ' + hostname + ']: ' +
-    'please fix the hostname in ./db.json and try again');
+if (!hostnames || hostnames[0] === 'localhost') {
+  throw new Error(`Cannot join cluster as [hostname = ${hostnames[0]}: ` +
+    `please fix the first hostname in ./db.json and try again`);
 }
 
-log('[ok] will try to join cluster as [hostname = ' + hostname + ']');
+log(`[ok] will try to join cluster as [hostname = ${hostnames[0]}]`);
 
 boot.executeInParallel([
   boot.forwardHttp,
@@ -32,7 +31,7 @@ boot.executeInParallel([
   boot.verifyJanitorOAuth2Access
 ], () => {
   boot.registerDockerClient(() => {
-    log('[ok] joined cluster as [hostname = ' + hostname + ']');
+    log('[ok] joined cluster as [hostname = ' + hostnames[0] + ']');
 
     const https = db.get('https');
     const ports = db.get('ports');
@@ -50,7 +49,7 @@ boot.executeInParallel([
     });
 
     log('[ok] proxy → http' + (security.forceHttp ? '' : 's') + '://' +
-      hostname + ':' + ports.https);
+      hostnames[0] + ':' + ports.https);
 
     // Authenticate all requests with a series of server middlewares.
     proxy.handle(ensureSession);
@@ -136,7 +135,7 @@ async function handleOAuth2Code (request, response, next) {
     return;
   }
 
-  const requestUrl = nodeurl.parse(request.url);
+  const requestUrl = new URL(request.url);
   if (!requestUrl.search) {
     // There are no URL parameters to remove, proceed without redirection.
     next();
@@ -144,16 +143,11 @@ async function handleOAuth2Code (request, response, next) {
   }
 
   // Remove the used OAuth2 code and state parameters from the requested URL.
-  const oldUrlParameters = requestUrl.search.slice(1).split('&');
-  const newUrlParameters = oldUrlParameters.filter(parameter => {
-    return !parameter.startsWith('code=') && !parameter.startsWith('state=');
-  });
-  requestUrl.search = newUrlParameters.length > 0
-    ? '?' + newUrlParameters.join('&')
-    : null;
+  requestUrl.searchParams.delete('code');
+  requestUrl.searchParams.delete('state');
 
   // Redirect the request to a safer URL (which can be revisited without 403).
-  routes.redirect(response, nodeurl.format(requestUrl), true);
+  routes.redirect(response, requestUrl.href, true);
 }
 
 // Ensure that all requests are authenticated via OAuth2.
@@ -241,11 +235,14 @@ function routeRequest (proxyParameters, request, response) {
   const { port, proxy } = proxyParameters;
   switch (proxy) {
     case 'https':
+      // Route this request through an authenticated HTTPS proxy, which gets its
+      // content from a locally-restricted HTTP port.
       routes.webProxy(request, response, { port, path });
       break;
 
     case 'none':
-      routes.redirect(response, 'https://' + hostname + ':' + port + path);
+      // Don't route, simply redirect this request to a different public port.
+      routes.redirect(response, 'https://' + request.headers.host + ':' + port + path);
       break;
 
     default:
@@ -261,7 +258,7 @@ async function getMappedPort (accessToken, container, port) {
   const parameters = {
     provider: 'janitor',
     accessToken: accessToken,
-    path: `/api/hosts/${hostname}/containers/${container}/${port}`
+    path: `/api/hosts/${hostnames[0]}/containers/${container}/${port}`
   };
 
   const { body, response } = await oauth2.request(parameters);
@@ -282,7 +279,7 @@ async function getOAuth2AuthorizationUrl (redirectUrl, state) {
   const parameters = {
     provider: 'janitor',
     options: {
-      redirect_url: 'https://' + hostname + redirectUrl,
+      redirect_url: 'https://' + hostnames[0] + redirectUrl,
       scope: [ 'user:ports' ],
       state
     }
