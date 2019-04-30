@@ -1,4 +1,4 @@
-// Copyright © 2015 Jan Keromnes. All rights reserved.
+// Copyright © 2015 Team Janitor. All rights reserved.
 // The following code is covered by the AGPL-3.0 license.
 
 // Helpers
@@ -50,7 +50,7 @@ Array.forEach($$('.tabs'), function (element) {
 Array.forEach(document.querySelectorAll('form[method]'), function (form) {
   setupAsyncForm(form);
   form.addEventListener('submit', function (event) {
-    // set form to pending status
+    // Set form to pending status
     updateFormStatus(form, 'pending');
 
     var elements = Array.filter(form.elements, function (element) {

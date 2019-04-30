@@ -1,3 +1,6 @@
+// Copyright © Team Janitor. All rights reserved.
+// The following code is covered by the AGPL-3.0 license.
+
 function expandPost (hash) {
   // If hash is an empty string then select first blog
   var blogId = hash.slice(1) || document.querySelector('.article-wrapper h1').id;
