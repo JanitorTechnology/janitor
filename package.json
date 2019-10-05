@@ -34,7 +34,7 @@
     "camp": "17.2.4",
     "dockerode": "3.0.2",
     "email-login": "1.3.1",
-    "fast-json-patch": "2.1.0",
+    "fast-json-patch": "2.2.1",
     "fleau": "16.2.0",
     "le-acme-core": "2.1.4",
     "ms-rest-azure": "3.0.0",
