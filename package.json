@@ -43,7 +43,7 @@
     "oauth2provider": "0.0.2",
     "selfapi": "1.0.0",
     "tar-stream": "2.1.0",
-    "timeago.js": "3.0.2"
+    "timeago.js": "4.0.0"
   },
   "devDependencies": {
     "eslint": "5.16.0",
