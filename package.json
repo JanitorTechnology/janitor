@@ -46,7 +46,7 @@
     "timeago.js": "4.0.2"
   },
   "devDependencies": {
-    "eslint": "5.16.0",
+    "eslint": "7.18.0",
     "eslint-config-standard": "12.0.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-node": "11.1.0",
