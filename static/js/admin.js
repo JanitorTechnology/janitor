@@ -277,7 +277,7 @@ Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
         for (var i in paths) {
           var path = paths[i];
           // Create any missing branches along the way.
-          if (!node.Children.hasOwnProperty(path)) {
+          if (!Object.prototype.hasOwnProperty.call(node.Children, path)) {
             node.Children[path] = { Children: {}, TotalNodes: 0 };
           }
           // Keep track of how many nodes this sub-tree contains.
