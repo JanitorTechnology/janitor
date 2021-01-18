@@ -1,6 +1,6 @@
 # Janitor
 
-[![Travis CI](https://img.shields.io/travis/JanitorTechnology/janitor.svg)](https://travis-ci.org/JanitorTechnology/janitor)
+[![Github Actions](https://github.com/JanitorTechnology/janitor/workflows/CI/badge.svg?branch=master)](https://github.com/JanitorTechnology/janitor/actions?query=workflow%3ACI+branch%3Amaster)
 [![Docker Hub](https://img.shields.io/docker/build/janitortechnology/janitor.svg)](https://hub.docker.com/r/janitortechnology/janitor/)
 [![Greenkeeper](https://img.shields.io/badge/greenkeeper-enabled-brightgreen.svg)](https://greenkeeper.io/)
 [![NPM version](https://img.shields.io/npm/v/janitor.technology.svg)](https://www.npmjs.com/package/janitor.technology)
