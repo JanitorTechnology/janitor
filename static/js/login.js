@@ -4,8 +4,8 @@
 // Email-login form.
 
 ajaxForm('#login-form', 'login', function (form, data) {
-  var status = 'error';
-  var message = data.message;
+  let status = 'error';
+  let message = data.message;
 
   switch (data.status) {
     case 'logged-in':

@@ -3,8 +3,8 @@
 
 // Alpha version invite form.
 ajaxForm('#invite-form', 'invite', function (form, data) {
-  var status = 'error';
-  var message = data.message;
+  let status = 'error';
+  let message = data.message;
 
   switch (data.status) {
     case 'already-invited':
@@ -23,11 +23,11 @@ ajaxForm('#invite-form', 'invite', function (form, data) {
 });
 
 // New host form.
-var newHostForm = document.querySelector('#newhost-form');
+const newHostForm = document.querySelector('#newhost-form');
 if (newHostForm) {
   window.setupAsyncForm(newHostForm);
   newHostForm.addEventListener('submit', function (event) {
-    var hostname = newHostForm.elements.hostname.value;
+    const hostname = newHostForm.elements.hostname.value;
     window.fetchAPI('POST', '/api/hosts/' + hostname, {}, function (error, data) {
       if (error) {
         updateFormStatus(newHostForm, 'error', String(error));
@@ -43,8 +43,8 @@ if (newHostForm) {
 
 // New project form.
 ajaxForm('#newproject-form', 'projectdb', function (form, data) {
-  var status = 'error';
-  var message = data.message;
+  let status = 'error';
+  let message = data.message;
 
   switch (data.status) {
     case 'success':
@@ -72,10 +72,10 @@ Array.map(document.querySelectorAll('button[data-action]'), function (button) {
 
 // Azure Virtual Machines button.
 Array.forEach(document.querySelectorAll('.azure-virtual-machines'), function (div) {
-  var button = div.querySelector('button');
-  var pre = div.querySelector('pre');
+  const button = div.querySelector('button');
+  const pre = div.querySelector('pre');
   button.addEventListener('click', function (event) {
-    var url = '/api/admin/azure/virtualmachines';
+    const url = '/api/admin/azure/virtualmachines';
     pre.textContent = 'Fetching virtual machines…';
     window.fetchAPI('GET', url, null, function (error, virtualMachines) {
       if (error) {
@@ -89,10 +89,10 @@ Array.forEach(document.querySelectorAll('.azure-virtual-machines'), function (di
 
 // Docker version button.
 Array.forEach(document.querySelectorAll('.docker-version'), function (div) {
-  var button = div.querySelector('button');
-  var pre = div.querySelector('pre');
+  const button = div.querySelector('button');
+  const pre = div.querySelector('pre');
   button.addEventListener('click', function (event) {
-    var url = '/api/hosts/' + button.dataset.hostname + '/version';
+    const url = '/api/hosts/' + button.dataset.hostname + '/version';
     pre.textContent = 'Fetching version…';
     window.fetchAPI('GET', url, null, function (error, version) {
       if (error) {
@@ -106,12 +106,12 @@ Array.forEach(document.querySelectorAll('.docker-version'), function (div) {
 
 // Docker container tree button.
 Array.forEach(document.querySelectorAll('.docker-tree'), function (div) {
-  var button = div.querySelector('button');
-  var pre = div.querySelector('pre');
+  const button = div.querySelector('button');
+  const pre = div.querySelector('pre');
   button.addEventListener('click', function (event) {
     // Request the list of all Docker images on this host.
-    var hostUrl = '/api/hosts/' + button.dataset.hostname;
-    var imagesUrl = hostUrl + '/images';
+    const hostUrl = '/api/hosts/' + button.dataset.hostname;
+    const imagesUrl = hostUrl + '/images';
     pre.textContent = 'Fetching images…';
     window.fetchAPI('GET', imagesUrl, null, function (error, data) {
       if (error) {
@@ -121,7 +121,7 @@ Array.forEach(document.querySelectorAll('.docker-tree'), function (div) {
 
       // Build a flat index of all images, indexed by Id.
       pre.textContent += '\nIndexing images…';
-      var images = data.reduce(function (images, image) {
+      const images = data.reduce(function (images, image) {
         images[image.Id] = image;
         // Clean up image structure somewhat.
         image.Children = [];
@@ -134,10 +134,10 @@ Array.forEach(document.querySelectorAll('.docker-tree'), function (div) {
 
       // Build the image hierarchy into a tree.
       pre.textContent += '\nBuilding image tree…';
-      var tree = {};
-      for (var Id in images) {
-        var image = images[Id];
-        var parent = images[image.ParentId];
+      const tree = {};
+      for (const Id in images) {
+        const image = images[Id];
+        const parent = images[image.ParentId];
         if (!parent) {
           // This image has no parent, so we place it at the root of the tree.
           tree[Id] = image;
@@ -147,7 +147,7 @@ Array.forEach(document.querySelectorAll('.docker-tree'), function (div) {
       }
 
       // Request the list of all Docker containers on this host.
-      var containersUrl = hostUrl + '/containers';
+      const containersUrl = hostUrl + '/containers';
       pre.textContent += '\nFetching containers…';
       window.fetchAPI('GET', containersUrl, null, function (error, data) {
         if (error) {
@@ -161,8 +161,8 @@ Array.forEach(document.querySelectorAll('.docker-tree'), function (div) {
         });
         // Export the tree in text format.
         pre.textContent += '\nExporting tree…';
-        var text = '';
-        for (var id in tree) {
+        let text = '';
+        for (const id in tree) {
           text += formatContainerTree(tree[id]) + '\n';
         }
         pre.textContent = text;
@@ -183,18 +183,18 @@ function formatContainerTree (image, linePrefix, lastChild, parentSize) {
   }
 
   // Format tree branches, image ID and any tags.
-  var text = linePrefix + (lastChild ? '└─' : '├─');
+  let text = linePrefix + (lastChild ? '└─' : '├─');
   text += image.Id.split(':')[1].slice(0, 16);
   text += ' ' + window.formatMemory(image.VirtualSize - parentSize);
   if (image.RepoTags.length > 0) {
     text += ' (tags: ' + image.RepoTags.join(', ') + ')';
   }
 
-  var childPrefix = linePrefix + (lastChild ? '  ' : '│ ');
+  const childPrefix = linePrefix + (lastChild ? '  ' : '│ ');
 
   // Format container IDs and creation dates.
   image.Containers.forEach(function (container, i) {
-    var created = new Date(container.Created * 1000)
+    const created = new Date(container.Created * 1000)
       .toISOString().split('T')[0];
     text += '\n' + childPrefix +
       (i === image.Containers.length - 1 ? '└─' : '├─') +
@@ -211,7 +211,7 @@ function formatContainerTree (image, linePrefix, lastChild, parentSize) {
 }
 
 // Docker container filesystem paths that can be ignored.
-var diffHiddenPaths = {
+const diffHiddenPaths = {
   '/etc': true,
   '/home/user/.bash_history': true,
   '/home/user/.bashrc': true,
@@ -254,12 +254,12 @@ var diffHiddenPaths = {
 
 // Docker container filesystem diff button.
 Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
-  var form = div.querySelector('form');
-  var pre = div.querySelector('pre');
+  const form = div.querySelector('form');
+  const pre = div.querySelector('pre');
   window.setupAsyncForm(form);
   form.addEventListener('submit', function (event) {
     // Request the list of all files that were changed in this container.
-    var url = '/api/hosts/' + form.dataset.hostname + '/containers/' +
+    const url = '/api/hosts/' + form.dataset.hostname + '/containers/' +
       form.elements.container.value.trim() + '/changes';
     pre.textContent = 'Fetching filesystem changes…';
     window.fetchAPI('GET', url, null, function (error, changes) {
@@ -269,13 +269,13 @@ Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
       }
 
       // Build the changes into a file tree.
-      var tree = { Children: {}, TotalNodes: 0 };
+      const tree = { Children: {}, TotalNodes: 0 };
       changes.forEach(function (change) {
         // Descend into the tree following the changed path.
-        var node = tree;
-        var paths = change.Path.slice(1).split('/');
-        for (var i in paths) {
-          var path = paths[i];
+        let node = tree;
+        const paths = change.Path.slice(1).split('/');
+        for (const i in paths) {
+          const path = paths[i];
           // Create any missing branches along the way.
           if (!Object.prototype.hasOwnProperty.call(node.Children, path)) {
             node.Children[path] = { Children: {}, TotalNodes: 0 };
@@ -295,10 +295,10 @@ Array.forEach(document.querySelectorAll('.docker-diff'), function (div) {
       });
 
       // Export the tree to HTML, sort paths alphabetically.
-      var documentFragment = document.createDocumentFragment();
-      var sortedPaths = Object.keys(tree.Children).sort();
-      for (var i = 0; i < sortedPaths.length; i++) {
-        var path = sortedPaths[i];
+      const documentFragment = document.createDocumentFragment();
+      const sortedPaths = Object.keys(tree.Children).sort();
+      for (let i = 0; i < sortedPaths.length; i++) {
+        const path = sortedPaths[i];
         exportDiffTree(documentFragment, tree.Children[path]);
       }
       pre.textContent = '';
@@ -317,13 +317,13 @@ function exportDiffTree (element, node) {
   }
 
   // By default, append child nodes to the same root element.
-  var parentElement = element;
+  let parentElement = element;
   if (node.Hidden && node.TotalNodes > 0) {
     // If this node is hidden, append its children to a collapsed <div> instead.
     parentElement = document.createElement('div');
     parentElement.classList.add('collapse');
     // Add a link to reveal hidden child nodes.
-    var a = document.createElement('a');
+    const a = document.createElement('a');
     a.href = 'javascript:void(0)';
     a.textContent = node.TotalNodes + ' hidden';
     a.addEventListener('click', function (event) {
@@ -336,9 +336,9 @@ function exportDiffTree (element, node) {
   }
 
   // Export all child nodes recursively, in alphabetical order.
-  var sortedPaths = Object.keys(node.Children).sort();
-  for (var i = 0; i < sortedPaths.length; i++) {
-    var path = sortedPaths[i];
+  const sortedPaths = Object.keys(node.Children).sort();
+  for (let i = 0; i < sortedPaths.length; i++) {
+    const path = sortedPaths[i];
     exportDiffTree(parentElement, node.Children[path]);
   }
 }

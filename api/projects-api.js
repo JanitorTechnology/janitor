@@ -25,7 +25,7 @@ projectsAPI.get({
 
   examples: [{
     response: {
-      body: JSON.stringify([ 'test-project' ], null, 2)
+      body: JSON.stringify(['test-project'], null, 2)
     }
   }]
 });

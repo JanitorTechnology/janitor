@@ -12,7 +12,7 @@
 Array.forEach(document.querySelectorAll('form[method]'), function (form) {
   setupAsyncForm(form);
   form.addEventListener('submit', function (event) {
-    var elements = Array.filter(form.elements, function (element) {
+    const elements = Array.filter(form.elements, function (element) {
       // Only consider `form.elements` that have a `name` attribute.
       return !!element.name;
     }).map(function (element) {
@@ -24,8 +24,8 @@ Array.forEach(document.querySelectorAll('form[method]'), function (form) {
     });
 
     // Build a JSON payload containing the submitted form data.
-    var data = {};
-    var method = form.getAttribute('method').toUpperCase();
+    let data = {};
+    const method = form.getAttribute('method').toUpperCase();
     if (method === 'PATCH') {
       // Set up JSON Patch forms to submit an Array of JSON Patch operations.
       // See also: RFC 6902 - JSON Patch.
@@ -53,8 +53,8 @@ Array.forEach(document.querySelectorAll('form[method]'), function (form) {
 // FIXME: Remove this deprecated code.
 // Automatically set up simple ajax forms (with 'data-action' attribute).
 Array.forEach(document.querySelectorAll('form[data-action]'), function (form) {
-  var id = '#' + form.getAttribute('id');
-  var action = form.dataset.action;
+  const id = '#' + form.getAttribute('id');
+  const action = form.dataset.action;
 
   ajaxForm(id, action, function (form, data) {
     updateFormStatus(form, data.status, data.message);
@@ -64,7 +64,7 @@ Array.forEach(document.querySelectorAll('form[data-action]'), function (form) {
 // FIXME: Remove this deprecated function.
 // Set up an ajax <form>.
 function ajaxForm (selector, action, callback) {
-  var form = document.querySelector(selector);
+  const form = document.querySelector(selector);
   if (!form) {
     return;
   }
@@ -86,11 +86,11 @@ function ajaxForm (selector, action, callback) {
 
 // Use `window.fetch()` to make an asynchronous Janitor API request.
 function fetchAPI (method, url, data, callback) {
-  var responseStatus = null;
-  var options = {
+  let responseStatus = null;
+  const options = {
     method: method.toUpperCase(),
     headers: new Headers({
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     }),
     credentials: 'same-origin'
@@ -183,7 +183,7 @@ function updateFormStatus (form, status, message) {
     element.classList.remove('disabled');
   });
 
-  var feedback = form.querySelector('.form-control-feedback');
+  const feedback = form.querySelector('.form-control-feedback');
 
   // Reset the custom validity message so the element isn't invalid anymore,
   // and the form can be submitted.
@@ -213,13 +213,13 @@ function updateFormStatus (form, status, message) {
 
 // Add visual feedback elements to a given <form>.
 function addFormFeedback (form) {
-  var feedback = document.createElement('button');
+  const feedback = document.createElement('button');
   feedback.classList.add('form-control-feedback');
   feedback.setAttribute('tabindex', '99');
 
   // Append icons for 'success' and 'error' states.
   ['ok', 'remove'].forEach(function (name) {
-    var icon = document.createElement('span');
+    const icon = document.createElement('span');
     icon.classList.add('glyphicon', 'glyphicon-' + name);
     icon.setAttribute('aria-hidden', 'true');
     feedback.appendChild(icon);
@@ -232,7 +232,7 @@ function addFormFeedback (form) {
 // Extract the values of all named fields in a given <form>.
 function getFormData (form) {
   return Array.reduce(form.elements, function (data, element) {
-    var name = element.name;
+    const name = element.name;
     if (name && !(name in data)) {
       data[name] = element.type === 'checkbox' ? element.checked : element.value;
     }
@@ -255,7 +255,7 @@ Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
 
 // Setup modals
 $('.modal-form').on('show.bs.modal', function (event) {
-  var menuItem = $(event.relatedTarget);
+  const menuItem = $(event.relatedTarget);
   $(this).find('.modal-title').text(menuItem.data('confirm'));
   $(this).find('.modal-details').text(menuItem.data('details'));
   $(this).find('button[type="submit"]').text(menuItem.text());
@@ -273,7 +273,7 @@ $('.modal-form').on('hidden.bs.modal', function (event) {
 
 // Remove the query string (e.g. '?key=123') from the URL.
 if (window.location.search) {
-  var url = String(window.location).replace(window.location.search, '');
+  const url = String(window.location).replace(window.location.search, '');
   window.history.replaceState({}, document.title, url);
 }
 

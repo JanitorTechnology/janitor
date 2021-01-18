@@ -38,7 +38,7 @@ hostsAPI.get({
 
   examples: [{
     response: {
-      body: JSON.stringify([ 'example.com' ], null, 2)
+      body: JSON.stringify(['example.com'], null, 2)
     }
   }]
 });

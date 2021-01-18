@@ -15,11 +15,11 @@ const routes = require('./lib/routes');
 const sessions = require('./lib/sessions');
 
 // Add your actual server hostnames in './db.json':
-const hostnames = db.get('hostnames', [ 'localhost' ]);
+const hostnames = db.get('hostnames', ['localhost']);
 
 if (!hostnames || hostnames[0] === 'localhost') {
   throw new Error(`Cannot join cluster as [hostname = ${hostnames[0]}: ` +
-    `please fix the first hostname in ./db.json and try again`);
+    'please fix the first hostname in ./db.json and try again');
 }
 
 log(`[ok] will try to join cluster as [hostname = ${hostnames[0]}]`);
@@ -280,7 +280,7 @@ async function getOAuth2AuthorizationUrl (redirectUrl, state) {
     provider: 'janitor',
     options: {
       redirect_url: 'https://' + hostnames[0] + redirectUrl,
-      scope: [ 'user:ports' ],
+      scope: ['user:ports'],
       state
     }
   };

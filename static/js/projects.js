@@ -4,13 +4,13 @@
 // Add status badges to elements with a 'data-status' attribute.
 
 Array.map(document.querySelectorAll('*[data-status]'), function (element) {
-  var status = element.dataset.status;
+  const status = element.dataset.status;
 
   // Format the status.
   element.title = 'Status: ' + status.split('-').join(' ');
 
   // Choose a relevant status class.
-  var classMap = {
+  const classMap = {
     started: 'success',
     accepted: 'success',
     rejected: 'warning',
@@ -23,9 +23,9 @@ Array.map(document.querySelectorAll('*[data-status]'), function (element) {
 });
 
 // Add fuzzy timestamps to elements with a 'data-timestamp' attribute.
-var timestampElements = document.querySelectorAll('[data-timestamp]');
+const timestampElements = document.querySelectorAll('[data-timestamp]');
 Array.forEach(timestampElements, function (element) {
-  var date = new Date(parseInt(element.dataset.timestamp));
+  const date = new Date(parseInt(element.dataset.timestamp));
 
   // GMT is deprecated (see https://en.wikipedia.org/wiki/UTC).
   element.title = date.toUTCString().replace('GMT', 'UTC');
@@ -35,13 +35,13 @@ Array.forEach(timestampElements, function (element) {
   timeago().render(element);
 });
 
-var cardSearchBox = document.querySelector('[data-search-cards]');
+const cardSearchBox = document.querySelector('[data-search-cards]');
 cardSearchBox.addEventListener('input', function () {
-  var words = cardSearchBox.value.toLowerCase().split(/\s+/);
-  var cardsContainerId = cardSearchBox.getAttribute('data-search-cards');
-  var cards = document.getElementById(cardsContainerId).querySelectorAll('.card');
+  const words = cardSearchBox.value.toLowerCase().split(/\s+/);
+  const cardsContainerId = cardSearchBox.getAttribute('data-search-cards');
+  const cards = document.getElementById(cardsContainerId).querySelectorAll('.card');
   Array.forEach(cards, function (element) {
-    var cardText = element.getAttribute('data-search-text');
+    const cardText = element.getAttribute('data-search-text');
     element.hidden = Array.some(words, function (word) {
       return cardText.indexOf(word) < 0;
     });
