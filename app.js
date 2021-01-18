@@ -22,7 +22,7 @@ boot.executeInParallel([
   boot.ensureDockerTlsCertificates
 ], () => {
   // You can customize these values in './db.json'.
-  const hostnames = db.get('hostnames', [ 'localhost' ]);
+  const hostnames = db.get('hostnames', ['localhost']);
   const https = db.get('https');
   const ports = db.get('ports');
   const security = db.get('security');

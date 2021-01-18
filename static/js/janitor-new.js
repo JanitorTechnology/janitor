@@ -2,14 +2,14 @@
 // The following code is covered by the AGPL-3.0 license.
 
 // Helpers
-var $ = function (selector, target) {
+const $ = function (selector, target) {
   if (!target) {
     target = document;
   }
   return target.querySelector(selector);
 };
 
-var $$ = function (selector, target) {
+const $$ = function (selector, target) {
   if (!target) {
     target = document;
   }
@@ -25,11 +25,11 @@ var $$ = function (selector, target) {
 
 // Setup tabs
 Array.forEach($$('.tabs'), function (element) {
-  var nav = $('.tab-nav', element);
+  const nav = $('.tab-nav', element);
   Array.forEach($$('.tab', nav), function (tab) {
     tab.addEventListener('click', function (event) {
-      var newSelected = '[data-tab=' + tab.dataset.tab + ']';
-      var currentSelected = $$('.tab-panel.selected, .tab.selected', element);
+      const newSelected = '[data-tab=' + tab.dataset.tab + ']';
+      const currentSelected = $$('.tab-panel.selected, .tab.selected', element);
       if (currentSelected.length > 0) {
         Array.forEach(currentSelected, function (panel) {
           panel.classList.remove('selected');
@@ -53,7 +53,7 @@ Array.forEach(document.querySelectorAll('form[method]'), function (form) {
     // Set form to pending status
     updateFormStatus(form, 'pending');
 
-    var elements = Array.filter(form.elements, function (element) {
+    const elements = Array.filter(form.elements, function (element) {
       // Only consider `form.elements` that have a `name` attribute.
       return !!element.name;
     }).map(function (element) {
@@ -65,8 +65,8 @@ Array.forEach(document.querySelectorAll('form[method]'), function (form) {
     });
 
     // Build a JSON payload containing the submitted form data.
-    var data = {};
-    var method = form.getAttribute('method').toUpperCase();
+    let data = {};
+    const method = form.getAttribute('method').toUpperCase();
     if (method === 'PATCH') {
       // Set up JSON Patch forms to submit an Array of JSON Patch operations.
       // See also: RFC 6902 - JSON Patch.
@@ -93,11 +93,11 @@ Array.forEach(document.querySelectorAll('form[method]'), function (form) {
 
 // Use `window.fetch()` to make an asynchronous Janitor API request.
 function fetchAPI (method, url, data, callback) {
-  var responseStatus = null;
-  var options = {
+  let responseStatus = null;
+  const options = {
     method: method.toUpperCase(),
     headers: new Headers({
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json'
     }),
     credentials: 'same-origin'
@@ -190,7 +190,7 @@ function updateFormStatus (form, status, message) {
       form.classList.add('error');
       break;
   }
-  var feedback = form.querySelector('.form-control-feedback');
+  const feedback = form.querySelector('.form-control-feedback');
 
   // Reset the custom validity message so the element isn't invalid anymore,
   // and the form can be submitted.
@@ -227,7 +227,7 @@ function updateFormStatus (form, status, message) {
 
 // Add visual feedback elements to a given <form>.
 function addFormFeedback (form) {
-  var feedback = document.createElement('button');
+  const feedback = document.createElement('button');
   feedback.classList.add('form-control-feedback');
   feedback.setAttribute('tabindex', '99');
 
@@ -236,7 +236,7 @@ function addFormFeedback (form) {
 
 // Setup editable labels.
 Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
-  var toggle = label.querySelector('.editable-toggle');
+  const toggle = label.querySelector('.editable-toggle');
   if (!toggle) {
     console.error('Editable label', label, 'has no ".editable-toggle" element!');
     return;
@@ -249,13 +249,13 @@ Array.forEach(document.querySelectorAll('.editable-label'), function (label) {
 
 // Remove the query string (e.g. '?key=123') from the URL.
 if (window.location.search) {
-  var url = String(window.location).replace(window.location.search, '');
+  const url = String(window.location).replace(window.location.search, '');
   window.history.replaceState({}, document.title, url);
 }
 
 // Add helpful anchor links to title elements with an 'id' attribute.
 Array.forEach(document.querySelectorAll('h1[id],h2[id]'), function (element) {
-  var link = document.createElement('a');
+  const link = document.createElement('a');
   link.href = '#' + element.id;
   link.classList.add('icon', 'link', 'icon-button');
   element.appendChild(link);

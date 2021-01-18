@@ -104,7 +104,7 @@ emailsAPI.get({
 
   examples: [{
     response: {
-      body: JSON.stringify([ 'admin@example.com' ], null, 2)
+      body: JSON.stringify(['admin@example.com'], null, 2)
     }
   }]
 });

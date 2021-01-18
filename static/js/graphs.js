@@ -3,7 +3,7 @@
 
 // Format milliseconds into human readable text.
 window.formatTime = function (milliseconds) {
-  var units = [
+  const units = [
     { code: 'ms', max: 1000 },
     { code: 's', max: 60 },
     { code: 'min', max: 60 },
@@ -11,8 +11,8 @@ window.formatTime = function (milliseconds) {
     { code: 'days', max: 365.25 },
     { code: 'years' }
   ];
-  var unit = units.shift();
-  var value = Number(milliseconds);
+  let unit = units.shift();
+  let value = Number(milliseconds);
 
   while (unit.max && value >= unit.max) {
     value /= unit.max;
@@ -24,9 +24,9 @@ window.formatTime = function (milliseconds) {
 
 // Format bytes into human readable text.
 window.formatMemory = function (bytes) {
-  var prefix = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-  var p = 0;
-  var value = Number(bytes);
+  const prefix = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+  let p = 0;
+  let value = Number(bytes);
 
   while (value > 1024 && p < prefix.length) {
     value /= 1024;
@@ -38,8 +38,8 @@ window.formatMemory = function (bytes) {
 
 // Set-up all time series graphs.
 Array.map(document.querySelectorAll('*[data-data]'), function (div) {
-  var data = JSON.parse(div.dataset.data);
-  var title = div.dataset.title;
+  const data = JSON.parse(div.dataset.data);
+  const title = div.dataset.title;
 
   data.forEach(function (row) {
     row[0] = new Date(row[0]);
