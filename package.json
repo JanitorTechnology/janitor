@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "azure-arm-compute": "10.0.0",
-    "camp": "17.2.4",
+    "camp": "18.1.1",
     "dockerode": "3.2.1",
     "email-login": "1.3.2",
     "fast-json-patch": "2.2.1",
