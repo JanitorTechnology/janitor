@@ -245,12 +245,7 @@ boot.executeInParallel([
   // User login via GitHub.
   app.route(/^\/login\/github\/?$/, async (data, match, end, query) => {
     const { req: request, res: response } = query;
-    const { user } = request;
-    if (!user) {
-      // Don't allow signing in only with GitHub just yet.
-      routes.notFoundPage(request, response);
-      return;
-    }
+    let { user } = request;
 
     let accessToken = null;
     let refreshToken = null;
@@ -260,6 +255,31 @@ boot.executeInParallel([
       log('[fail] github authentication', error);
       routes.notFoundPage(request, response);
       return;
+    }
+
+    if (!user) {
+      let verifiedEmails = null;
+      try {
+        verifiedEmails = await github.getVerifiedEmails(accessToken);
+      } catch (error) {
+        log('[fail] could not get verified emails', error);
+        routes.notFoundPage(response, user);
+        return;
+      }
+
+      const users = db.get('users');
+      for (const verifiedEmail of verifiedEmails) { // FIXME multiple emails
+        if (users[verifiedEmail]) {
+          // TODO sign in, user = ;
+        }
+      }
+
+      if (!user) {
+        // Don't allow unregistered users to sign in with GitHub just yet.
+        // TODO "We don't have a Janitor account associated with the GitHub user that you used to sign in."
+        routes.notFoundPage(response, user);
+        return;
+      }
     }
 
     try {
@@ -542,4 +562,8 @@ boot.executeInParallel([
 
   // Start regularly scheduling system events, once start-up is complete.
   events.startScheduling();
+});
+
+process.on('unhandledRejection', error => {
+  log('[fail] unhandled promise rejection', error);
 });
