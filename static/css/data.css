@@ -38,6 +38,12 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+  
+  @media (prefers-color-scheme: dark) {
+    .data-container::after {
+      background: #2a2a2e;
+    }
+  }
 
   .data-topic {
     flex-basis: 50%;
