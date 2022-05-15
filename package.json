@@ -37,7 +37,7 @@
     "fast-json-patch": "2.2.1",
     "fleau": "16.2.0",
     "le-acme-core": "2.1.4",
-    "ms-rest-azure": "3.0.0",
+    "ms-rest-azure": "3.0.2",
     "node-forge": "0.10.0",
     "oauth": "0.9.15",
     "oauth2provider": "0.0.2",
